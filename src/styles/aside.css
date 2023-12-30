@@ -1,0 +1,148 @@
+aside {
+    display: flex;
+    position: relative;
+    width: 240px;
+    height: 100vh;
+    background-color: #fcfdfb;
+}
+
+.aside-body {
+    position: fixed;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 240px;
+    height: 100vh;
+    padding: 1rem;
+}
+
+@media screen and (min-width: 488px) {
+    aside {
+        border-radius: 0 0.8rem 0 0;
+    }   
+    .aside-body {
+        height: calc(100vh - 2rem);
+        top: 2rem;
+    }
+}
+
+.aside-btn {
+    position: absolute;
+    right: -16px;
+    top: calc(50% - 30px);
+    width: 16px;
+    height: 60px;
+    border-radius: 0 0.4rem 0.4rem 0;
+    backdrop-filter: blur(2px);
+    background-color: rgba(106, 126, 154, 0.36);
+    z-index: 999;
+}
+
+.aside-btn:hover {
+    cursor: pointer;
+}
+
+.aside-btn::before {
+    content: "|";
+    position: absolute;
+    left: 6px;
+    top: 20px;
+    display: block;
+    color: #ffffff;
+}
+
+.aside-author,
+.aside-links,
+.aside-copyright {
+    padding: 0.6rem;
+    margin-bottom: 1rem;
+    border-radius: 0.8rem;
+    box-shadow: rgba(0, 0, 0, 0.6) 0px 5px 15px;
+}
+
+/* 站长信息 */
+.aside-author {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.aside-author img {
+    margin-right: 0.12rem;
+    width: 48px;
+    border-radius: 50%;
+}
+
+.aside-author h3 {
+    font-size: 1rem;
+    padding-bottom: 0.3rem;
+}
+
+.aside-author .desc {
+    font-size: 0.8rem;
+    font-weight: bold;
+    line-height: 1rem;
+    animation: breathe 6s linear infinite;
+}
+
+@keyframes breathe {
+    0% {
+        color: #000;
+    }
+
+    25% {
+        color: #f8fef3;
+    }
+
+    50% {
+        color: #d33a4a;
+    }
+
+    75% {
+        color: #f8f0e0;
+    }
+
+    100% {
+        color: #000;
+    }
+}
+
+/* 链接 */
+.aside-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    text-align: center;
+}
+
+.aside-links a {
+    display: inline-block;
+    padding: 0.12rem 0.3rem;
+    margin: 0.2rem 0;
+    border-radius: 4px;
+    color: #000;
+    box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
+}
+
+.aside-links a:hover {
+    background-color: #007175;
+    color: #033a4a;
+}
+
+/* 主题信息 */
+aside p {
+    margin: 0;
+}
+
+.aside-copyright {
+    align-self: end;
+    width: calc(240px - 2rem);
+    margin-bottom: 0;
+    background-color: transparent;
+    font-size: 1rem;
+}
+
+.aside-copyright a {
+    color: #000;
+}

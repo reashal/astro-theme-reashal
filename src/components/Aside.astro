@@ -1,0 +1,54 @@
+---
+import "../styles/aside.css";
+const authorInfo = [
+    "睿屿青衫",
+    "希望我们能在前行的路上久别重逢",
+    "/static/images/reashal.svg",
+];
+const links = [
+    ["动态", "/", "iconfont icon-Home"],
+    ["笔记", "/docs", "iconfont icon-pc"],
+    ["链接", "/links", "iconfont icon-plane"],
+    ["仓库", "https://github.com/reashal", "iconfont icon-github"],
+    ["游弋", "https://uuuu.ee", "iconfont icon-planet"],
+];
+---
+
+<aside>
+    <section class="aside-body">
+        <section class="aside-author">
+            <img
+                src={authorInfo[2]}
+                alt={authorInfo[0]}
+                title={authorInfo[0]}
+            />
+            <div class="aside-author-info">
+                <h3>{authorInfo[0]}</h3>
+                <p class="desc">{authorInfo[1]}</p>
+            </div>
+        </section>
+        <section class="aside-links">
+            {
+                links.map((single) => (
+                    <a href={single[1]} target="_self" class={single[2]}>
+                        {single[0]}
+                    </a>
+                ))
+            }
+        </section>
+        <section class="aside-copyright">
+            <div>
+                Powered By <a href="//astro.build" class="copy-a" target="_blank"
+                    >Astro</a
+                >
+            </div>
+            <div>
+                Themed By <a href="//www.reashal.com" class="copy-a" target="_blank"
+                    >reashal</a
+                >
+            </div>
+        </section>
+        
+    </section>
+    <div class="aside-btn" onclick="clickAsideBtn()"></div>
+</aside>

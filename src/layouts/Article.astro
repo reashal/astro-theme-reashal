@@ -1,0 +1,37 @@
+---
+import "../styles/md.css";
+import Giscus from "../components/Giscus.astro";
+import BaseLayout from "./BaseLayout.astro";
+const { pageTitle, pageDescription, pageType, frontmatter } = Astro.props;
+---
+
+<BaseLayout pageTitle={frontmatter.title} pageDescription={frontmatter.desc}>
+    <article class="doc">
+        <slot />
+        <section class="article-copy">
+            <div>
+                本文作者：<a href={frontmatter.source} target="_blank"
+                    >{frontmatter.author}</a
+                >
+            </div>
+            <div>
+                本文来源：<a href={frontmatter.source} target="_blank"
+                    >{frontmatter.source}</a
+                >
+            </div>
+            <div class="article-copy-info">
+                许可协议：<a
+                    href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans"
+                    target="_blank">CC BY-NC-SA 4.0</a
+                >
+            </div>
+            <div class="article-copy-info">
+                本站随笔均为原创，涉及隐私且时效性较强，不允许任何人以任何形式转载。
+            </div>
+            <div class="article-copy-info">
+                本站笔记多对原始作品作出修改，允许非商业用途转载，转载时请注明出处。
+            </div>
+        </section>
+        <Giscus />
+    </article>
+</BaseLayout>

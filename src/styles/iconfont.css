@@ -1,0 +1,154 @@
+@font-face {
+  font-family: "iconfont";
+  src: url('/static/fonts/iconfont.woff2') format('woff2'),
+    url('/static/fonts/iconfont.woff') format('woff'),
+    url('/static/fonts/iconfont.ttf') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-like:before {
+  content: "\e707";
+}
+
+.icon-pyq:before {
+  content: "\e601";
+}
+
+.icon-pc:before {
+  content: "\e6c4";
+}
+
+.icon-backtop:before {
+  content: "\e6c6";
+}
+
+.icon-Shut-down:before {
+  content: "\e632";
+}
+
+.icon-friendfill:before {
+  content: "\e726";
+}
+
+.icon-search:before {
+  content: "\e600";
+}
+
+.icon-tag:before {
+  content: "\e752";
+}
+
+.icon-sun:before {
+  content: "\e802";
+}
+
+.icon-date:before {
+  content: "\e60b";
+}
+
+.icon-right:before {
+  content: "\e7eb";
+}
+
+.icon-left:before {
+  content: "\e7ec";
+}
+
+.icon-up:before {
+  content: "\e7ed";
+}
+
+.icon-down:before {
+  content: "\e7ee";
+}
+
+.icon-about:before {
+  content: "\e6e5";
+}
+
+.icon-menu:before {
+  content: "\e700";
+}
+
+.icon-moon:before {
+  content: "\e64d";
+}
+
+.icon-fenleiclassify:before {
+  content: "\e7c0";
+}
+
+.icon-pause:before {
+  content: "\e63d";
+}
+
+.icon-play:before {
+  content: "\e66c";
+}
+
+.icon-Home:before {
+  content: "\e6bb";
+}
+
+.icon-plane:before {
+  content: "\e6b2";
+}
+
+.icon-pencil:before {
+  content: "\eb89";
+}
+
+.icon-cnblogs:before {
+  content: "\e603";
+}
+
+.icon-QQ:before {
+  content: "\e882";
+}
+
+.icon-backup:before {
+  content: "\e65b";
+}
+
+.icon-github:before {
+  content: "\e732";
+}
+
+.icon-planet:before {
+  content: "\e852";
+}
+
+.icon-bianjibeifen:before {
+  content: "\e612";
+}
+
+.icon-gitee:before {
+  content: "\e686";
+}
+
+.icon-mail:before {
+  content: "\e6c8";
+}
+
+.icon-bilibili:before {
+  content: "\e66d";
+}
+
+.icon-bird-copy:before {
+  content: "\e61a";
+}
+
+.icon-code:before {
+  content: "\e84f";
+}
+
+.icon-email:before {
+  content: "\e856";
+}

@@ -1,0 +1,44 @@
+.docs {
+    max-width: 100%;
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+    padding: 1rem;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.docs-body {
+    padding: .4rem .6rem;
+    border-radius: 6px;
+}
+
+.docs-h {
+    font-size: 1.4rem;
+    padding-bottom: .2rem;
+}
+
+.docs-p {
+    padding-bottom: .4rem;
+    font-size: 1rem;
+    color: #000;
+}
+
+.docs-t {
+    display: block;
+    padding-bottom: .6rem;
+    font-size: .8rem;
+    color: rgb(178, 178, 178);
+    border-bottom: .2rem rgb(242, 242, 242) solid;
+}
+
+.docs-fixed h2::before {
+    content: "『置顶』";
+}
+
+.docs-fixed h2 {
+    color: #ec6fa3;
+}
+
+.aside-links a.icon-pc {
+    color: #ff6100 !important;
+    background-color: #007175 !important;
+}

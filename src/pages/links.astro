@@ -1,0 +1,108 @@
+---
+import "../styles/links.css";
+import Giscus from "../components/Giscus.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+const standbys = [
+  ["Netlify", "//reashal.com", "reashal.com"],
+  ["GithubPage", "//hb.uuuu.ee", "hb.uuuu.ee"],
+  ["Vercel", "//vc.uuuu.ee", "vc.uuuu.ee"],
+  ["Cloudflare", "//cf.uuuu.ee", "cf.uuuu.ee"],
+];
+const friends = [
+  [
+    "银河渡舟",
+    "//suborbit.net",
+    "https://suborbit.net/assets/avatar.png",
+    "醉后不知天在水，满船清梦压星河",
+  ],
+  [
+    "大佬论坛",
+    "//dalao.net",
+    "https://dalao.net/img/dalao-svg.svg",
+    "互联网站长交流论坛",
+  ],
+];
+const recommends = [
+  [
+    "张洪HEO",
+    "https://blog.zhheo.com/",
+    "https://bu.dusays.com/2022/12/28/63ac2812183aa.png",
+    "惊艳设计",
+  ],
+  [
+    "莫比乌斯",
+    "https://onojyun.com/",
+    "https://onojyun.files.wordpress.com/2022/12/cropped-mobius_icon_black.jpg",
+    "文字共鸣",
+  ],
+];
+const pageTitle = "链接";
+const pageDescription = "备用镜像、互链朋友与推荐站点";
+---
+
+<BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
+  <article class="links">
+    <h2 class="links-h links-info">写在前面</h2>
+    <p class="links-p">
+      1.本站托管于境外，由于某个众所周知的不可抗力因素存在，我无法保证它可以一直被正常访问，所以我将在随后给出托管于不同厂商的几个备用镜像。然而这并不代表本站有任何违反中国大陆法律法规的内容。
+    </p>
+    <p class="links-p">
+      2.本站致力在于平淡中保持纯粹，不会随意交换友链，因此这里大概只会有少量互链朋友。
+    </p>
+    <p class="links-p">
+      3.然而，我也会以个人视角向您单方面推荐一些优质站点。
+    </p>
+    <h2 class="links-h links-reashal">备用镜像</h2>
+    <div class="links-body">
+      {
+        standbys.map((single) => (
+          <a href={single[1]} target="_blank" class="links-single">
+            <div class="link-info">
+              <h3>{single[0]}</h3>
+              <p>{single[2]}</p>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+    <h2 class="links-h links-friends">互链朋友</h2>
+    <div class="links-body">
+      {
+        friends.map((single) => (
+          <a href={single[1]} target="_blank" class="links-single">
+            <div class="link-avatar">
+              <img src={single[2]} alt={single[0]} title={single[0]} class="view-none">
+            </div>
+            <div class="link-info">
+              <h3>{single[0]}</h3>
+              <p>{single[3]}</p>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+    <h2 class="links-h links-webs">单向推荐</h2>
+    <div class="links-body">
+      {
+        recommends.map((single) => (
+          <a href={single[1]} target="_blank" class="links-single">
+            <div class="link-avatar">
+              <img src={single[2]} alt={single[0]} title={single[0]} class="view-none" />
+            </div>
+            <div class="link-info">
+              <h3>{single[0]}</h3>
+              <p>{single[3]}</p>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+    <section class="article-copy">
+      <div>名称：睿屿青衫</div>
+      <div>网址：https://www.reashal.com</div>
+      <div>头像：https://www.reashal.com/static/images/reashal.svg</div>
+      <div>描述：有限的文字无法写尽余生，希望我们能在前行的路上久别重逢。</div>
+    </section>
+    <Giscus />
+  </article>
+</BaseLayout>

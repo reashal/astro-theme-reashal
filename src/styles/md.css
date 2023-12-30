@@ -1,0 +1,133 @@
+.doc {
+    max-width: 100%;
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+    padding: 1rem;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.doc h1 {
+    margin: .8rem 0;
+    padding-left: 1rem;
+    border-left: 8px solid #ff0000;
+    font-size: 1.8rem;
+    color: #d33a4a;
+}
+
+.doc h2 {
+    margin: .8rem 0;
+    padding-left: 1rem;
+    border-left: 12px solid #ff6100;
+    font-size: 1.6rem;
+    color: #007175 !important;
+}
+
+.doc h3 {
+    margin: .8rem 0;
+    padding-left: 1rem;
+    border-left: 16px solid #114f9e;
+    font-size: 1.4rem;
+    color: #44362f;
+}
+
+.doc h4 {
+    margin: .8rem 0;
+    padding-left: 1rem;
+    border-left: 20px solid #007175;
+    font-size: 1.2rem;
+    color: #ff6100;
+}
+
+.doc h5 {
+    margin: .8rem 0;
+    padding-left: 1rem;
+    border-left: 24px solid #202e78;
+    font-size: 1rem;
+    color: #224e95;
+}
+
+.doc h6 {
+    margin: .8rem 0;
+    padding-left: 1rem;
+    border-left: 28px solid #9ea4b8;
+    font-size: 1rem;
+    font-weight: normal;
+    color: #9ea4b8;
+}
+
+.doc p {
+    margin: .8rem 0;
+}
+
+.doc blockquote p {
+    margin: .8rem 0;
+}
+
+.doc blockquote p::before {
+    content: "\eb89";
+    display: inline-block;
+    padding: .2rem;
+    margin-right: .2rem;
+    border-left: .25em solid;
+    font-family: "iconfont" !important;
+
+}
+
+.doc pre {
+    max-width: 100%;
+    padding: .4rem;
+    border-radius: .2rem;
+    font-size: 1rem;
+    background-color: rgb(59, 62, 67) !important;
+}
+
+.doc pre code {
+    max-width: calc(100% - 2rem);
+    padding: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    overflow-x: auto;
+    background-color: transparent;
+}
+
+.doc code {
+    max-width: 100%;
+    white-space: pre-wrap;
+    padding: 0 .3rem;
+    font-size: 1rem;
+    line-height: 1rem;
+    font-weight: bold;
+    border-radius: .2rem;
+    background-color: #9ea4b8;
+    color: #dcebf2;
+}
+
+.doc code span.line {
+    max-width: 100%;
+}
+
+.doc ul {
+    margin-left: 1.2rem;
+}
+
+.doc ol {
+    margin-left: 1.2rem;
+}
+
+.doc li {
+    margin-top: .2rem;
+}
+
+.doc hr {
+    margin: .8rem 0;
+}
+
+.doc img {
+    max-width: 100%;
+    background-color: transparent;
+}
+
+.aside-links a.icon-pc {
+    color: #db6220 !important;
+    background-color: #007175 !important;
+}
