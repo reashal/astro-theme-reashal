@@ -41,7 +41,7 @@ const pageDescription = "备用镜像、互链朋友与推荐站点";
 ---
 
 <BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
-  <article class="links">
+  <article class="article-container links">
     <h2 class="links-h links-info">写在前面</h2>
     <p class="links-p">
       1.本站托管于境外，由于某个众所周知的不可抗力因素存在，我无法保证它可以一直被正常访问，所以我将在随后给出托管于不同厂商的几个备用镜像。然而这并不代表本站有任何违反中国大陆法律法规的内容。
@@ -49,9 +49,7 @@ const pageDescription = "备用镜像、互链朋友与推荐站点";
     <p class="links-p">
       2.本站致力在于平淡中保持纯粹，不会随意交换友链，因此这里大概只会有少量互链朋友。
     </p>
-    <p class="links-p">
-      3.然而，我也会以个人视角向您单方面推荐一些优质站点。
-    </p>
+    <p class="links-p">3.然而，我也会以个人视角向您单方面推荐一些优质站点。</p>
     <h2 class="links-h links-reashal">备用镜像</h2>
     <div class="links-body">
       {
@@ -71,7 +69,12 @@ const pageDescription = "备用镜像、互链朋友与推荐站点";
         friends.map((single) => (
           <a href={single[1]} target="_blank" class="links-single">
             <div class="link-avatar">
-              <img src={single[2]} alt={single[0]} title={single[0]} class="view-none">
+              <img
+                src={single[2]}
+                alt={single[0]}
+                title={single[0]}
+                class="view-none"
+              />
             </div>
             <div class="link-info">
               <h3>{single[0]}</h3>
@@ -87,7 +90,12 @@ const pageDescription = "备用镜像、互链朋友与推荐站点";
         recommends.map((single) => (
           <a href={single[1]} target="_blank" class="links-single">
             <div class="link-avatar">
-              <img src={single[2]} alt={single[0]} title={single[0]} class="view-none" />
+              <img
+                src={single[2]}
+                alt={single[0]}
+                title={single[0]}
+                class="view-none"
+              />
             </div>
             <div class="link-info">
               <h3>{single[0]}</h3>

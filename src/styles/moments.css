@@ -1,6 +1,5 @@
 .moments {
     max-width: 800px;
-    padding: 1.4rem 1rem;
 }
 
 .moments h1 {
@@ -43,7 +42,7 @@
 }
 
 .moments h2:first-of-type {
-    margin-top: 0;
+    margin-top: -.8rem;
     border-top: none;
 }
 
@@ -130,7 +129,7 @@
 .moments img {
     width: auto;
     height: auto;
-    max-width: min(100%,240px);
+    max-width: min(100%, 240px);
     max-height: 260px;
 }
 
@@ -143,7 +142,7 @@
     width: 333px;
     height: auto;
     display: flex;
-    flex-wrap: wrap;  
+    flex-wrap: wrap;
     grid-gap: 10px;
     overflow: hidden;
 }

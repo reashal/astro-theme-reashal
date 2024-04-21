@@ -6,7 +6,7 @@ const { pageTitle, pageDescription, pageType, frontmatter } = Astro.props;
 ---
 
 <BaseLayout pageTitle={frontmatter.title} pageDescription={frontmatter.desc}>
-    <article class="doc">
+    <article class="article-container doc">
         <slot />
         <section class="article-copy">
             <div>

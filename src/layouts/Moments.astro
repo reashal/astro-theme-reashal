@@ -3,8 +3,11 @@ import "../styles/moments.css";
 import BaseLayout from "./BaseLayout.astro";
 const { frontmatter } = Astro.props;
 ---
+
 <BaseLayout pageTitle={frontmatter.title} pageDescription={frontmatter.desc}>
-    <article class="moments">
-        <slot />
+    <article class="article-container doc">
+        <article class="moments">
+            <slot />
+        </article>
     </article>
 </BaseLayout>

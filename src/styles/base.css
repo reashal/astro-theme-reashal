@@ -44,6 +44,15 @@ main {
     overflow-x: hidden;
 }
 
+.article-container {
+    max-width: 100%;
+    margin-top: 3.4vh;
+    margin-bottom: 2vh;
+    padding: 1rem;
+    padding-bottom: 2rem;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
 .aside-init {
     left: -240px;
 }
@@ -123,7 +132,7 @@ main {
 
     article {
         width: 80%;
-        min-height: calc(100% - 42vh) !important;
+        min-height: calc(100% - 43.4vh) !important;
         margin: 0 auto;
         border-radius: .8rem;
     }
@@ -137,7 +146,7 @@ main {
     }
 
     article {
-        min-height: calc(100% - 50vh) !important;
+        min-height: calc(100% - 51.4vh) !important;
     }
 
 }
@@ -149,7 +158,7 @@ main {
     }
 
     article {
-        min-height: calc(calc(100% - 400px) - 4vh) !important;
+        min-height: calc(calc(100% - 400px) - 5.4vh) !important;
     }
 }
 

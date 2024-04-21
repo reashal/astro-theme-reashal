@@ -3,7 +3,7 @@ const topArticles = await Astro.glob("../pages/about.md");
 const comArticles = (await Astro.glob("../pages/docs/*.md")).reverse();
 ---
 
-<article class="docs">
+<article class="article-container docs">
     {
         topArticles.map((post) => (
         <div class="docs-body docs-fixed">
