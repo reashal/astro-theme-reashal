@@ -9,11 +9,13 @@
 .moments h2::before {
     content: '';
     display: inline-block;
-    background: url('/static/images/reashal.svg');
+    background: url('/static/images/reashal.png');
+    background-color: rgb(250,216,200);
     background-size: 100% 100%;
-    width: 3rem;
-    height: 3rem;
+    width: 2.6rem;
+    height: 2.6rem;
     margin-left: .2rem;
+    margin-right: .2rem;
     border-radius: 50%;
 }
 
@@ -21,7 +23,7 @@
     content: '睿屿青衫';
     display: block;
     margin-top: -3rem;
-    margin-left: 3.2rem;
+    margin-left: 3rem;
     font-size: 1rem;
     font-weight: bold;
     color: rgb(87, 107, 149);
@@ -30,9 +32,8 @@
 .moments h2 {
     overflow: visible;
     border: none;
-    height: 4.4rem;
-    padding-top: 1rem;
-    padding-bottom: .2rem;
+    height: 3.6rem;
+    padding-top: .6rem;
     margin-top: .8rem;
     font-size: .8rem;
     font-weight: normal;
