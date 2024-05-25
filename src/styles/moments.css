@@ -10,7 +10,7 @@
 .moments h2::before {
     content: '';
     display: inline-block;
-    background: url('/static/images/reashal.png');
+    background: url('/static/images/reashal.svg');
     background-color: rgb(250,216,200);
     background-size: 100% 100%;
     width: 2.6rem;
