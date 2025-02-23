@@ -127,7 +127,7 @@
     background-color: transparent;
 }
 
-.article-container p{
+.article-container.doc>p{
     text-indent: 2em;
 }
 
