@@ -1,0 +1,17 @@
+---
+const comArticles = (await Astro.glob("../pages/life/*.md")).reverse();
+---
+
+<article class="article-container docs">
+    {
+        comArticles.map((post) => (
+        <div class="docs-body">
+            <a href={post.url} class="docs-a">
+                <h2 class="docs-h">{post.frontmatter.title}</h2>
+            </a>
+            <p class="docs-p">{post.frontmatter.desc}</p>
+            <time class="docs-t">{post.frontmatter.pubDate.substr(0, 10)}</time>
+        </div>
+    ))
+    }
+</article>

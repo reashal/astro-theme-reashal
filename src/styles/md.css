@@ -68,7 +68,7 @@
     display: inline-block;
     padding: .2rem;
     margin-right: .2rem;
-    border-left: .25em solid;
+    /* border-left: .25em solid; */
     font-family: "iconfont" !important;
 
 }
@@ -127,7 +127,10 @@
     background-color: transparent;
 }
 
-.aside-links a.icon-pc {
-    color: #db6220 !important;
-    background-color: #007175 !important;
+.article-container p{
+    text-indent: 2em;
+}
+
+.article-container blockquote p{
+    text-indent: 0;
 }

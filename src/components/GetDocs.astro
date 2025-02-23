@@ -11,7 +11,7 @@ const comArticles = (await Astro.glob("../pages/docs/*.md")).reverse();
                 <h2 class="docs-h">{post.frontmatter.title}</h2>
             </a>
             <p class="docs-p">{post.frontmatter.desc}</p>
-            <time class="docs-t">{post.frontmatter.pubDate.substr(0, 10)</time>
+            <time class="docs-t">{post.frontmatter.pubDate.substr(0, 10)}</time>
         </div>
     ))
     }
@@ -22,7 +22,7 @@ const comArticles = (await Astro.glob("../pages/docs/*.md")).reverse();
                 <h2 class="docs-h">{post.frontmatter.title}</h2>
             </a>
             <p class="docs-p">{post.frontmatter.desc}</p>
-            <time class="docs-t">{post.frontmatter.pubDate.substr(0, 10)</time>
+            <time class="docs-t">{post.frontmatter.pubDate.substr(0, 10)}</time>
         </div>
     ))
     }
