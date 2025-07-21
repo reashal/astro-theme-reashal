@@ -112,7 +112,7 @@
     white-space: pre-wrap;
 }
 
-.moments span.line::before {
+.moments span.line::before :not(:empty){
     content: '睿屿青衫:';
     display: inline-block;
     margin-right: .16rem;
