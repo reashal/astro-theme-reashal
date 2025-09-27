@@ -5,11 +5,22 @@ desc : 以碎片化的记录汇聚时光的川流
 ---
 # 动态
 
+## 2025.09.27
+
+小城·围炉
+
+![小城围炉](/images/smallCity.jpg)
+
+> `reashal`
+> ```
+> 美好独特 难以复刻
+> ```
+
 ## 2025.08.08
 
-除非你的加入能胜过我的独处
+除非你的加入能够胜过我的独处
 
-  ![Cadillac](/images/Cadillac.jpg)
+![Cadillac](/images/Cadillac.jpg)
 
   > `reashal`
 
