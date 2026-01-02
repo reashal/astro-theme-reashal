@@ -7,39 +7,28 @@
     display: none;
 }
 
-.moments h2::before {
-    content: '';
-    display: inline-block;
-    background: url('/static/images/reashal.svg');
-    background-size: 100% 100%;
-    width: 2.6rem;
-    height: 2.6rem;
-    margin-left: .2rem;
-    margin-right: .2rem;
-    border-radius: 50%;
-}
-
-.moments h2::after {
-    content: '睿屿青衫';
-    display: block;
-    margin-top: -3rem;
-    margin-left: 3rem;
-    font-size: 1rem;
-    font-weight: bold;
-    color: rgb(87, 107, 149);
-}
-
+/* --- 着重优化：头像与用户信息区 --- */
 .moments h2 {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    column-gap: .4rem;       /* 文字远离头像的距离 */
+    row-gap: .2rem;              /* 两行向中间靠拢 */
+    align-items: center;
+    
     overflow: visible;
     border: none;
-    height: 3.6rem;
-    padding-top: .6rem;
+    border-top: .1rem rgb(242, 242, 242) solid;
     margin-top: .8rem;
+    padding-top: .6rem;
+    height: 3.6rem;
+    
+    /* 这里的样式对应原本 h2 的日期表现 */
     font-size: .8rem;
     font-weight: normal;
     color: #b2b2b2;
-    border-top: .1rem rgb(242, 242, 242) solid;
     user-select: none;
+    line-height: 1.2;
 }
 
 .moments h2:first-of-type {
@@ -47,6 +36,38 @@
     border-top: none;
 }
 
+/* 左侧头像：跨两行 */
+.moments h2::before {
+    content: '';
+    grid-row: 1 / span 2;
+    display: block;
+    width: 2.6rem;
+    height: 2.6rem;
+    background: url('/static/images/reashal.svg');
+    background-size: 100% 100%;
+    border-radius: 50%;
+    margin-left: .2rem;
+}
+
+/* 右上昵称：定位在第一行 */
+.moments h2::after {
+    content: '睿屿青衫';
+    display: block;
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 1rem;
+    font-weight: bold;
+    color: rgb(87, 107, 149);
+    align-self: end;    /* 下沉靠拢 */
+}
+
+/* 右下日期：即 h2 自身的文本，自动落在 grid 第二行 */
+/* 通过 align-self 让它上浮靠拢 */
+.moments h2 {
+    align-content: center;
+}
+
+/* --- 正文区域 --- */
 .moments p {
     max-width: 100%;
     padding-top: .4rem;
@@ -55,26 +76,23 @@
     white-space: pre-wrap;
 }
 
-/* 日期、点赞、评论都以引用的形式出现 */
+/* --- 引用与日期/点赞/评论 --- */
 .moments blockquote {
     max-width: 100%;
     margin-top: .4rem;
 }
 
-/* 每块内容都被P包裹 */
 .moments blockquote p {
     padding: 0;
     margin-bottom: 0;
     color: rgb(178, 178, 178);
 }
 
-/* 发表日期 */
 .moments blockquote p:first-of-type {
     font-size: .8rem;
     line-height: .8rem;
 }
 
-/* 地址信息 */
 .moments p code {
     padding: 0;
     font-size: .8rem;
@@ -82,15 +100,7 @@
     color: rgb(87, 107, 149);
 }
 
-/* 点赞信息 */
-.moments blockquote p code::before {
-    content: "\e707";
-    display: inline-block;
-    padding-left: .6rem;
-    padding-right: .2rem;
-    font-family: "iconfont" !important;
-}
-
+/* 点赞样式 */
 .moments blockquote p code {
     display: block;
     padding: .3rem 0;
@@ -104,12 +114,26 @@
     font-weight: bold;
 }
 
-/* 评论区 */
+.moments blockquote p code::before {
+    content: "\e707";
+    display: inline-block;
+    padding-left: .6rem;
+    padding-right: .2rem;
+    font-family: "iconfont" !important;
+}
+
+/* 评论区样式 */
 .moments blockquote pre {
     padding: .3rem .6rem;
     border-radius: 0 0 .2rem .2rem;
     background-color: #f7f7f7 !important;
     white-space: pre-wrap;
+}
+
+.moments span.line {
+    font-size: .8rem;
+    line-height: 1.2rem;
+    color: #000;
 }
 
 .moments span.line :not(:empty)::before {
@@ -120,23 +144,12 @@
     color: rgb(87, 107, 149);
 }
 
-.moments span.line {
-    font-size: .8rem;
-    line-height: 1.2rem;
-    color: #000;
-}
-
-/* 一些杂项 */
+/* --- 图片处理 --- */
 .moments img {
     width: auto;
     height: auto;
     max-width: min(100%, 240px);
     max-height: 260px;
-}
-
-.moments .p-has-img img {
-    max-width: 160px;
-    max-height: 160px;
 }
 
 .moments .p-has-img {
@@ -155,8 +168,10 @@
     object-fit: cover;
 }
 
+/* --- 其他链接样式 --- */
 .moments a {
     color: #000;
+    text-decoration: none;
 }
 
 .moments a:hover {
