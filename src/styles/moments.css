@@ -1,29 +1,63 @@
+/* ============================================ */
+/* 动态页面样式 (moments.css)
+/* 配合 /src/pages/index.astro 使用
+/* 基于 JSON 数据（src/moments.json）驱动的动态渲染
+/* ============================================ */
+
+/* === 容器基础样式 === */
 .moments {
-    max-width: 800px;
+    /* max-width: 800px; */
+    max-width: 100%; 
     padding-top: .6rem;
 }
 
+/* 动态页面专用：使容器上下间距对称 */
+.article-container:has(.moments) {
+    margin-bottom: 3.4vh;
+}
+
+/* 隐藏页面标题 */
 .moments h1 {
     display: none;
 }
 
-/* --- 着重优化：头像与用户信息区 --- */
+/* === 单条动态容器 === */
+/* 每条 moment 被包裹在 moment-item 中 */
+.moment-item {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* 第一条动态无上边距 */
+.moment-item:first-of-type {
+    margin-top: 0;
+}
+
+/* 从第二条动态开始，顶部添加分割线和间距 */
+.moment-item:not(:first-of-type) {
+    margin-top: .7rem;
+    padding-top: 1rem;
+    border-top: .1rem solid rgb(242, 242, 242);
+}
+
+/* === 头部信息区域 === */
+/* 使用 Grid 布局：左侧头像，右侧昵称+日期 */
 .moments h2 {
     display: grid;
     grid-template-columns: auto 1fr;
     grid-template-rows: auto auto;
-    column-gap: .4rem;       /* 文字远离头像的距离 */
-    row-gap: .2rem;              /* 两行向中间靠拢 */
+    column-gap: .4rem;
+    row-gap: .2rem;
     align-items: center;
     
     overflow: visible;
     border: none;
-    border-top: .1rem rgb(242, 242, 242) solid;
-    margin-top: .8rem;
-    padding-top: .6rem;
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0;
     height: 3.6rem;
     
-    /* 这里的样式对应原本 h2 的日期表现 */
+    /* 日期文字样式 */
     font-size: .8rem;
     font-weight: normal;
     color: #b2b2b2;
@@ -31,12 +65,13 @@
     line-height: 1.2;
 }
 
-.moments h2:first-of-type {
+/* 第一条动态的头部样式调整：移除顶部外边距 */
+.moments h2:first-of-type,
+.moment-item:first-of-type h2 {
     margin-top: -.8rem;
-    border-top: none;
 }
 
-/* 左侧头像：跨两行 */
+/* 头像：通过伪元素实现 */
 .moments h2::before {
     content: '';
     grid-row: 1 / span 2;
@@ -49,7 +84,7 @@
     margin-left: .2rem;
 }
 
-/* 右上昵称：定位在第一行 */
+/* 昵称：通过伪元素实现，显示在头像右侧第一行 */
 .moments h2::after {
     content: '睿屿青衫';
     display: block;
@@ -58,30 +93,116 @@
     font-size: 1rem;
     font-weight: bold;
     color: rgb(87, 107, 149);
-    align-self: end;    /* 下沉靠拢 */
+    align-self: end;
 }
 
-/* 右下日期：即 h2 自身的文本，自动落在 grid 第二行 */
-/* 通过 align-self 让它上浮靠拢 */
+/* 日期：h2 元素本身的文本内容，显示在头像右侧第二行 */
 .moments h2 {
     align-content: center;
 }
 
-/* --- 正文区域 --- */
+/* === 正文区域 === */
+/* 支持 Markdown 渲染的 p 标签 */
 .moments p {
     max-width: 100%;
-    padding-top: .4rem;
+    padding-top: .3rem;
     font-size: 1rem;
     line-height: 1.4rem;
     white-space: pre-wrap;
 }
 
-/* --- 引用与日期/点赞/评论 --- */
+/* 支持 moments.astro 的 .moment-text 类 */
+.moments .moment-text {
+    max-width: 100%;
+    padding-top: .3rem;
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.4rem;
+    white-space: pre-wrap;
+}
+
+/* === 图片展示 === */
+/* 图片基础样式：限制最大尺寸 */
+.moments img {
+    width: auto;
+    height: auto;
+    max-width: min(100%, 240px);
+    max-height: 260px;
+}
+
+/* 多图：九宫格布局 */
+.moments .p-has-img {
+    width: 333px;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    grid-gap: 10px;
+    overflow: hidden;
+    margin-top: .4rem;
+    margin-bottom: 0;
+}
+
+.moments .p-has-img img {
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+/* 单图：保持纵横比 */
+.moments .p-single-img {
+    margin-top: .4rem;
+    margin-bottom: 0;
+}
+
+.moments .p-single-img img {
+    max-width: min(100%, 240px);
+    height: auto;
+}
+
+/* === 地理位置 === */
+/* Markdown 中的地理位置（code 标签） */
+.moments p code {
+    padding: 0;
+    font-size: .8rem;
+    line-height: .8rem;
+    color: rgb(87, 107, 149);
+}
+
+/* moments.astro 中的地理位置（.location 类） */
+.moments .location {
+    max-width: 100%;
+    padding-top: .4rem;
+    margin: 0;
+}
+
+.moments .location code {
+    padding: 0;
+    font-size: .8rem;
+    line-height: .8rem;
+    color: rgb(87, 107, 149);
+    background: transparent;
+}
+
+/* === 互动区域容器 === */
+/* Markdown 渲染的 blockquote */
 .moments blockquote {
     max-width: 100%;
     margin-top: .4rem;
+    margin-bottom: 0;
 }
 
+/* moments.astro 的 .interaction-area */
+.moments .interaction-area {
+    max-width: 100%;
+    margin-top: .4rem;
+    margin-bottom: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+}
+
+/* blockquote 内部的段落样式重置 */
 .moments blockquote p {
     padding: 0;
     margin-bottom: 0;
@@ -93,14 +214,8 @@
     line-height: .8rem;
 }
 
-.moments p code {
-    padding: 0;
-    font-size: .8rem;
-    line-height: .8rem;
-    color: rgb(87, 107, 149);
-}
-
-/* 点赞样式 */
+/* === 点赞区域 === */
+/* Markdown 版本：blockquote > p > code */
 .moments blockquote p code {
     display: block;
     padding: .3rem 0;
@@ -114,6 +229,7 @@
     font-weight: bold;
 }
 
+/* 点赞图标（爱心） */
 .moments blockquote p code::before {
     content: "\e707";
     display: inline-block;
@@ -122,20 +238,68 @@
     font-family: "iconfont" !important;
 }
 
-/* 评论区样式 */
+/* moments.astro 版本：.stars-box */
+.moments .stars-box {
+    display: block;
+    padding: .3rem 0;
+    width: 100%;
+    font-size: .8rem;
+    line-height: .8rem !important;
+    color: rgb(87, 107, 149);
+    background-color: #f7f7f7 !important;
+    border-radius: .2rem .2rem 0 0;
+    border-bottom: .1rem rgb(242, 242, 242) solid;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* stars-box 内部的 code 标签样式 */
+.moments .stars-box code {
+    padding: 0;
+    font-size: .8rem;
+    line-height: .8rem !important;
+    color: rgb(87, 107, 149);
+    background: transparent !important;
+    border: none;
+    font-weight: bold;
+}
+
+/* stars-box 的点赞图标 */
+.moments .stars-box code::before {
+    content: "\e707";
+    display: inline-block;
+    padding-left: .6rem;
+    padding-right: .2rem;
+    font-family: "iconfont" !important;
+}
+
+/* === 评论区域 === */
+/* Markdown 版本：blockquote > pre */
 .moments blockquote pre {
     padding: .3rem .6rem;
     border-radius: 0 0 .2rem .2rem;
     background-color: #f7f7f7 !important;
     white-space: pre-wrap;
+    margin: 0;
 }
 
+/* moments.astro 版本：.comments-box */
+.moments .comments-box {
+    padding: .3rem .6rem;
+    border-radius: 0 0 .2rem .2rem;
+    background-color: #f7f7f7 !important;
+    margin: 0;
+    line-height: 1.2rem;
+}
+
+/* 评论行（Markdown 自动生成的 span.line） */
 .moments span.line {
     font-size: .8rem;
     line-height: 1.2rem;
     color: #000;
 }
 
+/* Markdown 评论的用户名（通过伪元素添加） */
 .moments span.line :not(:empty)::before {
     content: '睿屿青衫:';
     display: inline-block;
@@ -144,31 +308,50 @@
     color: rgb(87, 107, 149);
 }
 
-/* --- 图片处理 --- */
-.moments img {
-    width: auto;
-    height: auto;
-    max-width: min(100%, 240px);
-    max-height: 260px;
+/* moments.astro 的评论行 */
+.moments .comment-line {
+    font-size: .8rem;
+    line-height: 1.2rem;
+    color: #000;
+    margin: 0;
+    padding: 0;
+    display: block;
 }
 
-.moments .p-has-img {
-    width: 333px;
-    height: auto;
-    display: flex;
-    flex-wrap: wrap;
-    grid-gap: 10px;
-    overflow: hidden;
+/* 评论用户名 */
+.moments .comment-user {
+    margin-right: .16rem;
+    font-weight: bold;
+    color: rgb(87, 107, 149);
 }
 
-.moments .p-has-img img {
-    display: inline-block;
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
+/* 评论内容 */
+.moments .comment-content {
+    color: #000;
 }
 
-/* --- 其他链接样式 --- */
+/* === 互动区域圆角处理 === */
+/* 只有点赞没有评论：四角圆角 */
+.moments blockquote:has(p code):not(:has(pre)) p code {
+    border-radius: .2rem;
+    border-bottom: none;
+}
+
+.moments .interaction-area:has(.stars-box):not(:has(.comments-box)) .stars-box {
+    border-radius: .2rem;
+    border-bottom: none;
+}
+
+/* 只有评论没有点赞：四角圆角 */
+.moments blockquote:not(:has(p code)):has(pre) pre {
+    border-radius: .2rem;
+}
+
+.moments .interaction-area:not(:has(.stars-box)):has(.comments-box) .comments-box {
+    border-radius: .2rem;
+}
+
+/* === 链接样式 === */
 .moments a {
     color: #000;
     text-decoration: none;
@@ -178,7 +361,153 @@
     color: #000;
 }
 
+/* 侧边栏首页图标高亮 */
 .aside-links a.icon-Home {
     color: #db6220 !important;
     background-color: #007175 !important;
+}
+
+/* === 页面底部 === */
+/* 底部信息容器 */
+.moments-footer {
+    margin-top: 1.5rem;
+    margin-bottom: -1rem;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top: none;
+    text-align: center;
+}
+
+/* "故事暂且讲到这里"提示文字 */
+.moments-footer .end-tip {
+    padding: 0;
+    margin: 0 0 .3rem 0;
+    font-size: .7rem;
+    line-height: 1.2rem;
+    color: #d0d0d0;
+    user-select: none;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+}
+
+/* 提示文字两侧的装饰线 */
+.moments-footer .end-tip::before,
+.moments-footer .end-tip::after {
+    content: '';
+    flex: 0 0 2rem;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #e8e8e8, transparent);
+}
+
+.moments-footer .end-tip::before {
+    background: linear-gradient(to right, transparent, #e8e8e8);
+}
+
+.moments-footer .end-tip::after {
+    background: linear-gradient(to left, transparent, #e8e8e8);
+}
+
+/* 备案信息（可选） */
+.moments-footer .icp-info {
+    padding: 0;
+    margin: 0;
+    font-size: .7rem;
+    line-height: 1.2rem;
+    color: #c0c0c0;
+    user-select: none;
+}
+
+/* 备案信息链接和文本 */
+.moments-footer .icp-info a,
+.moments-footer .icp-info span {
+    color: #c0c0c0;
+    text-decoration: none;
+    font-weight: normal;
+}
+
+/* 备案信息链接 hover 效果 */
+.moments-footer .icp-info a {
+    transition: color .2s ease;
+}
+
+.moments-footer .icp-info a:hover {
+    color: #b2b2b2;
+    text-decoration: none;
+}
+
+/* === 移动端适配 === */
+@media screen and (max-width: 488px) {
+    .moments .p-has-img {
+        width: 100%;
+    }
+}
+
+/* ============================================ */
+/* === 暗黑模式 === */
+/* ============================================ */
+
+/* 点赞区域暗黑模式 */
+.dark .moments blockquote p code,
+.dark .moments .stars-box {
+    background-color: rgb(59, 62, 67) !important;
+    color: #82a4ca;
+    border-bottom: .1rem rgb(49, 49, 49) solid;
+}
+
+.dark .moments .stars-box code {
+    color: #82a4ca;
+}
+
+/* 评论区域暗黑模式 */
+.dark .moments blockquote pre,
+.dark .moments .comments-box {
+    background-color: rgb(59, 62, 67) !important;
+}
+
+/* 评论用户名暗黑模式 */
+.dark .moments span.line::before,
+.dark .moments .comment-user {
+    color: #82a4ca !important;
+}
+
+/* 评论内容暗黑模式 */
+.dark .moments span.line span,
+.dark .moments .comment-content {
+    color: #dcebf2 !important;
+}
+
+/* 底部提示文字暗黑模式 */
+.dark .moments-footer .end-tip {
+    color: #707070;
+}
+
+/* 底部装饰线暗黑模式 */
+.dark .moments-footer .end-tip::before,
+.dark .moments-footer .end-tip::after {
+    background: linear-gradient(to right, transparent, #4a4a4a, transparent);
+}
+
+.dark .moments-footer .end-tip::before {
+    background: linear-gradient(to right, transparent, #4a4a4a);
+}
+
+.dark .moments-footer .end-tip::after {
+    background: linear-gradient(to left, transparent, #4a4a4a);
+}
+
+/* 备案信息暗黑模式 */
+.dark .moments-footer .icp-info {
+    color: #8a8a8a;
+}
+
+.dark .moments-footer .icp-info a,
+.dark .moments-footer .icp-info span {
+    color: #8a8a8a;
+}
+
+.dark .moments-footer .icp-info a:hover {
+    color: #a0a0a0;
 }

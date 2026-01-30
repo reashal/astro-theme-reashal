@@ -1,125 +1,166 @@
-/* 总体暗黑 */
+/* ============================================ */
+/* 暗黑模式样式 (dark.css)
+/* 为整站提供暗黑模式主题支持
+/* 通过 .dark 类触发，覆盖默认浅色主题
+/* ============================================ */
+
+/* === 全局基础样式 === */
+
+/* 页面背景：深蓝灰色调 */
 .dark body {
     background-color: rgb(17, 24, 38);
 }
 
+/* 文章容器：添加青色阴影 */
 .dark article {
     box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px;
 }
 
+/* 二级标题：浅色文字 */
 .dark h2 {
     color: #fcfdfb;
 }
 
+/* 段落文字：浅蓝灰色 */
 .dark p {
     color: #dcebf2;
 }
 
+/* 链接文字：继承段落颜色 */
 .dark a {
     color: #dcebf2;
 }
 
+/* 水平分割线：中灰蓝色 */
 .dark hr {
     color: rgb(126, 143, 166);
 }
 
+/* 行内代码：中灰蓝色 */
 .dark code {
     color: rgb(126, 143, 166);
 }
 
-/* 动态暗黑 */
+/* === 动态页面（Moments）=== */
+
+/* 动态容器：移除阴影 */
 .dark .moments {
     box-shadow: none;
 }
 
-.dark blockquote p code {
-    background-color: rgb(59, 62, 67) !important;
-    color: #82a4ca;
+/* 从第二条动态开始：添加青色半透明分割线 */
+.dark .moment-item:not(:first-of-type) {
+    border-top-color: rgba(142, 208, 220, .2);
 }
 
-.dark blockquote pre {
-    background-color: rgb(59, 62, 67) !important;
-}
-
+/* 动态头部：日期文字颜色 */
 .dark .moments h2 {
-    border-top: .1rem rgba(142, 208, 220, .2) solid !important;
     color: #b2b2b2;
 }
 
-.dark .moments h2:first-of-type {
-    border-top: none !important;
-}
-
+/* 动态昵称：青蓝色 */
 .dark .moments h2::after {
     color: #82a4ca;
 }
 
-.dark .moments blockquote p code {
+/* 动态点赞区域：深灰背景 + 青蓝色文字 */
+.dark .moments blockquote p code,
+.dark .moments .stars-box {
+    background-color: rgb(59, 62, 67) !important;
+    color: #82a4ca;
     border-bottom: .1rem rgb(49, 49, 49) solid;
 }
 
-.dark span.line::before {
+/* 点赞区域内的 code 标签：青蓝色 */
+.dark .moments .stars-box code {
+    color: #82a4ca;
+}
+
+/* 动态评论区域：深灰背景 */
+.dark .moments blockquote pre,
+.dark .moments .comments-box {
+    background-color: rgb(59, 62, 67) !important;
+}
+
+/* 评论用户名：青蓝色 */
+.dark .moments span.line::before,
+.dark .moments .comment-user {
     color: #82a4ca !important;
 }
 
-.dark span.line span {
+/* 评论内容：浅蓝灰色 */
+.dark .moments span.line span,
+.dark .moments .comment-content {
     color: #dcebf2 !important;
 }
 
-/* 笔记暗黑 */
+/* === 笔记页面（Docs）=== */
 
+/* 笔记标题底部：深灰色边框 */
 .dark .docs-t {
     border-bottom: .2rem rgb(49, 49, 49) solid;
 }
 
-/* 文章暗黑 */
+/* === 文章页面 === */
 
+/* 无序列表：浅蓝灰色 */
 .dark ul {
     color: #dcebf2;
 }
 
+/* 有序列表：浅蓝灰色 */
 .dark ol {
     color: #dcebf2;
 }
 
+/* 引用块内的代码：浅蓝灰色文字 + 深灰背景 */
 .dark blockquote code {
     color: #dcebf2;
     background-color: rgb(59, 62, 67);
 }
 
+/* 文档三级标题：浅蓝灰色 */
 .dark .doc h3 {
     color: #dcebf2;
 }
 
-/* 友链暗黑 */
+/* === 友链页面 === */
 
+/* 单个友链卡片：添加青色阴影 */
 .dark .links-single {
     box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px !important;
 }
 
-/* 侧边暗黑 */
+/* === 侧边栏 === */
+
+/* 侧边栏背景：深蓝灰色 */
 .dark aside {
     background-color: rgb(30, 41, 59) !important;
 }
 
+/* 侧边栏展开状态：添加青色阴影 */
 .dark .aside-show aside {
     box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px;
 }
 
+/* 侧边栏三级标题：浅蓝灰色 */
 .dark aside h3 {
     color: #dcebf2 !important;
 }
 
+/* 侧边栏链接：浅蓝灰色 */
 .dark aside a {
     color: #dcebf2 !important;
 }
 
+/* 侧边栏各模块（作者、链接、版权）：添加青色阴影 */
 .dark .aside-author,
 .dark .aside-links,
 .dark .aside-copyright {
     box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px !important;
 }
 
+/* 侧边栏版权信息：浅蓝灰色 */
 .dark .aside-copyright {
     color: #dcebf2;
 }

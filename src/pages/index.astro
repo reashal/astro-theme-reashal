@@ -1,0 +1,90 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { SITE_INFO } from "../consts";
+import "../styles/moments.css";
+
+const allMoments = await getCollection("moments");
+const sortedMoments = allMoments.sort((a, b) =>
+    b.data.date.localeCompare(a.data.date),
+);
+
+const pageMeta = {
+    title: "动态",
+    desc: "以碎片化的记录汇聚时光的川流",
+};
+---
+
+<BaseLayout pageTitle={pageMeta.title} pageDescription={pageMeta.desc}>
+    <article class="article-container doc">
+        <article class="moments">
+            <h1 id="动态">动态</h1>
+            
+            {sortedMoments.map((moment) => {
+                const { date, para, imgs, loc, stars, comments } = moment.data;
+
+                return (
+                    <div class="moment-item">
+                        {/* 头部：日期 */}
+                        <h2 id={date.split('.').join('')}>{date}</h2>
+
+                        {/* 正文 */}
+                        {para && para.map((text) => (
+                            <p class="moment-text">{text}</p>
+                        ))}
+
+                        {/* 图片 */}
+                        {imgs && imgs.length > 0 && (
+                            <div class={imgs.length > 1 ? "p-has-img" : "p-single-img"}>
+                                {imgs.map((img) => (
+                                    <img src={img.url} alt={img.alt} loading="lazy" decoding="async" />
+                                ))}
+                            </div>
+                        )}
+
+                        {/* 地理位置 */}
+                        {loc && <p class="location"><code>{loc}</code></p>}
+
+                        {/* 互动区域：点赞和评论 */}
+                        {(stars || comments) && (
+                            <blockquote class="interaction-area">
+                                {stars && (
+                                    <div class="stars-box">
+                                        <code>{stars.join(", ")}</code>
+                                    </div>
+                                )}
+                                
+                                {comments && (
+                                    <div class="comments-box">
+                                        {comments.map((comment) => (
+                                            <div class="comment-line">
+                                                <span class="comment-user">睿屿青衫:</span>
+                                                <span class="comment-content">{comment}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </blockquote>
+                        )}
+                    </div>
+                );
+            })}
+            
+            {/* 备案信息 */}
+            <footer class="moments-footer">
+                <p class="end-tip">故事暂且讲到这里</p>
+                {SITE_INFO.icpNo && (
+                    <p class="icp-info">
+                        {SITE_INFO.icpLink ? (
+                            <a href={SITE_INFO.icpLink} target="_blank" rel="noopener noreferrer">
+                                {SITE_INFO.icpNo}
+                            </a>
+                        ) : (
+                            <span>{SITE_INFO.icpNo}</span>
+                        )}
+                    </p>
+                )}
+            </footer>
+        </article>
+    </article>
+</BaseLayout>
