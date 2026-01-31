@@ -41,66 +41,6 @@
     color: rgb(126, 143, 166);
 }
 
-/* === 动态页面（Moments）=== */
-
-/* 动态容器：移除阴影 */
-.dark .moments {
-    box-shadow: none;
-}
-
-/* 从第二条动态开始：添加青色半透明分割线 */
-.dark .moment-item:not(:first-of-type) {
-    border-top-color: rgba(142, 208, 220, .2);
-}
-
-/* 动态头部：日期文字颜色 */
-.dark .moments h2 {
-    color: #b2b2b2;
-}
-
-/* 动态昵称：青蓝色 */
-.dark .moments h2::after {
-    color: #82a4ca;
-}
-
-/* 动态点赞区域：深灰背景 + 青蓝色文字 */
-.dark .moments blockquote p code,
-.dark .moments .stars-box {
-    background-color: rgb(59, 62, 67) !important;
-    color: #82a4ca;
-    border-bottom: .1rem rgb(49, 49, 49) solid;
-}
-
-/* 点赞区域内的 code 标签：青蓝色 */
-.dark .moments .stars-box code {
-    color: #82a4ca;
-}
-
-/* 动态评论区域：深灰背景 */
-.dark .moments blockquote pre,
-.dark .moments .comments-box {
-    background-color: rgb(59, 62, 67) !important;
-}
-
-/* 评论用户名：青蓝色 */
-.dark .moments span.line::before,
-.dark .moments .comment-user {
-    color: #82a4ca !important;
-}
-
-/* 评论内容：浅蓝灰色 */
-.dark .moments span.line span,
-.dark .moments .comment-content {
-    color: #dcebf2 !important;
-}
-
-/* === 笔记页面（Docs）=== */
-
-/* 笔记标题底部：深灰色边框 */
-.dark .docs-t {
-    border-bottom: .2rem rgb(49, 49, 49) solid;
-}
-
 /* === 文章页面 === */
 
 /* 无序列表：浅蓝灰色 */

@@ -1,3 +1,18 @@
+/* ============================================ */
+/* 笔记页面样式 (docs.css)
+/* 配合 /src/pages/docs.astro 和 /src/pages/life.astro 使用
+/* 展示笔记列表和随笔列表，支持置顶功能
+/* ============================================ */
+
+/* === 列表页面专用样式 === */
+
+/* 取消文章容器内段落的首行缩进 */
+.article-container p {
+    text-indent: 0;
+}
+
+/* === 文章条目基础样式 === */
+
 .docs-body {
     padding: .4rem .6rem;
     border-radius: 6px;
@@ -22,10 +37,101 @@
     border-bottom: .2rem rgb(242, 242, 242) solid;
 }
 
+/* === 置顶文章样式 === */
+
+/* 置顶标识 */
 .docs-fixed h2::before {
     content: "『置顶』";
 }
 
+/* 置顶文章标题颜色 */
 .docs-fixed h2 {
     color: #ec6fa3;
+}
+
+/* === 最后一篇文章样式 === */
+
+/* 最后一篇：移除分隔条和底部间隙 */
+.docs-last .docs-t {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* === 页面底部 === */
+
+/* 底部结束提示容器 */
+.docs-footer {
+    margin-top: .8rem;
+    margin-bottom: -.5rem;
+    text-align: center;
+}
+
+/* "故事暂且讲到这里"提示文字 */
+.docs-footer .end-tip {
+    padding: 0;
+    margin: 0;
+    font-size: .7rem;
+    line-height: 1.2rem;
+    color: #d0d0d0;
+    user-select: none;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+}
+
+/* 提示文字两侧的装饰线 */
+.docs-footer .end-tip::before,
+.docs-footer .end-tip::after {
+    content: '';
+    flex: 0 0 2rem;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #e8e8e8, transparent);
+}
+
+.docs-footer .end-tip::before {
+    background: linear-gradient(to right, transparent, #e8e8e8);
+}
+
+.docs-footer .end-tip::after {
+    background: linear-gradient(to left, transparent, #e8e8e8);
+}
+
+/* ============================================ */
+/* === 暗黑模式 === */
+/* ============================================ */
+
+/* 笔记标题底部：深灰色边框 */
+.dark .docs-t {
+    border-bottom: .2rem rgb(49, 49, 49) solid;
+}
+
+/* 置顶文章标题：青绿色 */
+.dark .docs-fixed h2 {
+    color: #007175;
+}
+
+/* 最后一篇文章：移除分隔条 */
+.dark .docs-last .docs-t {
+    border-bottom: none;
+}
+
+/* 底部提示文字暗黑模式 */
+.dark .docs-footer .end-tip {
+    color: #707070;
+}
+
+/* 底部装饰线暗黑模式 */
+.dark .docs-footer .end-tip::before,
+.dark .docs-footer .end-tip::after {
+    background: linear-gradient(to right, transparent, #4a4a4a, transparent);
+}
+
+.dark .docs-footer .end-tip::before {
+    background: linear-gradient(to right, transparent, #4a4a4a);
+}
+
+.dark .docs-footer .end-tip::after {
+    background: linear-gradient(to left, transparent, #4a4a4a);
 }

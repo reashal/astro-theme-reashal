@@ -1,8 +1,17 @@
+/* ============================================ */
+/* 全局基础样式 (base.css)
+/* 为整站提供基础布局和通用样式
+/* ============================================ */
+
+/* === 全局重置 === */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
+/* === HTML/Body 基础设置 === */
 
 html,
 body {
@@ -18,6 +27,16 @@ body {
     font-family: "HM";
 }
 
+/* === 字体定义 === */
+
+@font-face {
+    font-family: "HM";
+    src: url('/static/fonts/HarmonyOS_Sans_Medium.ttf');
+}
+
+/* === 通用元素样式 === */
+
+/* 链接 */
 a {
     list-style: none;
     text-decoration: none;
@@ -25,15 +44,19 @@ a {
     color: #202e78;
 }
 
+/* 图片 */
 img {
     cursor: pointer;
 }
 
-@font-face {
-    font-family: "HM";
-    src: url('/static/fonts/HarmonyOS_Sans_Medium.ttf');
+/* 滚动条：全局隐藏 */
+::-webkit-scrollbar {
+    display: none;
 }
 
+/* === 主布局结构 === */
+
+/* 主容器：Grid 布局（侧边栏 + 内容区域） */
 main {
     display: grid;
     position: relative;
@@ -44,19 +67,32 @@ main {
     overflow-x: hidden;
 }
 
+/* 内容区域容器 */
+.main {
+    height: 100%;
+    width: 100vw;
+    overflow-y: auto !important;
+}
+
+/* === 文章容器 === */
+
 .article-container {
     max-width: 100%;
     margin-top: 3.4vh;
-    margin-bottom: 2vh;
+    margin-bottom: 3.4vh;
     padding: 1rem;
     padding-bottom: 2rem;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
+/* === 侧边栏动画控制 === */
+
+/* 侧边栏初始状态：隐藏在左侧 */
 .aside-init {
     left: -240px;
 }
 
+/* 侧边栏显示状态 */
 .aside-show {
     left: 0;
     animation: show-aside .3s;
@@ -66,108 +102,34 @@ main {
     box-shadow: #00000059 0 5px 15px;
 }
 
+/* 侧边栏隐藏状态 */
 .aside-hide {
     left: -240px;
     animation: hide-aside .3s;
 }
 
+/* 侧边栏显示动画 */
 @keyframes show-aside {
     0% {
         left: -240px;
     }
-
     100% {
         left: 0;
     }
 }
 
+/* 侧边栏隐藏动画 */
 @keyframes hide-aside {
     0% {
         left: 0;
     }
-
     100% {
         left: -240px;
     }
 }
 
-.main {
-    height: 100%;
-    width: 100vw;
-    overflow-y: auto !important;
-}
+/* === 文章版权信息 === */
 
-@media screen and (max-width: 488px) {
-
-    header {
-        margin: 0;
-        width: 100%;
-        height: 38vh;
-    }
-
-    article {
-        width: 100%;
-        margin-top: 0 !important;
-        min-height: calc(100% - 38vh);
-    }
-}
-
-@media screen and (min-width: 488px) {
-    main {
-        padding: 2rem 0 0 0;
-    }
-
-    .main {
-        margin: 0 auto;
-        width: 100vw;
-        height: 100%;
-    }
-
-    header {
-        margin: 0 auto;
-        width: 80%;
-        height: 38vh;
-        border-radius: .8rem;
-    }
-
-    article {
-        width: 80%;
-        min-height: calc(100% - 43.4vh) !important;
-        margin: 0 auto;
-        border-radius: .8rem;
-    }
-
-}
-
-@media screen and (min-width: 688px) {
-
-    header {
-        height: 46vh !important;
-    }
-
-    article {
-        min-height: calc(100% - 51.4vh) !important;
-    }
-
-}
-
-@media screen and (min-width: 888px) {
-
-    header {
-        height: 400px !important;
-    }
-
-    article {
-        min-height: calc(calc(100% - 400px) - 5.4vh) !important;
-    }
-}
-
-/* 滚动条 */
-::-webkit-scrollbar {
-    display: none;
-}
-
-/* 文章版权 */
 .article-copy {
     display: block;
     margin: 1rem 0;
@@ -189,4 +151,83 @@ main {
 .article-copy-info a {
     color: rgb(178, 178, 178);
     font-weight: normal;
+}
+
+/* ============================================ */
+/* === 响应式设计 === */
+/* ============================================ */
+
+/* === 小屏设备（≤ 488px）：移动端 === */
+@media screen and (max-width: 488px) {
+    /* 头部：全宽，固定高度 */
+    header {
+        margin: 0;
+        width: 100%;
+        height: 38vh;
+    }
+
+    /* 文章区域：全宽，移除上下外边距 */
+    article {
+        width: 100%;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        min-height: calc(100% - 38vh);
+    }
+}
+
+/* === 中屏设备（≥ 488px）：平板/桌面 === */
+@media screen and (min-width: 488px) {
+    /* 主容器：顶部留白 */
+    main {
+        padding: 2rem 0 0 0;
+    }
+
+    /* 内容区域：居中显示 */
+    .main {
+        margin: 0 auto;
+        width: 100vw;
+        height: 100%;
+    }
+
+    /* 头部：80% 宽度，圆角 */
+    header {
+        margin: 0 auto;
+        width: 80%;
+        height: 38vh;
+        border-radius: .8rem;
+    }
+
+    /* 文章区域：80% 宽度，圆角 */
+    article {
+        width: 80%;
+        min-height: calc(100% - 43.4vh) !important;
+        margin: 0 auto;
+        border-radius: .8rem;
+    }
+}
+
+/* === 大屏设备（≥ 688px）=== */
+@media screen and (min-width: 688px) {
+    /* 头部：增加高度 */
+    header {
+        height: 46vh !important;
+    }
+
+    /* 文章区域：调整最小高度 */
+    article {
+        min-height: calc(100% - 51.4vh) !important;
+    }
+}
+
+/* === 超大屏设备（≥ 888px）=== */
+@media screen and (min-width: 888px) {
+    /* 头部：固定像素高度 */
+    header {
+        height: 400px !important;
+    }
+
+    /* 文章区域：调整最小高度 */
+    article {
+        min-height: calc(calc(100% - 400px) - 5.4vh) !important;
+    }
 }

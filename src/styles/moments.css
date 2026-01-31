@@ -11,11 +11,6 @@
     padding-top: .6rem;
 }
 
-/* 动态页面专用：使容器上下间距对称 */
-.article-container:has(.moments) {
-    margin-bottom: 3.4vh;
-}
-
 /* 隐藏页面标题 */
 .moments h1 {
     display: none;
@@ -361,12 +356,6 @@
     color: #000;
 }
 
-/* 侧边栏首页图标高亮 */
-.aside-links a.icon-Home {
-    color: #db6220 !important;
-    background-color: #007175 !important;
-}
-
 /* === 页面底部 === */
 /* 底部信息容器 */
 .moments-footer {
@@ -448,6 +437,26 @@
 /* ============================================ */
 /* === 暗黑模式 === */
 /* ============================================ */
+
+/* 动态容器：移除阴影 */
+.dark .moments {
+    box-shadow: none;
+}
+
+/* 从第二条动态开始：添加青色半透明分割线 */
+.dark .moment-item:not(:first-of-type) {
+    border-top-color: rgba(142, 208, 220, .2);
+}
+
+/* 动态头部：日期文字颜色 */
+.dark .moments h2 {
+    color: #b2b2b2;
+}
+
+/* 动态昵称：青蓝色 */
+.dark .moments h2::after {
+    color: #82a4ca;
+}
 
 /* 点赞区域暗黑模式 */
 .dark .moments blockquote p code,

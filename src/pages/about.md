@@ -5,6 +5,7 @@ desc: 本篇为睿屿青衫迁移Astro框架后测试主题渲染效果的第一
 author: 睿屿青衫
 source: https://www.reashal.com/about
 pubDate: 2023-05-02
+pinned: true
 ---
 ## 文之引言
 

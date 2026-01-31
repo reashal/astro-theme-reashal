@@ -39,7 +39,7 @@
 </style>
 
 <script>
-  let h = new Date().getHours();
+  const h = new Date().getHours();
   const theme = (() => {
     if (h > 20 || h < 6) {
       return "dark";
@@ -64,7 +64,8 @@
     localStorage.setItem("theme", isDark ? "dark" : "light");
   };
 
-  document
-    .getElementById("themeToggle")
-    .addEventListener("click", handleToggleClick);
+  const themeButton = document.getElementById("themeToggle");
+  if (themeButton) {
+    themeButton.addEventListener("click", handleToggleClick);
+  }
 </script>

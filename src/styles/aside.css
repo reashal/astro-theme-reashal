@@ -130,6 +130,32 @@ aside {
     color: #033a4a;
 }
 
+/* === 页面激活状态高亮 === */
+
+/* 动态页面（首页） */
+html[data-active-page="/"] .aside-links a.icon-Home {
+    color: #ff6100 !important;
+    background-color: #007175 !important;
+}
+
+/* 随笔页面 */
+html[data-active-page^="/life"] .aside-links a.icon-pencil {
+    color: #ff6100 !important;
+    background-color: #007175 !important;
+}
+
+/* 笔记页面 */
+html[data-active-page^="/docs"] .aside-links a.icon-pc {
+    color: #ff6100 !important;
+    background-color: #007175 !important;
+}
+
+/* 链接页面 */
+html[data-active-page^="/links"] .aside-links a.icon-plane {
+    color: #ff6100 !important;
+    background-color: #007175 !important;
+}
+
 /* 主题信息 */
 aside p {
     margin: 0;
