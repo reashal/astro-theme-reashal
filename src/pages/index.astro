@@ -13,6 +13,16 @@ const pageMeta = {
     title: "动态",
     desc: "以碎片化的记录汇聚时光的川流",
 };
+
+type ImgItem = { url: string; alt: string };
+
+function getImgLayout(imgs: ImgItem[]): "single" | "grid2" | "grid3" | "overflow" {
+    const n = imgs.length;
+    if (n === 1) return "single";
+    if (n <= 4) return "grid2";
+    if (n <= 9) return "grid3";
+    return "overflow";
+}
 ---
 
 <BaseLayout pageTitle={pageMeta.title} pageDescription={pageMeta.desc}>
@@ -35,11 +45,41 @@ const pageMeta = {
 
                         {/* 图片 */}
                         {imgs && imgs.length > 0 && (
-                            <div class={imgs.length > 1 ? "p-has-img" : "p-single-img"}>
-                                {imgs.map((img) => (
-                                    <img src={img.url} alt={img.alt} loading="lazy" decoding="async" />
-                                ))}
-                            </div>
+                            <>
+                                {/* 1张：单图 */}
+                                {getImgLayout(imgs) === "single" && (
+                                    <div class="img-single">
+                                        <img src={imgs[0].url} alt={imgs[0].alt} loading="lazy" decoding="async" />
+                                    </div>
+                                )}
+                                {/* 2~4张：四宫格 */}
+                                {getImgLayout(imgs) === "grid2" && (
+                                    <div class="img-grid-2x2">
+                                        {imgs.map((img) => (
+                                            <img src={img.url} alt={img.alt} loading="lazy" decoding="async" />
+                                        ))}
+                                    </div>
+                                )}
+                                {/* 5~9张：九宫格 */}
+                                {getImgLayout(imgs) === "grid3" && (
+                                    <div class="img-grid-3x3">
+                                        {imgs.map((img) => (
+                                            <img src={img.url} alt={img.alt} loading="lazy" decoding="async" />
+                                        ))}
+                                    </div>
+                                )}
+                                {/* >9张：九宫格 + 第9格朦胧遮罩 */}
+                                {getImgLayout(imgs) === "overflow" && (
+                                    <div class="img-grid-3x3">
+                                        {imgs.slice(0, 8).map((img) => (
+                                            <img src={img.url} alt={img.alt} loading="lazy" decoding="async" />
+                                        ))}
+                                        <div class="img-mask-overlay" style={`background-image: url('${imgs[8].url}')`}>
+                                            <span class="img-mask-count">+{imgs.length - 8}</span>
+                                        </div>
+                                    </div>
+                                )}
+                            </>
                         )}
 
                         {/* 地理位置 */}

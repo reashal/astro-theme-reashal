@@ -125,34 +125,113 @@
     max-height: 260px;
 }
 
-/* 多图：九宫格布局 */
-.moments .p-has-img {
-    width: 333px;
-    height: auto;
-    display: flex;
-    flex-wrap: wrap;
-    grid-gap: 10px;
-    overflow: hidden;
-    margin-top: .4rem;
-    margin-bottom: 0;
-}
-
-.moments .p-has-img img {
-    display: inline-block;
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-}
-
 /* 单图：保持纵横比 */
-.moments .p-single-img {
+.moments .img-single {
     margin-top: .4rem;
     margin-bottom: 0;
 }
 
-.moments .p-single-img img {
+.moments .img-single img {
     max-width: min(100%, 240px);
     height: auto;
+    border-radius: .3rem;
+}
+
+/* 四宫格（2~4张）：2列布局 */
+.moments .img-grid-2x2 {
+    display: grid;
+    grid-template-columns: repeat(2, min(160px, (100% - 6px) / 2));
+    gap: 6px;
+    width: 100%;
+    max-width: calc(160px * 2 + 6px);
+    margin-top: .4rem;
+    margin-bottom: 0;
+}
+
+.moments .img-grid-2x2 img {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: cover;
+    display: block;
+    border-radius: .3rem;
+    transition: transform .2s ease, opacity .2s ease;
+    cursor: zoom-in;
+}
+
+.moments .img-grid-2x2 img:hover {
+    transform: scale(1.03);
+    opacity: .9;
+}
+
+/* 九宫格（5~9张）：3列布局 */
+.moments .img-grid-3x3 {
+    display: grid;
+    grid-template-columns: repeat(3, min(150px, (100% - 12px) / 3));
+    gap: 6px;
+    width: 100%;
+    max-width: calc(150px * 3 + 12px);
+    margin-top: .4rem;
+    margin-bottom: 0;
+}
+
+.moments .img-grid-3x3 img {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: cover;
+    display: block;
+    border-radius: .3rem;
+    transition: transform .2s ease, opacity .2s ease;
+    cursor: zoom-in;
+}
+
+.moments .img-grid-3x3 img:hover {
+    transform: scale(1.03);
+    opacity: .9;
+}
+
+/* 超过9张：第9格朦胧遮罩 */
+.moments .img-mask-overlay {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-size: cover;
+    background-position: center;
+    border-radius: .3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.moments .img-mask-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, .52);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+.moments .img-mask-count {
+    position: relative;
+    z-index: 1;
+    color: #fff;
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-shadow: 0 1px 6px rgba(0,0,0,.4);
+    user-select: none;
 }
 
 /* === 地理位置 === */
@@ -428,12 +507,7 @@
 }
 
 /* === 移动端适配 === */
-@media screen and (max-width: 488px) {
-    .moments .p-has-img {
-        width: 100%;
-    }
-}
-
+/* 宫格使用固定 px 列宽，小屏下自然换行，无需额外处理 */
 /* ============================================ */
 /* === 暗黑模式 === */
 /* ============================================ */
