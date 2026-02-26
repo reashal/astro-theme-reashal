@@ -1,31 +1,23 @@
 ---
 import { SITE_INFO } from "../consts";
 
-// 获取 about.md（如果存在的话，作为特殊置顶）
 const aboutArticles = await Astro.glob("../pages/about.md");
-
-// 获取所有 docs 文件夹下的文章
 const docsArticles = await Astro.glob("../pages/docs/*.md");
-
-// 按文件名排序（反转以获得最新的在前）
 const sortedDocsArticles = docsArticles.reverse();
-
-// 从 docs 中分离置顶文章和普通文章
 const pinnedDocsArticles = sortedDocsArticles.filter(post => post.frontmatter.pinned === true);
 const normalArticles = sortedDocsArticles.filter(post => post.frontmatter.pinned !== true);
-
-// 合并所有文章：about.md + docs中的置顶 + docs中的普通文章
 const displayArticles = [...aboutArticles, ...pinnedDocsArticles, ...normalArticles];
 ---
 
-<article class="article-container docs">
+<article class="article-container docs" id="docs-container">
     {
         displayArticles.map((post, index) => {
-            const isLast = index === displayArticles.length - 1;
             const isPinned = post.frontmatter.pinned === true;
-            
             return (
-                <div class={`docs-body ${isPinned ? 'docs-fixed' : ''} ${isLast ? 'docs-last' : ''}`}>
+                <div
+                    class={`docs-body ${isPinned ? 'docs-fixed' : ''}`}
+                    data-article-index={index}
+                >
                     <a href={post.url} class="docs-a">
                         <h2 class="docs-h">{post.frontmatter.title}</h2>
                     </a>
@@ -35,9 +27,153 @@ const displayArticles = [...aboutArticles, ...pinnedDocsArticles, ...normalArtic
             );
         })
     }
-    
-    {/* 底部结束提示 */}
-    <footer class="docs-footer">
-        <p class="end-tip">{SITE_INFO.endTip}</p>
+
+    <footer class="docs-footer" id="docs-footer">
+        <nav class="docs-pagination" id="docs-pagination" aria-label="分页导航"></nav>
+        <p class="end-tip" id="docs-end-tip">{SITE_INFO.endTip}</p>
     </footer>
 </article>
+
+<script>
+(function () {
+    const container = document.getElementById('docs-container') as HTMLElement;
+    const pagination = document.getElementById('docs-pagination') as HTMLElement;
+    const footer = document.getElementById('docs-footer') as HTMLElement;
+    const endTip = document.getElementById('docs-end-tip') as HTMLElement;
+    const allItems = Array.from(
+        container.querySelectorAll<HTMLElement>('.docs-body')
+    );
+
+    if (allItems.length === 0) return;
+
+    let currentPage = 0;
+    let perPage = 1;
+
+    // 计算每页条数：令条目区填满「header 完全滚出后」的屏幕
+    function calcPerPage(): number {
+        const mainEl = document.querySelector<HTMLElement>('.main');
+        if (!mainEl) return allItems.length;
+
+        const viewportH = mainEl.clientHeight;
+        const footerH = footer.offsetHeight;
+        const articleStyle = getComputedStyle(container);
+        const articlePaddingV =
+            parseFloat(articleStyle.paddingTop) +
+            parseFloat(articleStyle.paddingBottom);
+
+        const available = viewportH - articlePaddingV - footerH;
+        if (available <= 0) return 1;
+
+        const firstItem = allItems[0];
+        const itemStyle = getComputedStyle(firstItem);
+        const itemH =
+            firstItem.offsetHeight +
+            parseFloat(itemStyle.marginTop) +
+            parseFloat(itemStyle.marginBottom);
+
+        if (itemH <= 0) return 1;
+        return Math.max(1, Math.floor(available / itemH));
+    }
+
+    function totalPages(): number {
+        return Math.ceil(allItems.length / perPage);
+    }
+
+    function showPage(page: number) {
+        currentPage = Math.max(0, Math.min(page, totalPages() - 1));
+        const start = currentPage * perPage;
+        const end = start + perPage;
+        const isLastPage = currentPage === totalPages() - 1;
+
+        allItems.forEach((item, i) => {
+            const isVisible = i >= start && i < end;
+            item.style.display = isVisible ? '' : 'none';
+            item.classList.toggle('docs-last', isVisible && i === end - 1);
+        });
+
+        // 仅最后一页显示 end-tip
+        endTip.style.display = isLastPage ? '' : 'none';
+
+        renderPagination();
+    }
+
+    function renderPagination() {
+        const total = totalPages();
+        if (total <= 1) {
+            pagination.style.display = 'none';
+            return;
+        }
+        pagination.style.display = '';
+
+        const pages: (number | '…')[] = [];
+        if (total <= 7) {
+            for (let i = 0; i < total; i++) pages.push(i);
+        } else {
+            pages.push(0);
+            if (currentPage > 3) pages.push('…');
+            const lo = Math.max(1, currentPage - 1);
+            const hi = Math.min(total - 2, currentPage + 1);
+            for (let i = lo; i <= hi; i++) pages.push(i);
+            if (currentPage < total - 4) pages.push('…');
+            pages.push(total - 1);
+        }
+
+        pagination.innerHTML = '';
+
+        const prev = document.createElement('button');
+        prev.className = 'page-btn page-prev';
+        prev.textContent = '‹';
+        prev.disabled = currentPage === 0;
+        prev.addEventListener('click', () => { showPage(currentPage - 1); scrollToTop(); });
+        pagination.appendChild(prev);
+
+        pages.forEach(p => {
+            if (p === '…') {
+                const sep = document.createElement('span');
+                sep.className = 'page-sep';
+                sep.textContent = '…';
+                pagination.appendChild(sep);
+            } else {
+                const btn = document.createElement('button');
+                btn.className = 'page-btn' + (p === currentPage ? ' page-active' : '');
+                btn.textContent = String(p + 1);
+                btn.addEventListener('click', () => { showPage(p); scrollToTop(); });
+                pagination.appendChild(btn);
+            }
+        });
+
+        const next = document.createElement('button');
+        next.className = 'page-btn page-next';
+        next.textContent = '›';
+        next.disabled = currentPage === total - 1;
+        next.addEventListener('click', () => { showPage(currentPage + 1); scrollToTop(); });
+        pagination.appendChild(next);
+    }
+
+    function scrollToTop() {
+        const mainEl = document.querySelector<HTMLElement>('.main');
+        if (mainEl) mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function init() {
+        perPage = calcPerPage();
+        showPage(0);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        requestAnimationFrame(() => requestAnimationFrame(init));
+    }
+
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            const prevPage = currentPage;
+            perPage = calcPerPage();
+            showPage(Math.min(prevPage, totalPages() - 1));
+        }, 150);
+    });
+})();
+</script>

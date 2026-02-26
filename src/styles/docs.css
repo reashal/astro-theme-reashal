@@ -66,6 +66,81 @@
     text-align: center;
 }
 
+/* === 分页控件 === */
+
+.docs-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .3rem;
+    margin-bottom: .6rem;
+}
+
+.page-btn {
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 .5rem;
+    border: none;
+    border-radius: .3rem;
+    background-color: #f0f0f0;
+    color: #555;
+    font-size: .85rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease;
+    user-select: none;
+}
+
+.page-btn:hover:not(:disabled) {
+    background-color: #007175;
+    color: #fff;
+}
+
+.page-btn:disabled {
+    opacity: .35;
+    cursor: default;
+}
+
+.page-btn.page-active {
+    background-color: #007175;
+    color: #fff;
+    font-weight: bold;
+}
+
+.page-prev,
+.page-next {
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.page-sep {
+    color: #b2b2b2;
+    font-size: .85rem;
+    line-height: 2rem;
+    user-select: none;
+    padding: 0 .1rem;
+}
+
+/* 暗黑模式 */
+.dark .page-btn {
+    background-color: rgb(59, 62, 67);
+    color: #dcebf2;
+}
+
+.dark .page-btn:hover:not(:disabled) {
+    background-color: #007175;
+    color: #fff;
+}
+
+.dark .page-btn.page-active {
+    background-color: #007175;
+    color: #fff;
+}
+
+.dark .page-sep {
+    color: #707070;
+}
+
 /* "故事暂且讲到这里"提示文字 */
 .docs-footer .end-tip {
     padding: 0;
