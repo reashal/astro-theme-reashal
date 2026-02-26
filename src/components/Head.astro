@@ -1,12 +1,13 @@
 ---
-import Dark from "./Dark.astro"
+import Dark from "./Dark.astro";
+import { SITE_INFO } from "../consts";
 ---
 <style>
     header {
         position: relative;
         height: 38vh;
         background-color: rgb(87, 87, 87);
-        background-image: url("/static/images/wallpaper.webp");
+        background-image: var(--wallpaper);
         background-repeat: no-repeat;
         background-position: center bottom 28%;
         background-size: cover;
@@ -34,7 +35,7 @@ import Dark from "./Dark.astro"
         display: none;
     }
 </style>
-<header>
+<header style={`--wallpaper: url('${SITE_INFO.wallpaper}')`}>
     <Dark />
     <section class="view-box" id="view-box">
         <img src="" class="view-img" id="view-img"/>

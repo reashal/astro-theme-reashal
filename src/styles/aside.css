@@ -63,27 +63,114 @@ aside {
 
 /* 站长信息 */
 .aside-author {
+    position: relative;
     display: flex;
-    justify-content: space-around;
     align-items: center;
+    gap: .5rem;
+    overflow: hidden;
+    cursor: default;
 }
 
-.aside-author img {
-    margin-right: 0.12rem;
+/* 遮罩层：hover 时从透明过渡到半透明背景色 */
+.aside-author::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 113, 117, 0);
+    border-radius: inherit;
+    transition: background-color .35s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.aside-author:hover::before {
+    background-color: rgba(0, 113, 117, .1);
+}
+
+/* 头像 */
+.aside-avatar {
+    flex-shrink: 0;
     width: 48px;
+    height: 48px;
     border-radius: 50%;
+    opacity: 1;
+    transition:
+        opacity .3s ease,
+        width .3s ease,
+        height .3s ease;
 }
 
-.aside-author h3 {
+.aside-author:hover .aside-avatar {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* 文字区域 */
+.aside-author-info {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* 网名：默认正常位置，hover 时移到左上角 */
+.aside-name {
     font-size: 1rem;
-    padding-bottom: 0.3rem;
+    padding-bottom: .3rem;
+    display: block;
+    transition:
+        font-size .3s ease,
+        position .3s ease,
+        opacity .3s ease;
 }
 
-.aside-author .desc {
-    font-size: 0.8rem;
+.aside-author:hover .aside-name {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: .75rem;
+    opacity: .7;
+    padding-bottom: 0;
+}
+
+/* 原签名：默认显示，hover 时淡出隐藏 */
+.aside-desc {
+    font-size: .8rem;
     font-weight: bold;
     line-height: 1rem;
     animation: breathe 6s linear infinite;
+    opacity: 1;
+    max-height: 2rem;
+    transition:
+        opacity .2s ease .1s,
+        max-height .3s ease .1s;
+}
+
+.aside-author:hover .aside-desc {
+    opacity: 0;
+    max-height: 0;
+}
+
+/* 详细介绍：默认隐藏，hover 时展开 */
+.aside-detail {
+    font-size: .78rem;
+    line-height: 1.5;
+    color: #444;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    margin-top: 0;
+    transition:
+        max-height .4s ease,
+        opacity .3s ease,
+        margin-top .3s ease;
+}
+
+.aside-author:hover .aside-detail {
+    max-height: 6rem;
+    opacity: 1;
+    margin-top: 1.2rem;
 }
 
 @keyframes breathe {
@@ -114,6 +201,12 @@ aside {
     grid-template-columns: 1fr 1fr;
     gap: 6px;
     text-align: center;
+    background-color: rgba(0, 113, 117, 0);
+    transition: background-color 0.3s ease;
+}
+
+.aside-links:hover {
+    background-color: rgba(0, 113, 117, 0.1);
 }
 
 .aside-links a {
@@ -165,12 +258,37 @@ aside p {
     align-self: end;
     width: calc(240px - 2rem);
     margin-bottom: 0;
-    background-color: transparent;
-    font-size: 1rem;
+    background-color: rgba(0, 113, 117, 0);
+    font-size: 0.85rem;
+    padding: 0.6rem;
+    border-radius: 0.8rem;
+    box-shadow: rgba(0, 0, 0, 0.6) 0px 5px 15px;
+    transition: all 0.3s ease;
+}
+
+.aside-copyright:hover {
+    background-color: rgba(0, 113, 117, 0.1);
+}
+
+.aside-copyright div {
+    margin-bottom: 0.4rem;
+}
+
+.aside-copyright div:last-child {
+    margin-bottom: 0;
 }
 
 .aside-copyright a {
-    color: #000;
+    color: #007175;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-bottom: 1px dashed transparent;
+}
+
+.aside-copyright a:hover {
+    color: #004d52;
+    border-bottom-color: #007175;
 }
 
 /* ============================================ */
@@ -194,6 +312,22 @@ aside p {
     box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px !important;
 }
 
+.dark .aside-links {
+    background-color: rgba(130, 216, 221, 0);
+}
+
+.dark .aside-links:hover {
+    background-color: rgba(130, 216, 221, 0.08);
+}
+
+.dark .aside-author:hover::before {
+    background-color: rgba(130, 216, 221, .08);
+}
+
+.dark .aside-detail {
+    color: #a0b4c0;
+}
+
 /* 侧边栏三级标题 */
 .dark aside h3 {
     color: #dcebf2 !important;
@@ -207,4 +341,19 @@ aside p {
 /* 侧边栏版权信息 */
 .dark .aside-copyright {
     color: #dcebf2;
+    background-color: rgba(130, 216, 221, 0);
+    transition: background-color 0.3s ease;
+}
+
+.dark .aside-copyright:hover {
+    background-color: rgba(130, 216, 221, 0.08);
+}
+
+.dark .aside-copyright a {
+    color: #82d8dd;
+}
+
+.dark .aside-copyright a:hover {
+    color: #a8e5e9;
+    border-bottom-color: #82d8dd;
 }

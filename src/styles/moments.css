@@ -532,6 +532,23 @@
     color: #82a4ca;
 }
 
+/* 正文、地理位置等段落文字 */
+.dark .moments p,
+.dark .moments .moment-text,
+.dark .moments .location {
+    color: #c8c8c8;
+}
+
+/* 链接 */
+.dark .moments a {
+    color: #c8c8c8;
+}
+
+/* 地理位置 code */
+.dark .moments .location code {
+    color: #82a4ca;
+}
+
 /* 点赞区域暗黑模式 */
 .dark .moments blockquote p code,
 .dark .moments .stars-box {

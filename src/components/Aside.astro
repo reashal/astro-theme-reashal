@@ -1,38 +1,32 @@
 ---
 import "../styles/aside.css";
-const authorInfo = [
-    "睿屿青衫",
-    "希望我们能在前行的路上久别重逢",
-    "/static/favicon.svg",
-];
-const links = [
-    ["动态", "/", "iconfont icon-Home"],
-    ["随笔", "/life", "iconfont icon-pencil"],
-    ["笔记", "/docs", "iconfont icon-pc"],
-    ["链接", "/links", "iconfont icon-plane"],
-    ["仓库", "https://github.com/reashal", "iconfont icon-github"],
-    ["游弋", "https://uuuu.ee", "iconfont icon-planet"],
-];
+import { AUTHOR_INFO, NAV_LINKS } from "../consts";
 ---
 
 <aside>
     <section class="aside-body">
         <section class="aside-author">
             <img
-                src={authorInfo[2]}
-                alt={authorInfo[0]}
-                title={authorInfo[0]}
+                class="aside-avatar"
+                src={AUTHOR_INFO.avatar}
+                alt={AUTHOR_INFO.name}
+                title={AUTHOR_INFO.name}
             />
             <div class="aside-author-info">
-                <h3>{authorInfo[0]}</h3>
-                <p class="desc">{authorInfo[1]}</p>
+                <h3 class="aside-name">{AUTHOR_INFO.name}</h3>
+                <p class="aside-desc">{AUTHOR_INFO.description}</p>
+                <p class="aside-detail">{AUTHOR_INFO.detailDescription || AUTHOR_INFO.description}</p>
             </div>
         </section>
         <section class="aside-links">
             {
-                links.map((single) => (
-                    <a href={single[1]} target="_self" class={single[2]}>
-                        {single[0]}
+                NAV_LINKS.map((link) => (
+                    <a
+                        href={link.href}
+                        target={link.external ? "_blank" : "_self"}
+                        class={link.icon}
+                    >
+                        {link.label}
                     </a>
                 ))
             }
@@ -49,7 +43,6 @@ const links = [
                 >
             </div>
         </section>
-        
     </section>
     <div class="aside-btn" onclick="clickAsideBtn()"></div>
 </aside>

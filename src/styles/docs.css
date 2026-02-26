@@ -16,6 +16,26 @@
 .docs-body {
     padding: .4rem .6rem;
     border-radius: 6px;
+    cursor: pointer;
+    transition:
+        opacity .25s ease,
+        transform .25s ease,
+        box-shadow .25s ease;
+}
+
+/* 容器内有条目被 hover 时，其余条目淡出 */
+.article-container:has(.docs-body:hover) .docs-body:not(:hover) {
+    opacity: .45;
+}
+
+/* hover 的条目：微微凸起 */
+.docs-body:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px -4px rgba(0, 113, 117, .18);
+}
+
+.docs-fixed:hover {
+    box-shadow: 0 2px 8px -4px rgba(236, 111, 163, .2);
 }
 
 .docs-h {
@@ -48,6 +68,7 @@
 .docs-fixed h2 {
     color: #ec6fa3;
 }
+
 
 /* === 最后一篇文章样式 === */
 
@@ -177,13 +198,28 @@
 /* === 暗黑模式 === */
 /* ============================================ */
 
+/* 其余条目淡出（暗色背景下 opacity 稍高，避免消失感太强） */
+.dark .article-container:has(.docs-body:hover) .docs-body:not(:hover) {
+    opacity: .35;
+}
+
+/* hover 阴影换为浅青色系 */
+.dark .docs-body:hover {
+    box-shadow: 0 2px 8px -4px rgba(130, 216, 221, .18);
+}
+
+.dark .docs-fixed:hover {
+    box-shadow: 0 2px 8px -4px rgba(240, 139, 184, .2);
+}
+
+
 /* 笔记标题底部：深灰色边框 */
 .dark .docs-t {
     border-bottom: .2rem rgb(49, 49, 49) solid;
 }
 
-/* 置顶文章标题：青绿色 */
-.dark .docs-fixed h2 {
+/* 置顶文章标题：浅青色 */
+.dark .article-container .docs-fixed h2 {
     color: #007175;
 }
 

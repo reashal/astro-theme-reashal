@@ -144,44 +144,44 @@
     box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px;
 }
 
-/* 二级标题 */
-.dark h2 {
+/* 二级标题（仅内容页） */
+.dark .article-container h2 {
     color: #fcfdfb;
 }
 
-/* 段落文字 */
-.dark p {
+/* 段落文字（仅内容页） */
+.dark .article-container p {
     color: #dcebf2;
 }
 
-/* 链接 */
-.dark a {
+/* 链接（仅内容页） */
+.dark .article-container a {
     color: #dcebf2;
 }
 
-/* 水平分割线 */
-.dark hr {
+/* 水平分割线（仅内容页） */
+.dark .article-container hr {
     color: rgb(126, 143, 166);
 }
 
-/* 行内代码 */
-.dark code {
+/* 行内代码（仅内容页） */
+.dark .article-container code {
     color: rgb(126, 143, 166);
 }
 
-/* 无序/有序列表 */
-.dark ul,
-.dark ol {
+/* 无序/有序列表（仅内容页） */
+.dark .article-container ul,
+.dark .article-container ol {
     color: #dcebf2;
 }
 
-/* 引用块内代码 */
-.dark blockquote code {
+/* 引用块内代码（仅内容页） */
+.dark .article-container blockquote code {
     color: #dcebf2;
     background-color: rgb(59, 62, 67);
 }
 
-/* 文档三级标题 */
-.dark .doc h3 {
+/* 三级标题（仅内容页） */
+.dark .article-container h3 {
     color: #dcebf2;
 }
