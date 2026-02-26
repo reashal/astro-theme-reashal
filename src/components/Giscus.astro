@@ -16,3 +16,42 @@
         crossorigin="anonymous"
         async></script>
 </section>
+
+<script>
+    // 同步 Giscus 主题与当前深色/浅色模式
+    function syncGiscusTheme() {
+        const isDark = document.documentElement.classList.contains("dark");
+        const theme = isDark ? "dark" : "light";
+        const giscusFrame = document.querySelector<HTMLIFrameElement>("iframe.giscus-frame");
+        if (giscusFrame) {
+            giscusFrame.contentWindow?.postMessage(
+                { giscus: { setConfig: { theme } } },
+                "https://giscus.app"
+            );
+        } else {
+            // iframe 尚未加载，直接修改 script 属性让 Giscus 初始化时读取正确主题
+            const script = document.getElementById("giscus");
+            if (script) script.setAttribute("data-theme", theme);
+        }
+    }
+
+    // 页面加载时同步一次
+    syncGiscusTheme();
+
+    // 监听 Giscus iframe 加载完成后再同步一次
+    window.addEventListener("message", (event) => {
+        if (event.origin !== "https://giscus.app") return;
+        if (event.data?.giscus?.discussion !== undefined) {
+            syncGiscusTheme();
+        }
+    });
+
+    // 监听主题切换按钮（复用 themeToggle 的 click 事件）
+    const themeToggleBtn = document.getElementById("themeToggle");
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener("click", () => {
+            // 等待 dark 类切换完成后再同步
+            requestAnimationFrame(syncGiscusTheme);
+        });
+    }
+</script>

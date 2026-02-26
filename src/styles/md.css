@@ -134,3 +134,54 @@
 .article-container blockquote p{
     text-indent: 0;
 }
+
+/* ============================================ */
+/* === 暗黑模式 === */
+/* ============================================ */
+
+/* 文章容器阴影 */
+.dark article {
+    box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px;
+}
+
+/* 二级标题 */
+.dark h2 {
+    color: #fcfdfb;
+}
+
+/* 段落文字 */
+.dark p {
+    color: #dcebf2;
+}
+
+/* 链接 */
+.dark a {
+    color: #dcebf2;
+}
+
+/* 水平分割线 */
+.dark hr {
+    color: rgb(126, 143, 166);
+}
+
+/* 行内代码 */
+.dark code {
+    color: rgb(126, 143, 166);
+}
+
+/* 无序/有序列表 */
+.dark ul,
+.dark ol {
+    color: #dcebf2;
+}
+
+/* 引用块内代码 */
+.dark blockquote code {
+    color: #dcebf2;
+    background-color: rgb(59, 62, 67);
+}
+
+/* 文档三级标题 */
+.dark .doc h3 {
+    color: #dcebf2;
+}

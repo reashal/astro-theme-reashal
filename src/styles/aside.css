@@ -172,3 +172,39 @@ aside p {
 .aside-copyright a {
     color: #000;
 }
+
+/* ============================================ */
+/* === 暗黑模式 === */
+/* ============================================ */
+
+/* 侧边栏背景 */
+.dark aside {
+    background-color: rgb(30, 41, 59) !important;
+}
+
+/* 侧边栏展开时阴影 */
+.dark .aside-show aside {
+    box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px;
+}
+
+/* 侧边栏各模块阴影 */
+.dark .aside-author,
+.dark .aside-links,
+.dark .aside-copyright {
+    box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px !important;
+}
+
+/* 侧边栏三级标题 */
+.dark aside h3 {
+    color: #dcebf2 !important;
+}
+
+/* 侧边栏链接 */
+.dark aside a {
+    color: #dcebf2 !important;
+}
+
+/* 侧边栏版权信息 */
+.dark .aside-copyright {
+    color: #dcebf2;
+}

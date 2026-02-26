@@ -2,19 +2,11 @@
     padding: 6px;
 }
 
-.dark .links-info {
-    color: #fcfdfb;
-}
-
 .links-info::before {
     content: "\eb89";
     display: inline-block;
     padding-right: 2px;
     font-family: "iconfont" !important;
-}
-
-.dark .links-reashal {
-    color: #fcfdfb;
 }
 
 .links-reashal::before {
@@ -24,19 +16,11 @@
     font-family: "iconfont" !important;
 }
 
-.dark .links-friends {
-    color: #fcfdfb;
-}
-
 .links-friends::before {
     content: "\e726";
     display: inline-block;
     padding-right: 2px;
     font-family: "iconfont" !important;
-}
-
-.dark .links-webs {
-    color: #fcfdfb;
 }
 
 .links-webs::before {
@@ -70,10 +54,6 @@
     border-radius: 8px;
 }
 
-.dark .link-single {
-    box-shadow: rgba(255, 255, 255, 0.12) 0px 0px 8px;
-}
-
 .link-avatar {
     display: inline-block;
     margin-right: 4px;
@@ -105,4 +85,21 @@
 .aside-links a.icon-plane {
     color: #db6220 !important;
     background-color: #007175 !important;
+}
+
+/* ============================================ */
+/* === 暗黑模式 === */
+/* ============================================ */
+
+/* 分组标题 */
+.dark .links-info,
+.dark .links-reashal,
+.dark .links-friends,
+.dark .links-webs {
+    color: #fcfdfb;
+}
+
+/* 友链卡片阴影 */
+.dark .links-single {
+    box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px !important;
 }

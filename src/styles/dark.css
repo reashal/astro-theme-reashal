@@ -1,106 +1,15 @@
 /* ============================================ */
-/* 暗黑模式样式 (dark.css)
-/* 为整站提供暗黑模式主题支持
-/* 通过 .dark 类触发，覆盖默认浅色主题
+/* 暗黑模式全局样式 (dark.css)
+/* 仅保留无法归属到具体模块的全局基础样式
+/* 各模块暗黑样式已拆分至对应 CSS 文件末尾：
+/*   aside.css   — 侧边栏
+/*   md.css      — 文章/Markdown 内容
+/*   docs.css    — 笔记/随笔列表
+/*   links.css   — 友链页面
+/*   moments.css — 动态页面
 /* ============================================ */
 
-/* === 全局基础样式 === */
-
-/* 页面背景：深蓝灰色调 */
+/* 页面背景 */
 .dark body {
     background-color: rgb(17, 24, 38);
-}
-
-/* 文章容器：添加青色阴影 */
-.dark article {
-    box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px;
-}
-
-/* 二级标题：浅色文字 */
-.dark h2 {
-    color: #fcfdfb;
-}
-
-/* 段落文字：浅蓝灰色 */
-.dark p {
-    color: #dcebf2;
-}
-
-/* 链接文字：继承段落颜色 */
-.dark a {
-    color: #dcebf2;
-}
-
-/* 水平分割线：中灰蓝色 */
-.dark hr {
-    color: rgb(126, 143, 166);
-}
-
-/* 行内代码：中灰蓝色 */
-.dark code {
-    color: rgb(126, 143, 166);
-}
-
-/* === 文章页面 === */
-
-/* 无序列表：浅蓝灰色 */
-.dark ul {
-    color: #dcebf2;
-}
-
-/* 有序列表：浅蓝灰色 */
-.dark ol {
-    color: #dcebf2;
-}
-
-/* 引用块内的代码：浅蓝灰色文字 + 深灰背景 */
-.dark blockquote code {
-    color: #dcebf2;
-    background-color: rgb(59, 62, 67);
-}
-
-/* 文档三级标题：浅蓝灰色 */
-.dark .doc h3 {
-    color: #dcebf2;
-}
-
-/* === 友链页面 === */
-
-/* 单个友链卡片：添加青色阴影 */
-.dark .links-single {
-    box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px !important;
-}
-
-/* === 侧边栏 === */
-
-/* 侧边栏背景：深蓝灰色 */
-.dark aside {
-    background-color: rgb(30, 41, 59) !important;
-}
-
-/* 侧边栏展开状态：添加青色阴影 */
-.dark .aside-show aside {
-    box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px;
-}
-
-/* 侧边栏三级标题：浅蓝灰色 */
-.dark aside h3 {
-    color: #dcebf2 !important;
-}
-
-/* 侧边栏链接：浅蓝灰色 */
-.dark aside a {
-    color: #dcebf2 !important;
-}
-
-/* 侧边栏各模块（作者、链接、版权）：添加青色阴影 */
-.dark .aside-author,
-.dark .aside-links,
-.dark .aside-copyright {
-    box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px !important;
-}
-
-/* 侧边栏版权信息：浅蓝灰色 */
-.dark .aside-copyright {
-    color: #dcebf2;
 }
