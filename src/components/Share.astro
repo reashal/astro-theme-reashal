@@ -1,0 +1,162 @@
+---
+import "../styles/share.css";
+import { SITE_INFO } from "../consts";
+
+const siteName = SITE_INFO.title;
+---
+
+<div class="share-container">
+    <button class="share-btn" id="share-btn" aria-label="分享文章">
+        <i class="iconfont icon-share"></i>
+        <span>分享</span>
+    </button>
+</div>
+
+<div class="share-overlay" id="share-overlay">
+    <div class="share-card" id="share-card">
+        <div class="share-card-header">
+            <div class="share-card-banner" style={`background-image: url('${SITE_INFO.wallpaper}')`}></div>
+        </div>
+        <div class="share-card-content">
+            <h3 class="share-card-title" id="share-card-title"></h3>
+            <p class="share-card-desc" id="share-card-desc"></p>
+            <div class="share-card-link">
+                <input type="text" id="share-link-input" readonly />
+                <button id="copy-btn" class="copy-btn">
+                    <i class="iconfont icon-link"></i>
+                    <span>复制链接</span>
+                </button>
+            </div>
+            <div class="share-card-qrcode">
+                <canvas id="qrcode-canvas"></canvas>
+                <p class="qrcode-tip">扫码访问</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script define:vars={{ siteName }}>
+    const shareBtn = document.getElementById('share-btn');
+    const overlay = document.getElementById('share-overlay');
+    const shareCard = document.getElementById('share-card');
+    const copyBtn = document.getElementById('copy-btn');
+    const titleEl = document.getElementById('share-card-title');
+    const descEl = document.getElementById('share-card-desc');
+    const inputEl = document.getElementById('share-link-input');
+
+    let currentTitle = '';
+    let currentUrl = '';
+    let currentDescription = '';
+
+    shareBtn.addEventListener('click', () => {
+        // 动态获取当前页面信息
+        currentUrl = window.location.href;
+        currentTitle = document.title.split('｜')[0].trim();
+        currentDescription = document.querySelector('meta[name="description"]')?.getAttribute('content') || '';
+        
+        // 更新卡片内容
+        titleEl.textContent = currentTitle;
+        descEl.textContent = currentDescription;
+        descEl.style.display = currentDescription ? 'block' : 'none';
+        inputEl.value = currentUrl;
+        
+        overlay.classList.add('show');
+        generateQRCode();
+    });
+
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            overlay.classList.remove('show');
+        }
+    });
+
+    copyBtn.addEventListener('click', () => {
+        inputEl.select();
+        const text = `我从『${siteName}』为您分享了一篇文章～\n标题：${currentTitle}\n摘要：${currentDescription || '暂无摘要'}\n链接：${currentUrl}`;
+        navigator.clipboard.writeText(text).then(() => {
+            alert('已复制到剪贴板');
+        }).catch(() => {
+            alert('复制失败，请手动复制链接');
+        });
+    });
+
+    function generateQRCode() {
+        const canvas = document.getElementById('qrcode-canvas');
+        const ctx = canvas.getContext('2d');
+        const size = 150;
+        
+        canvas.width = size;
+        canvas.height = size;
+        
+        // 检查库是否加载
+        if (typeof qrcode === 'undefined') {
+            console.log('QRCode library not loaded, loading...');
+            loadQRCodeLibrary();
+            return;
+        }
+        
+        try {
+            // 创建二维码
+            const qr = qrcode(0, 'M');
+            qr.addData(currentUrl);
+            qr.make();
+            
+            // 清空画布
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, size, size);
+            
+            // 计算模块大小
+            const moduleCount = qr.getModuleCount();
+            const moduleSize = size / moduleCount;
+            
+            // 绘制二维码
+            ctx.fillStyle = '#000000';
+            for (let row = 0; row < moduleCount; row++) {
+                for (let col = 0; col < moduleCount; col++) {
+                    if (qr.isDark(row, col)) {
+                        ctx.fillRect(
+                            col * moduleSize,
+                            row * moduleSize,
+                            moduleSize,
+                            moduleSize
+                        );
+                    }
+                }
+            }
+            
+            console.log('QRCode generated successfully');
+        } catch (error) {
+            console.error('QRCode generation error:', error);
+            drawFallbackQRCode();
+        }
+    }
+
+    function loadQRCodeLibrary() {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js';
+        script.onload = () => {
+            console.log('QRCode library loaded');
+            generateQRCode();
+        };
+        script.onerror = () => {
+            console.error('Failed to load QRCode library');
+            drawFallbackQRCode();
+        };
+        document.head.appendChild(script);
+    }
+
+    function drawFallbackQRCode() {
+        const canvas = document.getElementById('qrcode-canvas');
+        const ctx = canvas.getContext('2d');
+        const size = 150;
+        canvas.width = size;
+        canvas.height = size;
+        
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, size, size);
+        ctx.fillStyle = '#000000';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('二维码生成失败', size / 2, size / 2);
+    }
+</script>

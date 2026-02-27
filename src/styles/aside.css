@@ -14,7 +14,7 @@ aside {
     justify-content: flex-start;
     width: 240px;
     height: 100vh;
-    padding: 0.5rem 1rem 1rem;
+    padding: 1rem 1rem 1rem;
 }
 
 @media screen and (min-width: 488px) {
@@ -54,6 +54,7 @@ aside {
 
 .aside-author,
 .aside-links,
+.aside-share,
 .aside-copyright {
     padding: 0.6rem;
     margin-bottom: 1rem;
@@ -223,6 +224,33 @@ aside {
     color: #033a4a;
 }
 
+/* 分享按钮 */
+.aside-share {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    text-align: center;
+    background-color: rgba(0, 113, 117, 0);
+    transition: background-color 0.3s ease;
+}
+
+.aside-share:hover {
+    background-color: rgba(0, 113, 117, 0.1);
+}
+
+.aside-share-link {
+    display: inline-block;
+    padding: 0.12rem 0.3rem;
+    margin: 0.2rem 0;
+    border-radius: 4px;
+    color: #000;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    grid-column: 1 / -1;
+    cursor: pointer;
+}
+
 /* === 页面激活状态高亮 === */
 
 /* 动态页面（首页） */
@@ -356,4 +384,17 @@ aside p {
 .dark .aside-copyright a:hover {
     color: #a8e5e9;
     border-bottom-color: #82d8dd;
+}
+
+/* 暗黑模式 - 分享按钮 */
+.dark .aside-share {
+    background-color: rgba(130, 216, 221, 0);
+}
+
+.dark .aside-share:hover {
+    background-color: rgba(130, 216, 221, 0.08);
+}
+
+.dark .aside-share-link {
+    color: #dcebf2;
 }

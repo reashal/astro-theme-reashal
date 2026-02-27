@@ -1,35 +1,47 @@
 ---
-import "../styles/base.css"
-import "../styles/iconfont.css"
-import Head from "../components/Head.astro"
-import Aside from "../components/Aside.astro"
-const { pageTitle, pageDescription ,pageType,frontmatter } = Astro.props;
+import "../styles/base.css";
+import "../styles/iconfont.css";
+import Head from "../components/Head.astro";
+import Aside from "../components/Aside.astro";
+import Share from "../components/Share.astro";
+const { pageTitle, pageDescription, pageType, frontmatter } = Astro.props;
 
 // 获取当前路径，用于侧边栏高亮
 const currentPath = Astro.url.pathname;
 ---
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="zh-cn" data-active-page={currentPath}>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{`${pageTitle}｜睿屿青衫`}</title>
-    <meta name="description" content=`『${pageDescription}』『有限的文字无法写尽余生,希望我们能在前行的路上久别重逢』`/>
-    <meta name="author" content="睿屿青衫" />
-    <meta name="keywords" content="睿屿青衫,reashal,blog,life,博客,随笔,记录,点滴,主页"/>
-    <link rel="icon" href="/static/favicon.svg" />
-</head>
-<body>
-    <main class="aside-init">
-        <Aside />
-        <section class="main" onclick="hideAside()">
-            <Head />
-            <slot />
-        </section>
-    </main>
-    <script is:inline src="/static/scripts/view.js"></script>
-    <script is:inline src="/static/scripts/aside.js"></script>
-    <canvas class="fireworks" style="position:fixed;left:0;top:0;z-index:99999999;pointer-events:none;" ></canvas>
-    <script is:inline src="/static/scripts/cursor.js"></script>
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{`${pageTitle}｜睿屿青衫`}</title>
+        <meta
+            name="description"
+            content=`『${pageDescription}』『有限的文字无法写尽余生,希望我们能在前行的路上久别重逢』`
+        />
+        <meta name="author" content="睿屿青衫" />
+        <meta
+            name="keywords"
+            content="睿屿青衫,reashal,blog,life,博客,随笔,记录,点滴,主页"
+        />
+        <link rel="icon" href="/static/favicon.svg" />
+    </head>
+    <body>
+        <main class="aside-init">
+            <Aside />
+            <section class="main" onclick="hideAside()">
+                <Head />
+                <slot />
+            </section>
+        </main>
+        <Share />
+        <script is:inline src="/static/scripts/view.js"></script>
+        <script is:inline src="/static/scripts/aside.js"></script>
+        <canvas
+            class="fireworks"
+            style="position:fixed;left:0;top:0;z-index:99999999;pointer-events:none;"
+        ></canvas>
+        <script is:inline src="/static/scripts/cursor.js"></script>
+    </body>
 </html>

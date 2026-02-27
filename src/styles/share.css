@@ -1,0 +1,192 @@
+.share-container {
+    display: inline-block;
+    margin: 1rem 0;
+}
+
+.share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #007175;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.share-btn:hover {
+    background-color: #005a5e;
+    transform: translateY(-2px);
+}
+
+.share-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.share-overlay.show {
+    display: flex;
+    opacity: 1;
+}
+
+.share-card {
+    background-color: white;
+    border-radius: 1rem;
+    width: 90%;
+    max-width: 400px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    position: relative;
+}
+
+.share-overlay.show .share-card {
+    transform: scale(1);
+}
+
+.share-card-header {
+    height: 150px;
+    overflow: hidden;
+}
+
+.share-card-banner {
+    width: 100%;
+    height: 100%;
+    background-image: var(--wallpaper);
+    background-size: cover;
+    background-position: center bottom 28%;
+    filter: blur(0);
+}
+
+.share-card-content {
+    padding: 1.5rem;
+}
+
+.share-card-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: #1a1a1a;
+    line-height: 1.4;
+}
+
+.share-card-desc {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0 0 1rem 0;
+    line-height: 1.6;
+}
+
+.share-card-link {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.share-card-link input {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.copy-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.5rem 1rem;
+    background-color: #007175;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.copy-btn:hover {
+    background-color: #005a5e;
+    transform: translateY(-1px);
+}
+
+.share-card-qrcode {
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.share-card-qrcode canvas {
+    border: 2px solid #e0e0e0;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    background-color: white;
+    display: block;
+    margin: 0 auto;
+}
+
+.qrcode-tip {
+    font-size: 0.8rem;
+    color: #999;
+    margin: 0.2rem 0 0 0;
+    line-height: 1;
+}
+
+/* 暗黑模式 */
+html.dark .share-btn {
+    background-color: #82d8dd;
+}
+
+html.dark .share-btn:hover {
+    background-color: #a8e5e9;
+}
+
+html.dark .share-card {
+    background-color: #1e293b;
+}
+
+html.dark .share-card-title {
+    color: #dcebf2;
+}
+
+html.dark .share-card-desc {
+    color: #a0b4c0;
+}
+
+html.dark .share-card-link input {
+    background-color: #2d3748;
+    border-color: #4a5568;
+    color: #dcebf2;
+}
+
+html.dark .copy-btn {
+    background-color: #82d8dd;
+}
+
+html.dark .copy-btn:hover {
+    background-color: #a8e5e9;
+}
+
+html.dark .share-card-qrcode canvas {
+    border-color: #4a5568;
+}
+
+html.dark .qrcode-tip {
+    color: #718096;
+}

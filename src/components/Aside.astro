@@ -1,6 +1,6 @@
 ---
 import "../styles/aside.css";
-import { AUTHOR_INFO, NAV_LINKS } from "../consts";
+import { AUTHOR_INFO, NAV_LINKS, SITE_INFO } from "../consts";
 ---
 
 <aside>
@@ -33,6 +33,12 @@ import { AUTHOR_INFO, NAV_LINKS } from "../consts";
                 ))
             }
         </section>
+        <section class="aside-share">
+            <a class="aside-share-link" id="aside-share-btn" aria-label="分享当前页面">
+                <i class="iconfont icon-share"></i>
+                分享当前页面
+            </a>
+        </section>
         <section class="aside-copyright">
             <div>
                 Powered By <a href="//astro.build" class="copy-a" target="_blank"
@@ -48,3 +54,30 @@ import { AUTHOR_INFO, NAV_LINKS } from "../consts";
     </section>
     <div class="aside-btn" onclick="clickAsideBtn()"></div>
 </aside>
+
+<script define:vars={{ SITE_INFO }}>
+    const asideShareBtn = document.getElementById('aside-share-btn');
+    
+    if (asideShareBtn) {
+        asideShareBtn.addEventListener('click', () => {
+            // 折叠侧边栏
+            if (typeof clickAsideBtn === 'function') {
+                clickAsideBtn();
+            }
+            
+            // 延迟弹出分享卡片，等待侧边栏折叠
+            setTimeout(() => {
+                // 动态获取当前页面信息
+                const url = window.location.href;
+                const title = document.title.split('｜')[0].trim();
+                const description = document.querySelector('meta[name="description"]')?.getAttribute('content') || '';
+                
+                // 触发分享卡片
+                const shareBtn = document.getElementById('share-btn');
+                if (shareBtn) {
+                    shareBtn.click();
+                }
+            }, 300);
+        });
+    }
+</script>
