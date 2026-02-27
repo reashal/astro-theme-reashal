@@ -27,6 +27,10 @@ body {
     font-family: "HM";
 }
 
+.dark body {
+    background-color: rgb(17, 24, 38);
+}
+
 /* === 字体定义 === */
 
 @font-face {
@@ -159,14 +163,14 @@ main {
 
 /* === 小屏设备（≤ 488px）：移动端 === */
 @media screen and (max-width: 488px) {
-    /* 头部：全宽，固定高度 */
+    /* 头部：全宽，固定高度，顶到顶部 */
     header {
         margin: 0;
         width: 100%;
         height: 38vh;
     }
 
-    /* 文章区域：全宽，移除上下外边距 */
+    /* 文章区域：全宽，移除底部间隙 */
     article {
         width: 100%;
         margin-top: 0 !important;
@@ -177,10 +181,6 @@ main {
 
 /* === 中屏设备（≥ 488px）：平板/桌面 === */
 @media screen and (min-width: 488px) {
-    /* 主容器：顶部留白 */
-    main {
-        padding: 2rem 0 0 0;
-    }
 
     /* 内容区域：居中显示 */
     .main {
@@ -191,7 +191,7 @@ main {
 
     /* 头部：80% 宽度，圆角 */
     header {
-        margin: 0 auto;
+        margin: 2rem auto 0;
         width: 80%;
         height: 38vh;
         border-radius: .8rem;

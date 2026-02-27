@@ -14,7 +14,7 @@ aside {
     justify-content: flex-start;
     width: 240px;
     height: 100vh;
-    padding: 1rem;
+    padding: 0.5rem 1rem 1rem;
 }
 
 @media screen and (min-width: 488px) {
@@ -22,8 +22,8 @@ aside {
         border-radius: 0 0.8rem 0 0;
     }   
     .aside-body {
-        height: calc(100vh - 2rem);
-        top: 2rem;
+        height: 100vh;
+        top: 0;
     }
 }
 
