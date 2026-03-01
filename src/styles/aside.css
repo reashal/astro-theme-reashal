@@ -3,7 +3,7 @@ aside {
     position: relative;
     width: 240px;
     height: 100vh;
-    background-color: #fcfdfb;
+    background-color: #fafbfc;
 }
 
 .aside-body {
@@ -56,10 +56,21 @@ aside {
 .aside-links,
 .aside-share,
 .aside-copyright {
-    padding: 0.6rem;
-    margin-bottom: 1rem;
+    padding: 0.8rem;
+    margin-bottom: 1.2rem;
     border-radius: 0.8rem;
     box-shadow: rgba(0, 0, 0, 0.6) 0px 5px 15px;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.aside-author:hover,
+.aside-links:hover,
+.aside-share:hover,
+.aside-copyright:hover {
+    transform: translateY(4px) scale(0.98);
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 8px;
+    background-color: rgba(0, 113, 117, 0.05);
 }
 
 /* 站长信息 */
@@ -203,11 +214,7 @@ aside {
     gap: 6px;
     text-align: center;
     background-color: rgba(0, 113, 117, 0);
-    transition: background-color 0.3s ease;
-}
-
-.aside-links:hover {
-    background-color: rgba(0, 113, 117, 0.1);
+    transition: all 0.3s ease;
 }
 
 .aside-links a {
@@ -231,11 +238,7 @@ aside {
     gap: 6px;
     text-align: center;
     background-color: rgba(0, 113, 117, 0);
-    transition: background-color 0.3s ease;
-}
-
-.aside-share:hover {
-    background-color: rgba(0, 113, 117, 0.1);
+    transition: all 0.3s ease;
 }
 
 .aside-share-link {
@@ -294,10 +297,6 @@ aside p {
     transition: all 0.3s ease;
 }
 
-.aside-copyright:hover {
-    background-color: rgba(0, 113, 117, 0.1);
-}
-
 .aside-copyright div {
     margin-bottom: 0.4rem;
 }
@@ -336,16 +335,29 @@ aside p {
 /* 侧边栏各模块阴影 */
 .dark .aside-author,
 .dark .aside-links,
+.dark .aside-share,
 .dark .aside-copyright {
-    box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px !important;
+    box-shadow: 
+        rgba(0, 0, 0, 0.5) 0px 8px 20px,
+        rgba(0, 0, 0, 0.3) 0px 2px 6px;
+    background-color: rgba(36, 43, 61, 0.8);
+    border: 1px solid rgba(130, 216, 221, 0.15);
+    transition: all 0.3s ease;
+}
+
+.dark .aside-author:hover,
+.dark .aside-links:hover,
+.dark .aside-share:hover,
+.dark .aside-copyright:hover {
+    transform: translateY(4px) scale(0.98);
+    box-shadow: 
+        rgba(0, 0, 0, 0.15) 0px 1px 3px;
+    border-color: rgba(130, 216, 221, 0.4);
+    background-color: rgba(25, 31, 45, 0.95);
 }
 
 .dark .aside-links {
     background-color: rgba(130, 216, 221, 0);
-}
-
-.dark .aside-links:hover {
-    background-color: rgba(130, 216, 221, 0.08);
 }
 
 .dark .aside-author:hover::before {
@@ -370,11 +382,6 @@ aside p {
 .dark .aside-copyright {
     color: #dcebf2;
     background-color: rgba(130, 216, 221, 0);
-    transition: background-color 0.3s ease;
-}
-
-.dark .aside-copyright:hover {
-    background-color: rgba(130, 216, 221, 0.08);
 }
 
 .dark .aside-copyright a {
@@ -389,10 +396,6 @@ aside p {
 /* 暗黑模式 - 分享按钮 */
 .dark .aside-share {
     background-color: rgba(130, 216, 221, 0);
-}
-
-.dark .aside-share:hover {
-    background-color: rgba(130, 216, 221, 0.08);
 }
 
 .dark .aside-share-link {
