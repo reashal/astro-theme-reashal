@@ -1,26 +1,44 @@
 ---
+/**
+ * 侧边栏组件
+ * 
+ * 包含模块：
+ * 1. 站长信息卡片 (aside-author-card) - 显示头像、名称、简介
+ * 2. 导航链接卡片 (aside-links-card) - 网站主要页面导航
+ * 3. 分享按钮卡片 (aside-share-card) - 分享当前页面功能
+ * 4. 标签云卡片 (aside-tags-card) - 显示所有文章标签
+ * 5. 版权信息卡片 (aside-copyright-card) - 网站版权信息
+ * 
+ * 命名规范：
+ * - 卡片类名统一使用 aside-{模块}-card 格式
+ * - 卡片内部元素使用 {模块}-{元素} 格式，如 author-avatar、author-name
+ */
 import "../styles/aside.css";
 import { AUTHOR_INFO, NAV_LINKS, SITE_INFO } from "../consts";
+import GetTags from "./GetTags.astro";
 ---
 
 <aside>
     <section class="aside-body">
-        <section class="aside-author">
+        <!-- 站长信息卡片：hover 时显示详细简介 -->
+        <section class="aside-author-card">
             <img
-                class="aside-avatar"
+                class="author-avatar"
                 src={AUTHOR_INFO.avatar}
                 alt={AUTHOR_INFO.name}
                 title={AUTHOR_INFO.name}
                 loading="lazy"
                 decoding="async"
             />
-            <div class="aside-author-info">
-                <h3 class="aside-name">{AUTHOR_INFO.name}</h3>
-                <p class="aside-desc">{AUTHOR_INFO.description}</p>
-                <p class="aside-detail">{AUTHOR_INFO.detailDescription || AUTHOR_INFO.description}</p>
+            <div class="author-info">
+                <h3 class="author-name">{AUTHOR_INFO.name}</h3>
+                <p class="author-desc">{AUTHOR_INFO.description}</p>
+                <p class="author-bio">{AUTHOR_INFO.detailDescription || AUTHOR_INFO.description}</p>
             </div>
         </section>
-        <section class="aside-links">
+
+        <!-- 导航链接卡片：2x2 网格布局 -->
+        <section class="aside-links-card">
             {
                 NAV_LINKS.map((link) => (
                     <a
@@ -33,13 +51,20 @@ import { AUTHOR_INFO, NAV_LINKS, SITE_INFO } from "../consts";
                 ))
             }
         </section>
-        <section class="aside-share">
-            <a class="aside-share-link" id="aside-share-btn" aria-label="分享当前页面">
+
+        <!-- 分享按钮卡片 -->
+        <section class="aside-share-card">
+            <a class="share-link" id="aside-share-btn" aria-label="分享当前页面">
                 <i class="iconfont icon-share"></i>
                 分享当前页面
             </a>
         </section>
-        <section class="aside-copyright">
+
+        <!-- 标签云卡片 -->
+        <GetTags />
+
+        <!-- 版权信息卡片 -->
+        <section class="aside-copyright-card">
             <div>
                 Powered By <a href="//astro.build" class="copy-a" target="_blank"
                     >Astro</a
@@ -52,10 +77,13 @@ import { AUTHOR_INFO, NAV_LINKS, SITE_INFO } from "../consts";
             </div>
         </section>
     </section>
-    <div class="aside-btn" onclick="clickAsideBtn()"></div>
+
+    <!-- 侧边栏折叠/展开按钮 -->
+    <div class="aside-toggle-btn" onclick="clickAsideBtn()"></div>
 </aside>
 
 <script define:vars={{ SITE_INFO }}>
+    // 分享按钮点击事件：先折叠侧边栏，再弹出分享卡片
     const asideShareBtn = document.getElementById('aside-share-btn');
     
     if (asideShareBtn) {
@@ -65,7 +93,7 @@ import { AUTHOR_INFO, NAV_LINKS, SITE_INFO } from "../consts";
                 clickAsideBtn();
             }
             
-            // 延迟弹出分享卡片，等待侧边栏折叠
+            // 延迟弹出分享卡片，等待侧边栏折叠动画完成
             setTimeout(() => {
                 // 动态获取当前页面信息
                 const url = window.location.href;

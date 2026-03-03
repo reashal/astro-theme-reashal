@@ -1,0 +1,122 @@
+---
+/**
+ * 标签卡片组件
+ * 职责：
+ * 1. 获取所有文章的标签
+ * 2. 按文章数量排序标签
+ * 3. 渲染横向滚动的标签卡片
+ * 
+ * 功能：
+ * - 标签从左向右无缝循环滚动
+ * - 鼠标悬停暂停滚动
+ * - 点击标签跳转到标签详情页
+ */
+import { SITE_INFO } from "../consts";
+
+// 获取所有文章
+const docsArticles = await Astro.glob("../pages/docs/*.md");
+const lifeArticles = await Astro.glob("../pages/life/*.md");
+const allArticles = [...docsArticles, ...lifeArticles];
+
+// 收集所有标签
+const allTags = new Set<string>();
+
+allArticles.forEach(post => {
+    if (post.frontmatter.tags) {
+        post.frontmatter.tags.forEach((tag: string) => allTags.add(tag));
+    }
+});
+
+// 统计每个标签的文章数量
+const tags = Array.from(allTags).sort();
+const tagCounts = new Map<string, number>();
+
+allArticles.forEach(post => {
+    if (post.frontmatter.tags) {
+        post.frontmatter.tags.forEach((tag: string) => {
+            tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+        });
+    }
+});
+
+// 按文章数量排序标签
+const sortedTags = tags.sort((a, b) => {
+    const countA = tagCounts.get(a) || 0;
+    const countB = tagCounts.get(b) || 0;
+    return countB - countA;
+});
+
+const displayTags = sortedTags;
+const totalTags = sortedTags.length;
+const tagCountsObj = Object.fromEntries(tagCounts);
+---
+
+<section class="aside-tags-card">
+    <div class="tags-scroll-container" id="tags-scroll-container">
+        <div class="tags-content" id="tags-content"></div>
+    </div>
+</section>
+
+<script define:vars={{ displayTags, tagCountsObj }}>
+    if (typeof document !== 'undefined') {
+        const container = document.getElementById('tags-content');
+        
+        function createTagElement(tag) {
+            const tagEl = document.createElement('a');
+            tagEl.href = `/tags/${tag}`;
+            tagEl.className = 'tag-item';
+            tagEl.innerHTML = `
+                <span class="tag-name">#${tag}</span>
+                <span class="tag-count">${tagCountsObj[tag]}</span>
+            `;
+            return tagEl;
+        }
+        
+        displayTags.forEach((tag) => {
+            container.appendChild(createTagElement(tag));
+        });
+        
+        displayTags.forEach((tag) => {
+            container.appendChild(createTagElement(tag));
+        });
+        
+        const scrollContainer = document.getElementById('tags-scroll-container');
+        let currentTranslateX = 0;
+        let isPaused = false;
+        let lastTime = 0;
+        const speed = 25;
+        
+        setTimeout(() => {
+            currentTranslateX = -container.scrollWidth / 2;
+            requestAnimationFrame(animate);
+        }, 100);
+        
+        function animate(currentTime) {
+            if (!lastTime) lastTime = currentTime;
+            const deltaTime = (currentTime - lastTime) / 1000;
+            lastTime = currentTime;
+            
+            if (!isPaused) {
+                currentTranslateX += speed * deltaTime;
+                
+                const halfWidth = container.scrollWidth / 2;
+                
+                if (currentTranslateX >= 0) {
+                    currentTranslateX = -halfWidth;
+                }
+                
+                container.style.transform = `translateX(${currentTranslateX}px)`;
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        scrollContainer.addEventListener('mouseenter', () => {
+            isPaused = true;
+        });
+        
+        scrollContainer.addEventListener('mouseleave', () => {
+            isPaused = false;
+        });
+    }
+</script>

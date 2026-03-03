@@ -228,8 +228,8 @@
 }
 
 /* 置顶文章标题：浅青色 */
-.dark .article-container .docs-fixed h2 {
-    color: #007175;
+.dark .article-container .docs-fixed .docs-h {
+    color: #007175 !important;
 }
 
 /* 最后一篇文章：移除分隔条 */

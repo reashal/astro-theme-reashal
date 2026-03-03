@@ -1,0 +1,172 @@
+/* ============================================
+ * 标签页面样式 (tags.css)
+ * 用于标签详情页和标签列表页面
+ * ============================================ */
+
+/* ============================================
+ * === 文章标签（文章详情页底部） ===
+ * ============================================ */
+
+.article-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 0;
+}
+
+.tag {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    background-color: #007175;
+    color: #f8fef3;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.tag:hover {
+    background-color: #005a5e;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 113, 117, 0.3);
+}
+
+/* 暗黑模式 */
+.dark .article-tags {
+    background-color: transparent;
+}
+
+.dark .tag {
+    background-color: #007175;
+    color: #f8fef3;
+}
+
+.dark .tag:hover {
+    background-color: #005a5e;
+    box-shadow: 0 2px 8px rgba(0, 113, 117, 0.3);
+}
+
+/* ============================================
+ * === 标签页面文章列表 ===
+ * ============================================ */
+
+.tag-articles {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.tag-article-item {
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 0.8rem;
+    box-shadow: rgba(0, 0, 0, 0.6) 0px 5px 15px;
+    transition: all 0.3s ease;
+}
+
+.tag-article-item:hover {
+    transform: translateY(-4px);
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 8px;
+}
+
+.tag-article-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.tag-article-title {
+    font-size: 1.2rem;
+    color: #007175;
+    margin-bottom: 0.5rem;
+}
+
+.tag-article-desc {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.tag-article-date {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+/* 暗黑模式 */
+.dark .tag-article-item {
+    background-color: rgba(36, 43, 61, 0.8);
+    box-shadow:
+        rgba(0, 0, 0, 0.5) 0px 8px 20px,
+        rgba(0, 0, 0, 0.3) 0px 2px 6px;
+}
+
+.dark .tag-article-item:hover {
+    box-shadow:
+        rgba(0, 0, 0, 0.15) 0px 1px 3px;
+}
+
+.dark .tag-article-title {
+    color: #82d8dd;
+}
+
+.dark .tag-article-desc {
+    color: #a0b4c0;
+}
+
+.dark .tag-article-date {
+    color: #718096;
+}
+
+/* ============================================
+ * === 标签页面网格 ===
+ * ============================================ */
+
+.tags-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.tag-card {
+    display: block;
+    padding: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 0.8rem;
+    box-shadow: rgba(0, 0, 0, 0.6) 0px 5px 15px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.tag-card:hover {
+    transform: translateY(-4px);
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 8px;
+}
+
+.tag-name {
+    font-size: 1.1rem;
+    color: #007175;
+    font-weight: 600;
+}
+
+/* 暗黑模式 */
+.dark .tags-grid {
+    gap: 1rem;
+}
+
+.dark .tag-card {
+    background-color: rgba(36, 43, 61, 0.8);
+    box-shadow:
+        rgba(0, 0, 0, 0.5) 0px 8px 20px,
+        rgba(0, 0, 0, 0.3) 0px 2px 6px;
+}
+
+.dark .tag-card:hover {
+    box-shadow:
+        rgba(0, 0, 0, 0.15) 0px 1px 3px;
+}
+
+.dark .tag-name {
+    color: #82d8dd;
+}

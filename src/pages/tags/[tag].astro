@@ -1,0 +1,58 @@
+---
+/**
+ * 标签详情页
+ * 职责：
+ * 1. 生成所有标签的静态路径
+ * 2. 获取指定标签的所有文章
+ * 3. 按发表时间倒序排列文章
+ * 4. 渲染文章列表
+ */
+import "../../styles/docs.css";
+import "../../styles/tags.css";
+import GetTagArticles from "../../components/GetTagArticles.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+// 生成所有标签的静态路径
+export async function getStaticPaths() {
+    const docsArticles = await Astro.glob("../docs/*.md");
+    const lifeArticles = await Astro.glob("../life/*.md");
+    const allArticles = [...docsArticles, ...lifeArticles];
+    
+    // 收集所有标签
+    const allTags = new Set<string>();
+    
+    allArticles.forEach(post => {
+        if (post.frontmatter.tags) {
+            post.frontmatter.tags.forEach((tag: string) => allTags.add(tag));
+        }
+    });
+    
+    const tags = Array.from(allTags);
+    
+    return tags.map(tag => ({
+        params: { tag }
+    }));
+}
+
+// 获取当前标签的文章
+const { tag } = Astro.params;
+const docsArticles = await Astro.glob("../docs/*.md");
+const lifeArticles = await Astro.glob("../life/*.md");
+const allArticles = [...docsArticles, ...lifeArticles];
+
+// 筛选并排序文章
+const tagArticles = allArticles.filter(post => 
+    post.frontmatter.tags && post.frontmatter.tags.includes(tag)
+).sort((a, b) => {
+    const dateA = new Date(a.frontmatter.pubDate || '1970-01-01');
+    const dateB = new Date(b.frontmatter.pubDate || '1970-01-01');
+    return dateB.getTime() - dateA.getTime();
+});
+
+const pageTitle = `标签：${tag}`;
+const pageDescription = `包含标签"${tag}"的所有文章`;
+---
+
+<BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
+    <GetTagArticles articles={tagArticles} />
+</BaseLayout>

@@ -1,46 +1,73 @@
 ---
+/**
+ * 文章列表组件
+ * 职责：
+ * 1. 提供文章列表的容器和基础样式
+ * 2. 实现分页功能（根据屏幕高度自动计算每页显示数量）
+ * 3. 显示底部提示信息
+ * 4. 渲染文章卡片（支持置顶文章）
+ * 
+ * 使用方式：
+ * <ArticleList articles={articleArray} />
+ */
 import { SITE_INFO } from "../consts";
+import "../styles/docs.css";
 
-const comArticles = (await Astro.glob("../pages/life/*.md")).reverse();
+interface Props {
+    articles: any[];
+}
+
+const { articles } = Astro.props;
 ---
 
 <article class="article-container docs" id="docs-container">
-    {
-        comArticles.map((post, index) => (
-            <div class="docs-body" data-article-index={index}>
+    {articles.map((post, index) => {
+        const isPinned = post.frontmatter.pinned === true;
+        return (
+            <div
+                class={`docs-body ${isPinned ? "docs-fixed" : ""}`}
+                data-article-index={index}
+            >
                 <a href={post.url} class="docs-a">
                     <h2 class="docs-h">{post.frontmatter.title}</h2>
                 </a>
                 <p class="docs-p">{post.frontmatter.desc}</p>
                 <time class="docs-t">
-                    {post.frontmatter.pubDate.substr(0, 10)}
+                    {post.frontmatter.pubDate?.substr(0, 10)}
                 </time>
             </div>
-        ))
-    }
+        );
+    })}
+    
+    {articles.length === 0 && (
+        <div class="docs-body">
+            <p class="docs-p">暂无文章</p>
+        </div>
+    )}
 
     <footer class="docs-footer" id="docs-footer">
         <nav class="docs-pagination" id="docs-pagination" aria-label="分页导航">
         </nav>
         <p class="end-tip" id="docs-end-tip">{SITE_INFO.endTip}</p>
     </footer>
-    <script defer>
+    <script>
         (function () {
-            const container = document.getElementById("docs-container");
-            const pagination = document.getElementById("docs-pagination");
-            const footer = document.getElementById("docs-footer");
-            const endTip = document.getElementById("docs-end-tip");
+            const container = document.getElementById("docs-container")!;
+            const pagination = document.getElementById("docs-pagination")!;
+            const footer = document.getElementById("docs-footer")!;
+            const endTip = document.getElementById("docs-end-tip")!;
+            
             const allItems = Array.from(
                 container.querySelectorAll(".docs-body"),
-            );
+            ) as HTMLElement[];
 
             if (allItems.length === 0) return;
 
             let currentPage = 0;
             let perPage = 1;
 
-            function calcPerPage() {
-                const mainEl = document.querySelector(".main");
+            function calcPerPage(): number {
+                const mainEl = document.querySelector(".main") as HTMLElement | null;
                 if (!mainEl) return allItems.length;
 
                 const viewportH = mainEl.clientHeight;
@@ -64,15 +91,14 @@ const comArticles = (await Astro.glob("../pages/life/*.md")).reverse();
                 return Math.max(1, Math.floor(available / itemH));
             }
 
-            function totalPages() {
+            function totalPages(): number {
                 return Math.ceil(allItems.length / perPage);
             }
 
-            function showPage(page) {
+            function showPage(page: number): void {
                 currentPage = Math.max(0, Math.min(page, totalPages() - 1));
                 const start = currentPage * perPage;
                 const end = start + perPage;
-
                 const isLastPage = currentPage === totalPages() - 1;
 
                 allItems.forEach((item, i) => {
@@ -89,7 +115,7 @@ const comArticles = (await Astro.glob("../pages/life/*.md")).reverse();
                 renderPagination();
             }
 
-            function renderPagination() {
+            function renderPagination(): void {
                 const total = totalPages();
                 if (total <= 1) {
                     pagination.style.display = "none";
@@ -97,7 +123,7 @@ const comArticles = (await Astro.glob("../pages/life/*.md")).reverse();
                 }
                 pagination.style.display = "";
 
-                const pages = [];
+                const pages: (number | string)[] = [];
                 if (total <= 7) {
                     for (let i = 0; i < total; i++) pages.push(i);
                 } else {
@@ -133,9 +159,9 @@ const comArticles = (await Astro.glob("../pages/life/*.md")).reverse();
                         btn.className =
                             "page-btn" +
                             (p === currentPage ? " page-active" : "");
-                        btn.textContent = String(p + 1);
+                        btn.textContent = String(Number(p) + 1);
                         btn.addEventListener("click", () => {
-                            showPage(p);
+                            showPage(Number(p));
                             scrollToTop();
                         });
                         pagination.appendChild(btn);
@@ -153,12 +179,12 @@ const comArticles = (await Astro.glob("../pages/life/*.md")).reverse();
                 pagination.appendChild(next);
             }
 
-            function scrollToTop() {
-                const mainEl = document.querySelector(".main");
+            function scrollToTop(): void {
+                const mainEl = document.querySelector(".main") as HTMLElement | null;
                 if (mainEl) mainEl.scrollTo({ top: 0, behavior: "smooth" });
             }
 
-            function init() {
+            function init(): void {
                 perPage = calcPerPage();
                 showPage(0);
             }
@@ -169,7 +195,7 @@ const comArticles = (await Astro.glob("../pages/life/*.md")).reverse();
                 requestAnimationFrame(() => requestAnimationFrame(init));
             }
 
-            let resizeTimer;
+            let resizeTimer: number;
             window.addEventListener("resize", () => {
                 clearTimeout(resizeTimer);
                 resizeTimer = setTimeout(() => {

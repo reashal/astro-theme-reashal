@@ -1,11 +1,26 @@
 ---
+/**
+ * 笔记页面
+ * 展示所有笔记文章（包括 about 页面）
+ */
 import "../styles/docs.css";
-import GetDocs from "../components/GetDocs.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-const pageTitle = "笔记";
-const pageDescription = "积跬步以至千里";
+import ArticleList from "../components/ArticleList.astro";
+import { processArticles } from "../utils/articles";
+import { PAGE_CONFIG } from "../consts/pages";
+
+// 获取文章数据（必须使用字面量字符串）
+const aboutArticles = await Astro.glob("../pages/about.md");
+const docsArticles = await Astro.glob("../pages/docs/*.md");
+const allArticles = [...aboutArticles, ...docsArticles];
+
+// 处理文章：分离置顶并排序
+const displayArticles = processArticles(allArticles);
+
+const pageTitle = PAGE_CONFIG.docs.title;
+const pageDescription = PAGE_CONFIG.docs.description;
 ---
 
 <BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
-    <GetDocs />
+    <ArticleList articles={displayArticles} />
 </BaseLayout>

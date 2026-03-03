@@ -27,7 +27,7 @@ aside {
     }
 }
 
-.aside-btn {
+.aside-toggle-btn {
     position: absolute;
     right: -16px;
     top: calc(50% - 30px);
@@ -39,11 +39,11 @@ aside {
     z-index: 999;
 }
 
-.aside-btn:hover {
+.aside-toggle-btn:hover {
     cursor: pointer;
 }
 
-.aside-btn::before {
+.aside-toggle-btn::before {
     content: "|";
     position: absolute;
     left: 6px;
@@ -52,10 +52,15 @@ aside {
     color: #ffffff;
 }
 
-.aside-author,
-.aside-links,
-.aside-share,
-.aside-copyright {
+/* ============================================
+ * 侧边栏卡片基础样式
+ * 所有卡片统一使用 aside-{模块}-card 命名
+ * hover 效果：向下移动并缩小，阴影变浅
+ * ============================================ */
+.aside-body .aside-author-card,
+.aside-body .aside-links-card,
+.aside-body .aside-share-card,
+.aside-body .aside-copyright-card {
     padding: 0.8rem;
     margin-bottom: 1.2rem;
     border-radius: 0.8rem;
@@ -64,17 +69,18 @@ aside {
     background-color: rgba(255, 255, 255, 0.8);
 }
 
-.aside-author:hover,
-.aside-links:hover,
-.aside-share:hover,
-.aside-copyright:hover {
+/* 卡片 hover 效果："按下去"的视觉反馈 */
+.aside-body .aside-author-card:hover,
+.aside-body .aside-links-card:hover,
+.aside-body .aside-share-card:hover,
+.aside-body .aside-copyright-card:hover {
     transform: translateY(4px) scale(0.98);
     box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 8px;
     background-color: rgba(0, 113, 117, 0.05);
 }
 
 /* 站长信息 */
-.aside-author {
+.aside-body .aside-author-card {
     position: relative;
     display: flex;
     align-items: center;
@@ -84,7 +90,7 @@ aside {
 }
 
 /* 遮罩层：hover 时从透明过渡到半透明背景色 */
-.aside-author::before {
+.aside-body .aside-author-card::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -95,12 +101,12 @@ aside {
     z-index: 1;
 }
 
-.aside-author:hover::before {
+.aside-body .aside-author-card:hover::before {
     background-color: rgba(0, 113, 117, .1);
 }
 
 /* 头像 */
-.aside-avatar {
+.aside-body .author-avatar {
     flex-shrink: 0;
     width: 48px;
     height: 48px;
@@ -112,14 +118,14 @@ aside {
         height .3s ease;
 }
 
-.aside-author:hover .aside-avatar {
+.aside-body .aside-author-card:hover .author-avatar {
     opacity: 0;
     width: 0;
     height: 0;
 }
 
 /* 文字区域 */
-.aside-author-info {
+.aside-body .author-info {
     position: relative;
     flex: 1;
     min-width: 0;
@@ -127,7 +133,7 @@ aside {
 }
 
 /* 网名：默认正常位置，hover 时移到左上角 */
-.aside-name {
+.aside-body .author-name {
     font-size: 1rem;
     padding-bottom: .3rem;
     display: block;
@@ -137,7 +143,7 @@ aside {
         opacity .3s ease;
 }
 
-.aside-author:hover .aside-name {
+.aside-body .aside-author-card:hover .author-name {
     position: absolute;
     top: 0;
     left: 0;
@@ -147,7 +153,7 @@ aside {
 }
 
 /* 原签名：默认显示，hover 时淡出隐藏 */
-.aside-desc {
+.aside-body .author-desc {
     font-size: .8rem;
     font-weight: bold;
     line-height: 1rem;
@@ -159,13 +165,13 @@ aside {
         max-height .3s ease .1s;
 }
 
-.aside-author:hover .aside-desc {
+.aside-body .aside-author-card:hover .author-desc {
     opacity: 0;
     max-height: 0;
 }
 
 /* 详细介绍：默认隐藏，hover 时展开 */
-.aside-detail {
+.aside-body .author-bio {
     font-size: .78rem;
     line-height: 1.5;
     color: #444;
@@ -179,7 +185,7 @@ aside {
         margin-top .3s ease;
 }
 
-.aside-author:hover .aside-detail {
+.aside-body .aside-author-card:hover .author-bio {
     max-height: 6rem;
     opacity: 1;
     margin-top: 1.2rem;
@@ -208,7 +214,7 @@ aside {
 }
 
 /* 链接 */
-.aside-links {
+.aside-body .aside-links-card {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 6px;
@@ -217,7 +223,7 @@ aside {
     transition: all 0.3s ease;
 }
 
-.aside-links a {
+.aside-body .aside-links-card a {
     display: inline-block;
     padding: 0.12rem 0.3rem;
     margin: 0.2rem 0;
@@ -226,13 +232,13 @@ aside {
     box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
 }
 
-.aside-links a:hover {
+.aside-body .aside-links-card a:hover {
     background-color: #007175;
     color: #033a4a;
 }
 
 /* 分享按钮 */
-.aside-share {
+.aside-body .aside-share-card {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 6px;
@@ -241,7 +247,7 @@ aside {
     transition: all 0.3s ease;
 }
 
-.aside-share-link {
+.aside-body .share-link {
     display: inline-block;
     padding: 0.12rem 0.3rem;
     margin: 0.2rem 0;
@@ -257,35 +263,35 @@ aside {
 /* === 页面激活状态高亮 === */
 
 /* 动态页面（首页） */
-html[data-active-page="/"] .aside-links a.icon-Home {
+html[data-active-page="/"] .aside-body .aside-links-card a.icon-Home {
     color: #ff6100 !important;
     background-color: #007175 !important;
 }
 
 /* 随笔页面 */
-html[data-active-page^="/life"] .aside-links a.icon-pencil {
+html[data-active-page^="/life"] .aside-body .aside-links-card a.icon-pencil {
     color: #ff6100 !important;
     background-color: #007175 !important;
 }
 
 /* 笔记页面 */
-html[data-active-page^="/docs"] .aside-links a.icon-pc {
+html[data-active-page^="/docs"] .aside-body .aside-links-card a.icon-pc {
     color: #ff6100 !important;
     background-color: #007175 !important;
 }
 
 /* 链接页面 */
-html[data-active-page^="/links"] .aside-links a.icon-plane {
+html[data-active-page^="/links"] .aside-body .aside-links-card a.icon-plane {
     color: #ff6100 !important;
     background-color: #007175 !important;
 }
 
 /* 主题信息 */
-aside p {
+.aside-body p {
     margin: 0;
 }
 
-.aside-copyright {
+.aside-body .aside-copyright-card {
     align-self: end;
     width: calc(240px - 2rem);
     margin-bottom: 0;
@@ -297,15 +303,15 @@ aside p {
     transition: all 0.3s ease;
 }
 
-.aside-copyright div {
+.aside-body .aside-copyright-card div {
     margin-bottom: 0.4rem;
 }
 
-.aside-copyright div:last-child {
+.aside-body .aside-copyright-card div:last-child {
     margin-bottom: 0;
 }
 
-.aside-copyright a {
+.aside-body .aside-copyright-card a {
     color: #007175;
     text-decoration: none;
     font-weight: 500;
@@ -313,14 +319,18 @@ aside p {
     border-bottom: 1px dashed transparent;
 }
 
-.aside-copyright a:hover {
+.aside-body .aside-copyright-card a:hover {
     color: #004d52;
     border-bottom-color: #007175;
 }
 
-/* ============================================ */
-/* === 暗黑模式 === */
-/* ============================================ */
+/* ============================================
+ * === 暗黑模式 ===
+ * ============================================
+ * 暗黑模式下所有卡片使用统一的深色主题
+ * 阴影效果比亮色模式更深，营造层次感
+ * hover 时添加青色边框高亮
+ */
 
 /* 侧边栏背景 */
 .dark aside {
@@ -332,23 +342,23 @@ aside p {
     box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px;
 }
 
-/* 侧边栏各模块阴影 */
-.dark .aside-author,
-.dark .aside-links,
-.dark .aside-share,
-.dark .aside-copyright {
+/* 暗黑模式卡片基础样式：更深的阴影和深色背景 */
+.dark .aside-body .aside-author-card,
+.dark .aside-body .aside-links-card,
+.dark .aside-body .aside-share-card,
+.dark .aside-body .aside-copyright-card {
     box-shadow: 
         rgba(0, 0, 0, 0.5) 0px 8px 20px,
         rgba(0, 0, 0, 0.3) 0px 2px 6px;
     background-color: rgba(36, 43, 61, 0.8);
-    border: 1px solid rgba(130, 216, 221, 0.15);
     transition: all 0.3s ease;
 }
 
-.dark .aside-author:hover,
-.dark .aside-links:hover,
-.dark .aside-share:hover,
-.dark .aside-copyright:hover {
+/* 暗黑模式卡片 hover："按下去"效果 + 青色边框 */
+.dark .aside-body .aside-author-card:hover,
+.dark .aside-body .aside-links-card:hover,
+.dark .aside-body .aside-share-card:hover,
+.dark .aside-body .aside-copyright-card:hover {
     transform: translateY(4px) scale(0.98);
     box-shadow: 
         rgba(0, 0, 0, 0.15) 0px 1px 3px;
@@ -356,15 +366,15 @@ aside p {
     background-color: rgba(25, 31, 45, 0.95);
 }
 
-.dark .aside-links {
+.dark .aside-body .aside-links-card {
     background-color: rgba(130, 216, 221, 0);
 }
 
-.dark .aside-author:hover::before {
+.dark .aside-body .aside-author-card:hover::before {
     background-color: rgba(130, 216, 221, .08);
 }
 
-.dark .aside-detail {
+.dark .aside-body .author-bio {
     color: #a0b4c0;
 }
 
@@ -379,25 +389,180 @@ aside p {
 }
 
 /* 侧边栏版权信息 */
-.dark .aside-copyright {
+.dark .aside-body .aside-copyright-card {
     color: #dcebf2;
     background-color: rgba(130, 216, 221, 0);
 }
 
-.dark .aside-copyright a {
+.dark .aside-body .aside-copyright-card a {
     color: #82d8dd;
 }
 
-.dark .aside-copyright a:hover {
+.dark .aside-body .aside-copyright-card a:hover {
     color: #a8e5e9;
     border-bottom-color: #82d8dd;
 }
 
 /* 暗黑模式 - 分享按钮 */
-.dark .aside-share {
+.dark .aside-body .aside-share-card {
     background-color: rgba(130, 216, 221, 0);
 }
 
-.dark .aside-share-link {
+.dark .aside-body .share-link {
     color: #dcebf2;
+}
+
+/* ============================================
+ * 侧边栏标签卡片
+ * 包含横向滚动的标签列表
+ * 标签使用渐变背景和圆角设计
+ * ============================================ */
+.aside-body .aside-tags-card {
+    padding: 0.6rem 0.4rem;
+    margin-bottom: 1rem;
+    border-radius: 0.6rem;
+    box-shadow: rgba(0, 0, 0, 0.6) 0px 5px 15px;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.8);
+    overflow: hidden;
+    position: relative;
+    min-height: 2.5rem;
+}
+
+/* 标签卡片 hover：与其他卡片一致的"按下去"效果 */
+.aside-body .aside-tags-card:hover {
+    transform: translateY(4px) scale(0.98);
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 8px;
+    background-color: rgba(0, 113, 117, 0.05);
+}
+
+.aside-body .tags-wrapper {
+    position: relative;
+    height: 100%;
+}
+
+.aside-body .tags-scroll-container {
+    overflow-y: hidden;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: auto;
+}
+
+.aside-body .tags-scroll-container::-webkit-scrollbar {
+    display: none;
+}
+
+.aside-body .tags-content {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.3rem;
+    will-change: transform;
+    white-space: nowrap;
+}
+
+/* 标签项：渐变背景 + 圆角边框 */
+.aside-body .tag-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.1rem;
+    padding: 0.12rem 0.3rem;
+    background: linear-gradient(135deg, rgba(130, 216, 221, 0.15), rgba(130, 216, 221, 0.05));
+    border: 1px solid rgba(130, 216, 221, 0.3);
+    border-radius: 0.2rem;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+}
+
+/* 标签 hover：背景变深，边框变深 */
+.aside-body .tag-item:hover {
+    background: linear-gradient(135deg, rgba(0, 113, 117, 0.9), rgba(0, 113, 117, 0.8));
+    border-color: rgba(0, 113, 117, 0.5);
+}
+
+/* 标签名称：小字号，黑色 */
+.aside-body .aside-tags-card .tag-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #000;
+    transition: color 0.3s ease;
+}
+
+/* 标签 hover 时名称颜色变深 */
+.aside-body .aside-tags-card .tag-item:hover .tag-name {
+    color: #033a4a;
+}
+
+/* 标签计数：小圆角背景 */
+.aside-body .aside-tags-card .tag-count {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #82d8dd;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 0.05rem 0.15rem;
+    border-radius: 0.15rem;
+    min-width: 0.7rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.aside-body .aside-tags-card .tag-item:hover .tag-count {
+    background-color: rgba(255, 255, 255, 0.95);
+    color: #007175;
+}
+
+/* ============================================
+ * 暗黑模式 - 标签卡片
+ * ============================================ */
+
+/* 暗黑模式标签卡片：与其他卡片一致的深色主题 */
+.dark .aside-body .aside-tags-card {
+    box-shadow: 
+        rgba(0, 0, 0, 0.5) 0px 8px 20px,
+        rgba(0, 0, 0, 0.3) 0px 2px 6px;
+    background-color: rgba(36, 43, 61, 0.8);
+}
+
+/* 暗黑模式标签卡片 hover："按下去"效果 */
+.dark .aside-body .aside-tags-card:hover {
+    transform: translateY(4px) scale(0.98);
+    box-shadow: 
+        rgba(0, 0, 0, 0.15) 0px 1px 3px;
+    background-color: rgba(25, 31, 45, 0.95);
+}
+
+/* 暗黑模式标签项：降低透明度的渐变背景 */
+.dark .aside-body .tag-item {
+    background: linear-gradient(135deg, rgba(130, 216, 221, 0.1), rgba(130, 216, 221, 0.05));
+    border-color: rgba(130, 216, 221, 0.2);
+}
+
+/* 暗黑模式标签 hover：高亮背景 + 发光阴影 */
+.dark .aside-body .tag-item:hover {
+    background: linear-gradient(135deg, rgba(130, 216, 221, 0.9), rgba(130, 216, 221, 0.8));
+    border-color: rgba(130, 216, 221, 0.5);
+    box-shadow: 0 4px 12px rgba(130, 216, 221, 0.2);
+}
+
+/* 暗黑模式标签名称：青色 */
+.dark .aside-body .tag-name {
+    color: #82d8dd;
+}
+
+/* 暗黑模式标签 hover 时名称变深色 */
+.dark .aside-body .tag-item:hover .tag-name {
+    color: #1e293b;
+}
+
+/* 暗黑模式标签计数：深色背景 + 浅色文字 */
+.dark .aside-body .tag-count {
+    background-color: rgba(36, 43, 61, 0.9);
+    color: #a8e5e9;
+}
+
+/* 暗黑模式标签 hover 时计数器颜色变化 */
+.dark .aside-body .tag-item:hover .tag-count {
+    background-color: rgba(36, 43, 61, 0.95);
+    color: #82d8dd;
 }

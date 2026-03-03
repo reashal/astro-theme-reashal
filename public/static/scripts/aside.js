@@ -1,4 +1,4 @@
-let btn = document.getElementsByClassName('aside-btn')[0];
+let btn = document.getElementsByClassName('aside-toggle-btn')[0];
 let aside = document.getElementsByTagName('main')[0];
 let num = 0;
 clickAsideBtn = function () {
