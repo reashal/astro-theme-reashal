@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { SITE_INFO } from "../consts";
+import { SITE_INFO, AUTHOR_INFO } from "../consts";
 import "../styles/moments.css";
 
 const allMoments = await getCollection("moments");
@@ -27,90 +27,98 @@ function getImgLayout(imgs: ImgItem[]): "single" | "grid2" | "grid3" | "overflow
 
 <BaseLayout pageTitle={pageMeta.title} pageDescription={pageMeta.desc}>
     <article class="article-container">
-        <article class="moments">
-            <h1 id="动态">动态</h1>
+        <section class="moments">
+            <h1>动态</h1>
             
             {sortedMoments.map((moment) => {
                 const { date, para, imgs, loc, stars, comments } = moment.data;
 
                 return (
-                    <div class="moment-item">
-                        {/* 头部：日期 */}
-                        <h2 id={date.split('.').join('')}>{date}</h2>
+                    <article class="moment" id={date.split('.').join('')}>
+                        <header class="moment-author">
+                            <figure class="author-avatar">
+                                <img src={AUTHOR_INFO.avatar} alt={AUTHOR_INFO.name} loading="lazy" decoding="async" class="view-none" />
+                            </figure>
+                            <div class="author-info">
+                                <span class="author-name">{AUTHOR_INFO.name}</span>
+                                <time class="author-date" datetime={date}>{date}</time>
+                            </div>
+                        </header>
 
-                        {/* 正文 */}
-                        {para && para.map((text) => (
-                            <p class="moment-text">{text}</p>
-                        ))}
+                        {para && para.length > 0 && (
+                            <section class="moment-content">
+                                {para.map((text) => (
+                                    <p>{text}</p>
+                                ))}
+                            </section>
+                        )}
 
-                        {/* 图片 */}
                         {imgs && imgs.length > 0 && (
-                            <>
-                                {/* 1张：单图 */}
+                            <section class="moment-images" data-moment-id={date.split('.').join('')} data-imgs={JSON.stringify(imgs)}>
                                 {getImgLayout(imgs) === "single" && (
-                                    <div class="img-single">
+                                    <figure class="img-single">
                                         <img src={imgs[0].url} alt={imgs[0].alt} loading="lazy" decoding="async" />
-                                    </div>
+                                    </figure>
                                 )}
-                                {/* 2~4张：四宫格 */}
                                 {getImgLayout(imgs) === "grid2" && (
-                                    <div class="img-grid-2x2">
+                                    <figure class="img-grid img-grid-2x2">
                                         {imgs.map((img) => (
                                             <img src={img.url} alt={img.alt} loading="lazy" decoding="async" />
                                         ))}
-                                    </div>
+                                    </figure>
                                 )}
-                                {/* 5~9张：九宫格 */}
                                 {getImgLayout(imgs) === "grid3" && (
-                                    <div class="img-grid-3x3">
+                                    <figure class="img-grid img-grid-3x3">
                                         {imgs.map((img) => (
                                             <img src={img.url} alt={img.alt} loading="lazy" decoding="async" />
                                         ))}
-                                    </div>
+                                    </figure>
                                 )}
-                                {/* >9张：九宫格 + 第9格朦胧遮罩 */}
                                 {getImgLayout(imgs) === "overflow" && (
-                                    <div class="img-grid-3x3">
+                                    <figure class="img-grid img-grid-3x3">
                                         {imgs.slice(0, 8).map((img) => (
                                             <img src={img.url} alt={img.alt} loading="lazy" decoding="async" />
                                         ))}
                                         <div class="img-mask-overlay" style={`background-image: url('${imgs[8].url}')`}>
                                             <span class="img-mask-count">+{imgs.length - 8}</span>
                                         </div>
-                                    </div>
+                                    </figure>
                                 )}
-                            </>
+                            </section>
                         )}
 
-                        {/* 地理位置 */}
-                        {loc && <p class="location"><code>{loc}</code></p>}
+                        {loc && (
+                            <div class="moment-location">
+                                <p><code>{loc}</code></p>
+                            </div>
+                        )}
 
-                        {/* 互动区域：点赞和评论 */}
                         {(stars || comments) && (
-                            <blockquote class="interaction-area">
+                            <section class="moment-interaction">
                                 {stars && (
-                                    <div class="stars-box">
-                                        <code>{stars.join(", ")}</code>
+                                    <div class="interaction-stars">
+                                        {stars.map((star) => (
+                                            <span class="star-item">{star}</span>
+                                        ))}
                                     </div>
                                 )}
                                 
                                 {comments && (
-                                    <div class="comments-box">
+                                    <div class="interaction-comments">
                                         {comments.map((comment) => (
-                                            <div class="comment-line">
-                                                <span class="comment-user">睿屿青衫:</span>
-                                                <span class="comment-content">{comment}</span>
-                                            </div>
+                                            <p class="comment-item">
+                                                <span class="comment-author">{AUTHOR_INFO.name}:</span>
+                                                <span class="comment-text">{comment}</span>
+                                            </p>
                                         ))}
                                     </div>
                                 )}
-                            </blockquote>
+                            </section>
                         )}
-                    </div>
+                    </article>
                 );
             })}
             
-            {/* 备案信息 */}
             <footer class="moments-footer">
                 <p class="end-tip">{SITE_INFO.endTip}</p>
                 {SITE_INFO.icpNo && (
@@ -125,6 +133,6 @@ function getImgLayout(imgs: ImgItem[]): "single" | "grid2" | "grid3" | "overflow
                     </p>
                 )}
             </footer>
-        </article>
+        </section>
     </article>
 </BaseLayout>

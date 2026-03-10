@@ -140,7 +140,7 @@
 /* ============================================ */
 
 /* 文章容器阴影 */
-.dark article {
+.dark .article-container {
     box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px;
 }
 

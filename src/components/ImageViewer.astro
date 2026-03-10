@@ -1,0 +1,121 @@
+<style is:inline>
+    .view-box-show {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.92);
+        z-index: 999999;
+    }
+    .view-box-hide {
+        display: none;
+    }
+    .view-content {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .view-img {
+        display: block;
+        max-width: 85vw;
+        max-height: 85vh;
+        border-radius: .3rem;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+    .view-close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: 2.5rem;
+        height: 2.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s ease, transform 0.2s ease;
+        color: #fff;
+        font-size: 1.5rem;
+    }
+    .view-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.1);
+    }
+    .view-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3rem;
+        height: 3rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s ease, transform 0.2s ease;
+        color: #fff;
+    }
+    .view-nav:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+    .view-prev {
+        left: 1rem;
+    }
+    .view-prev:hover {
+        transform: translateY(-50%) scale(1.1);
+    }
+    .view-next {
+        right: 1rem;
+    }
+    .view-next:hover {
+        transform: translateY(-50%) scale(1.1);
+    }
+    .view-counter {
+        position: absolute;
+        bottom: 1.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        user-select: none;
+    }
+    .view-nav:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+    .view-nav:disabled:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-50%);
+    }
+</style>
+<section class="view-box view-box-hide" id="view-box">
+    <button class="view-close" id="view-close" aria-label="关闭">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+    </button>
+    <button class="view-nav view-prev" id="view-prev" aria-label="上一张">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+    </button>
+    <div class="view-content">
+        <img src="" class="view-img" id="view-img"/>
+    </div>
+    <button class="view-nav view-next" id="view-next" aria-label="下一张">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+    </button>
+    <div class="view-counter" id="view-counter"></div>
+</section>

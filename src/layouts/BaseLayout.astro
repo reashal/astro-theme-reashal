@@ -4,6 +4,7 @@ import "../styles/iconfont.css";
 import Head from "../components/Head.astro";
 import Aside from "../components/Aside.astro";
 import Share from "../components/Share.astro";
+import ImageViewer from "../components/ImageViewer.astro";
 const { pageTitle, pageDescription, pageType, frontmatter } = Astro.props;
 
 // 获取当前路径，用于侧边栏高亮
@@ -36,6 +37,7 @@ const currentPath = Astro.url.pathname;
             </section>
         </main>
         <Share />
+        <ImageViewer />
         <script is:inline src="/static/scripts/view.js"></script>
         <script is:inline src="/static/scripts/aside.js"></script>
         <canvas
