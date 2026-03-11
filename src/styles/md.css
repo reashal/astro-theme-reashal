@@ -4,92 +4,198 @@
     margin-bottom: 2vh;
     padding: 1rem;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    overflow-wrap: break-word;
+    counter-reset: h1-counter h2-counter h3-counter h4-counter h5-counter h6-counter;
 }
 
-.doc h1 {
-    margin: .8rem 0;
-    padding-left: 1rem;
-    border-left: 8px solid #ff0000;
-    font-size: 1.8rem;
-    color: #d33a4a;
+.dark .article-container {
+    box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px;
 }
 
-.doc h2 {
-    margin: .8rem 0;
-    padding-left: 1rem;
-    border-left: 12px solid #ff6100;
-    font-size: 1.6rem;
-    color: #007175 !important;
-}
-
-.doc h3 {
-    margin: .8rem 0;
-    padding-left: 1rem;
-    border-left: 16px solid #114f9e;
-    font-size: 1.4rem;
-    color: #44362f;
-}
-
-.doc h4 {
-    margin: .8rem 0;
-    padding-left: 1rem;
-    border-left: 20px solid #007175;
-    font-size: 1.2rem;
-    color: #ff6100;
-}
-
-.doc h5 {
-    margin: .8rem 0;
-    padding-left: 1rem;
-    border-left: 24px solid #202e78;
-    font-size: 1rem;
-    color: #224e95;
-}
-
+/* 标题通用样式 */
+.doc h1,
+.doc h2,
+.doc h3,
+.doc h4,
+.doc h5,
 .doc h6 {
     margin: .8rem 0;
     padding-left: 1rem;
-    border-left: 28px solid #9ea4b8;
+    overflow-wrap: break-word;
+    line-height: 1.4;
+}
+
+/* H1 标题 */
+.doc h1 {
+    border-left: 16px solid #ff0000;
+    font-size: 1.8rem;
+    color: #d33a4a;
+    font-weight: bold;
+    counter-increment: h1-counter;
+}
+
+.doc h1::before {
+    content: counter(h1-counter) ". ";
+    font-weight: bold;
+    margin-right: 0.3rem;
+}
+
+/* H2 标题 */
+.doc h2 {
+    border-left: 20px solid #ff6100;
+    font-size: 1.6rem;
+    color: #007175 !important;
+    font-weight: bold;
+    counter-increment: h2-counter;
+}
+
+.doc h2::before {
+    content: counter(h1-counter) "." counter(h2-counter) " ";
+    font-weight: bold;
+    margin-right: 0.3rem;
+}
+
+.dark .article-container h2 {
+    color: #fcfdfb;
+}
+
+/* H3 标题 */
+.doc h3 {
+    border-left: 24px solid #114f9e;
+    font-size: 1.4rem;
+    color: #44362f;
+    font-weight: bold;
+    counter-increment: h3-counter;
+}
+
+.doc h3::before {
+    content: counter(h1-counter) "." counter(h2-counter) "." counter(h3-counter) " ";
+    font-weight: bold;
+    margin-right: 0.3rem;
+}
+
+.dark .article-container h3 {
+    color: #dcebf2;
+}
+
+/* H4 标题 */
+.doc h4 {
+    border-left: 28px solid #007175;
+    font-size: 1.2rem;
+    color: #ff6100;
+    font-weight: normal;
+    counter-increment: h4-counter;
+}
+
+.doc h4::before {
+    content: counter(h1-counter) "." counter(h2-counter) "." counter(h3-counter) "." counter(h4-counter) " ";
+    font-weight: bold;
+    margin-right: 0.3rem;
+}
+
+/* H5 标题 */
+.doc h5 {
+    border-left: 32px solid #202e78;
+    font-size: 1rem;
+    color: #224e95;
+    font-weight: normal;
+    counter-increment: h5-counter;
+}
+
+.doc h5::before {
+    content: counter(h1-counter) "." counter(h2-counter) "." counter(h3-counter) "." counter(h4-counter) "." counter(h5-counter) " ";
+    font-weight: bold;
+    margin-right: 0.3rem;
+}
+
+/* H6 标题 */
+.doc h6 {
+    border-left: 36px solid #9ea4b8;
     font-size: 1rem;
     font-weight: normal;
     color: #9ea4b8;
+    counter-increment: h6-counter;
 }
 
-.doc p {
-    margin: .8rem 0;
+.doc h6::before {
+    content: counter(h1-counter) "." counter(h2-counter) "." counter(h3-counter) "." counter(h4-counter) "." counter(h5-counter) "." counter(h6-counter) " ";
+    font-weight: bold;
+    margin-right: 0.3rem;
 }
 
+/* 段落 */
+.doc p,
 .doc blockquote p {
     margin: .8rem 0;
+    overflow-wrap: break-word;
+    line-height: 1.6;
 }
 
+.dark .article-container p {
+    color: #dcebf2;
+}
+
+/* 引用块 */
 .doc blockquote p::before {
     content: "\eb89";
     display: inline-block;
     padding: .2rem;
     margin-right: .2rem;
-    /* border-left: .25em solid; */
     font-family: "iconfont" !important;
-
+    color: #007175;
 }
 
+.dark .article-container blockquote p::before {
+    color: #82a4ca;
+}
+
+/* 代码块 */
 .doc pre {
     max-width: 100%;
-    padding: .4rem;
-    border-radius: .2rem;
+    padding: 2.4rem .6rem .6rem .6rem;
+    border-radius: .5rem;
     font-size: 1rem;
-    background-color: rgb(59, 62, 67) !important;
+    background-color: #e8e8ea !important;
+    border: 1px solid #d5d5d7;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    position: relative;
+    margin: .8rem 0;
+    overflow: hidden;
+}
+
+.doc pre::before {
+    content: '';
+    position: absolute;
+    top: .6rem;
+    left: .6rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #ff5f57;
+    box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #28ca42;
+    z-index: 1;
+}
+
+.dark .doc pre {
+    background-color: #1e1e1e !important;
+    border-color: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .doc pre code {
     max-width: calc(100% - 2rem);
     padding: 0;
-    word-wrap: break-word;
     overflow-wrap: break-word;
     overflow-x: auto;
     background-color: transparent;
+    color: #2d2d2d !important;
 }
 
+.dark .doc pre code {
+    color: #dcebf2 !important;
+}
+
+/* 行内代码 */
 .doc code {
     max-width: 100%;
     white-space: pre-wrap;
@@ -102,87 +208,132 @@
     color: #dcebf2;
 }
 
-.doc code span.line {
-    max-width: 100%;
+.doc > p code,
+.doc blockquote p code {
+    background-color: #9ea4b8;
+    color: #dcebf2;
+    border: none;
 }
 
-.doc ul {
-    margin-left: 1.2rem;
+.dark .doc > p code,
+.dark .doc blockquote p code {
+    color: #dcebf2;
+    background-color: rgb(59, 62, 67);
+    border: 1px solid #4a4d55;
 }
 
+/* 列表 */
+.doc ul,
 .doc ol {
     margin-left: 1.2rem;
+    line-height: 1.6;
 }
 
 .doc li {
-    margin-top: .2rem;
+    margin-top: .4rem;
+    margin-bottom: .2rem;
 }
 
-.doc hr {
-    margin: .8rem 0;
-}
-
-.doc img {
-    max-width: 100%;
-    background-color: transparent;
-}
-
-.article-container.doc>p{
-    text-indent: 2em;
-}
-
-.article-container blockquote p{
-    text-indent: 0;
-}
-
-/* ============================================ */
-/* === 暗黑模式 === */
-/* ============================================ */
-
-/* 文章容器阴影 */
-.dark .article-container {
-    box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px;
-}
-
-/* 二级标题（仅内容页） */
-.dark .article-container h2 {
-    color: #fcfdfb;
-}
-
-/* 段落文字（仅内容页） */
-.dark .article-container p {
-    color: #dcebf2;
-}
-
-/* 链接（仅内容页） */
-.dark .article-container a {
-    color: #dcebf2;
-}
-
-/* 水平分割线（仅内容页） */
-.dark .article-container hr {
-    color: rgb(126, 143, 166);
-}
-
-/* 行内代码（仅内容页） */
-.dark .article-container code {
-    color: rgb(126, 143, 166);
-}
-
-/* 无序/有序列表（仅内容页） */
 .dark .article-container ul,
 .dark .article-container ol {
     color: #dcebf2;
 }
 
-/* 引用块内代码（仅内容页） */
+/* 表格 */
+.doc table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: .8rem 0;
+    overflow-x: auto;
+}
+
+.doc th {
+    padding: .6rem 1rem;
+    text-align: left;
+    font-weight: bold;
+    color: #2d2d2d;
+    border: 1px solid #e5e5e7;
+}
+
+.dark .doc th {
+    color: #dcebf2;
+    border-color: #3d3d3d;
+}
+
+.doc tbody tr {
+    border-bottom: 1px solid #e5e5e7;
+}
+
+.dark .doc tbody tr {
+    border-color: #3d3d3d;
+}
+
+.doc tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.dark .doc tbody tr:nth-child(even) {
+    background-color: #252525;
+}
+
+.doc td {
+    padding: .6rem 1rem;
+    border: 1px solid #e5e5e7;
+}
+
+.dark .doc td {
+    border-color: #3d3d3d;
+    color: #dcebf2;
+}
+
+/* 分隔线 */
+.doc hr {
+    margin: .8rem 0;
+}
+
+.dark .article-container hr {
+    color: rgb(126, 143, 166);
+}
+
+/* 图片 */
+.doc img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: .8rem auto;
+    border-radius: .3rem;
+    background-color: transparent;
+}
+
+/* 段落缩进 */
+.article-container.doc > p {
+    text-indent: 2em;
+}
+
+.article-container blockquote p {
+    text-indent: 0;
+}
+
+/* 链接 */
+.doc a {
+    color: #007175;
+    text-decoration: none;
+}
+
+.doc a:hover {
+    color: #005a5a;
+}
+
+.dark .article-container a {
+    color: #dcebf2;
+}
+
+.dark .article-container a:hover {
+    color: #a8c8d8;
+}
+
+/* 暗黑模式引用块代码 */
 .dark .article-container blockquote code {
     color: #dcebf2;
     background-color: rgb(59, 62, 67);
 }
-
-/* 三级标题（仅内容页） */
-.dark .article-container h3 {
-    color: #dcebf2;
-}
-

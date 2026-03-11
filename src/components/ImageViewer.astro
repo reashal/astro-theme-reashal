@@ -10,6 +10,7 @@
         height: 100vh;
         background-color: rgba(0, 0, 0, 0.92);
         z-index: 999999;
+        user-select: none;
     }
     .view-box-hide {
         display: none;
@@ -26,6 +27,11 @@
         max-height: 85vh;
         border-radius: .3rem;
         box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        pointer-events: none;
     }
     .view-close {
         position: absolute;
