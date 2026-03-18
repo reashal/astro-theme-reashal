@@ -4,6 +4,36 @@
 /* 展示笔记列表和随笔列表，支持置顶功能
 /* ============================================ */
 
+/* === 响应式每页文章数 === */
+
+/* 大屏幕：高度 >= 900px */
+@media (min-height: 900px) {
+    :root {
+        --per-page: 8;
+    }
+}
+
+/* 中等大屏幕：高度 700-899px */
+@media (min-height: 700px) and (max-height: 899px) {
+    :root {
+        --per-page: 6;
+    }
+}
+
+/* 中等小屏幕：高度 500-699px */
+@media (min-height: 500px) and (max-height: 699px) {
+    :root {
+        --per-page: 4;
+    }
+}
+
+/* 小屏幕：高度 < 500px */
+@media (max-height: 499px) {
+    :root {
+        --per-page: 2;
+    }
+}
+
 /* === 列表页面专用样式 === */
 
 /* 取消文章容器内段落的首行缩进 */
@@ -44,9 +74,22 @@
 }
 
 .docs-p {
-    padding-bottom: .4rem;
     font-size: 1rem;
     color: #000;
+    display: -webkit-box;
+    display: -moz-box;
+    display: box;
+    -webkit-line-clamp: 3;
+    -moz-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.5;
+    max-height: 4.5em;
+    margin-bottom: .4rem;
 }
 
 .docs-t {
@@ -190,9 +233,11 @@
 .docs-footer .end-tip::before,
 .docs-footer .end-tip::after {
     content: '';
-    flex: 0 0 2rem;
+    flex: 1;
+    min-width: 0.5rem;
+    max-width: 2rem;
     height: 1px;
-    background: linear-gradient(to right, transparent, #e8e8e8, transparent);
+    background: linear-gradient(to right, transparent, #e8e8e8);
 }
 
 .docs-footer .end-tip::before {

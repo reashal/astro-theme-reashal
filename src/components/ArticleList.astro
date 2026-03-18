@@ -60,39 +60,55 @@ const { articles } = Astro.props;
             const allItems = Array.from(
                 container.querySelectorAll(".docs-body"),
             ) as HTMLElement[];
-
             if (allItems.length === 0) return;
 
             let currentPage = 0;
             let perPage = 1;
+            let hasEnoughSpace = false;
 
             function calcPerPage(): number {
-                const mainEl = document.querySelector(".main") as HTMLElement | null;
-                if (!mainEl) return allItems.length;
+                const rootStyle = getComputedStyle(document.documentElement);
+                const perPage = parseInt(rootStyle.getPropertyValue('--per-page')) || 1;
+                return perPage;
+            }
 
+            function totalPages(): number {
+                if (perPage <= 0) return 0;
+                return Math.ceil(allItems.length / perPage);
+            }
+
+            function checkEnoughSpace(): void {
+                const mainEl = document.querySelector(".main") as HTMLElement | null;
+                if (!mainEl) {
+                    hasEnoughSpace = false;
+                    return;
+                }
+                
+                const footerEl = document.getElementById("docs-footer") as HTMLElement | null;
+                if (!footerEl) {
+                    hasEnoughSpace = false;
+                    return;
+                }
+                
                 const viewportH = mainEl.clientHeight;
-                const footerH = footer.offsetHeight;
+                const footerH = footerEl.offsetHeight;
                 const articleStyle = getComputedStyle(container);
                 const articlePaddingV =
                     parseFloat(articleStyle.paddingTop) +
                     parseFloat(articleStyle.paddingBottom);
-
-                const available = viewportH - articlePaddingV - footerH;
-                if (available <= 0) return 1;
-
-                const firstItem = allItems[0];
-                const itemStyle = getComputedStyle(firstItem);
-                const itemH =
-                    firstItem.offsetHeight +
-                    parseFloat(itemStyle.marginTop) +
-                    parseFloat(itemStyle.marginBottom);
-
-                if (itemH <= 0) return 1;
-                return Math.max(1, Math.floor(available / itemH));
-            }
-
-            function totalPages(): number {
-                return Math.ceil(allItems.length / perPage);
+                
+                // 计算实际使用的空间
+                let usedHeight = articlePaddingV;
+                allItems.forEach(item => {
+                    const itemStyle = getComputedStyle(item);
+                    usedHeight += item.offsetHeight +
+                        parseFloat(itemStyle.marginTop) +
+                        parseFloat(itemStyle.marginBottom);
+                });
+                
+                // 检查是否有足够的空间（至少 100px）
+                const available = viewportH - usedHeight - footerH;
+                hasEnoughSpace = available > 100;
             }
 
             function showPage(page: number): void {
@@ -100,6 +116,12 @@ const { articles } = Astro.props;
                 const start = currentPage * perPage;
                 const end = start + perPage;
                 const isLastPage = currentPage === totalPages() - 1;
+
+                // 检查空间
+                checkEnoughSpace();
+                
+                // 只在所有文章都在一页展示完，并且底部有足够空间时显示"故事暂且讲到这里"
+                endTip.style.display = (totalPages() === 1 && hasEnoughSpace) ? "" : "none";
 
                 allItems.forEach((item, i) => {
                     const isVisible = i >= start && i < end;
@@ -109,8 +131,6 @@ const { articles } = Astro.props;
                         isVisible && i === end - 1,
                     );
                 });
-
-                endTip.style.display = isLastPage ? "" : "none";
 
                 renderPagination();
             }
@@ -171,7 +191,7 @@ const { articles } = Astro.props;
                 const next = document.createElement("button");
                 next.className = "page-btn page-next";
                 next.textContent = "›";
-                next.disabled = currentPage === total - 1;
+                next.disabled = currentPage === totalPages() - 1;
                 next.addEventListener("click", () => {
                     showPage(currentPage + 1);
                     scrollToTop();
@@ -186,6 +206,7 @@ const { articles } = Astro.props;
 
             function init(): void {
                 perPage = calcPerPage();
+                checkEnoughSpace();
                 showPage(0);
             }
 
@@ -201,6 +222,7 @@ const { articles } = Astro.props;
                 resizeTimer = setTimeout(() => {
                     const prevPage = currentPage;
                     perPage = calcPerPage();
+                    checkEnoughSpace();
                     showPage(Math.min(prevPage, totalPages() - 1));
                 }, 150);
             });
