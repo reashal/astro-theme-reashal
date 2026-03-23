@@ -1,0 +1,134 @@
+---
+/**
+ * 嵌入版动态页面
+ * 用途：供外部站点通过iframe嵌入调用，展示动态内容
+ * 特点：去除侧边栏、导航等无关元素，只保留核心的moments展示功能
+ * 访问路径：/embed
+ */
+import { getCollection } from "astro:content";
+import EmbedLayout from "../layouts/_embed.astro";
+import { SITE_INFO, AUTHOR_INFO } from "../consts";
+
+const allMoments = await getCollection("moments");
+const sortedMoments = allMoments.sort((a, b) =>
+    b.data.date.localeCompare(a.data.date),
+);
+
+type ImgItem = { url: string; alt: string };
+
+function getImgLayout(imgs: ImgItem[]): "single" | "grid2" | "grid3" | "overflow" {
+    const n = imgs.length;
+    if (n === 1) return "single";
+    if (n <= 4) return "grid2";
+    if (n <= 9) return "grid3";
+    return "overflow";
+}
+---
+
+<EmbedLayout pageTitle="动态" pageDescription="以碎片化的记录汇聚时光的川流">
+    <section class="moments">
+        {sortedMoments.map((moment) => {
+            const { date, para, imgs, loc, stars, comments } = moment.data;
+
+            return (
+                <article class="moment" id={date.split('.').join('')}>
+                    <header class="moment-author">
+                        <figure class="author-avatar">
+                            <img src={AUTHOR_INFO.avatar} alt={AUTHOR_INFO.name} loading="lazy" decoding="async" class="view-none" />
+                        </figure>
+                        <div class="author-info">
+                            <span class="author-name">{AUTHOR_INFO.name}</span>
+                            <time class="author-date" datetime={date}>{date}</time>
+                        </div>
+                    </header>
+
+                    {para && para.length > 0 && (
+                        <section class="moment-content">
+                            {para.map((text) => (
+                                <p>{text}</p>
+                            ))}
+                        </section>
+                    )}
+
+                    {imgs && imgs.length > 0 && (
+                        <section class="moment-images" data-moment-id={date.split('.').join('')} data-imgs={JSON.stringify(imgs)}>
+                            {getImgLayout(imgs) === "single" && (
+                                <figure class="img-single">
+                                    <img src={imgs[0].url} alt={imgs[0].alt} loading="lazy" decoding="async" />
+                                </figure>
+                            )}
+                            {getImgLayout(imgs) === "grid2" && (
+                                <figure class="img-grid img-grid-2x2">
+                                    {imgs.map((img) => (
+                                        <img src={img.url} alt={img.alt} loading="lazy" decoding="async" />
+                                    ))}
+                                </figure>
+                            )}
+                            {getImgLayout(imgs) === "grid3" && (
+                                <figure class="img-grid img-grid-3x3">
+                                    {imgs.map((img) => (
+                                        <img src={img.url} alt={img.alt} loading="lazy" decoding="async" />
+                                    ))}
+                                </figure>
+                            )}
+                            {getImgLayout(imgs) === "overflow" && (
+                                <figure class="img-grid img-grid-3x3">
+                                    {imgs.slice(0, 8).map((img) => (
+                                        <img src={img.url} alt={img.alt} loading="lazy" decoding="async" />
+                                    ))}
+                                    <div class="img-mask-overlay" style={`background-image: url('${imgs[8].url}')`}>
+                                        <span class="img-mask-count">+{imgs.length - 8}</span>
+                                    </div>
+                                </figure>
+                            )}
+                        </section>
+                    )}
+
+                    {loc && (
+                        <div class="moment-location">
+                            <p><code>{loc}</code></p>
+                        </div>
+                    )}
+
+                    {(stars || comments) && (
+                        <section class="moment-interaction">
+                            {stars && (
+                                <div class="interaction-stars">
+                                    {stars.map((star) => (
+                                        <span class="star-item">{star}</span>
+                                    ))}
+                                </div>
+                            )}
+                            
+                            {comments && (
+                                <div class="interaction-comments">
+                                    {comments.map((comment) => (
+                                        <p class="comment-item">
+                                            <span class="comment-author">{AUTHOR_INFO.name}:</span>
+                                            <span class="comment-text">{comment}</span>
+                                        </p>
+                                    ))}
+                                </div>
+                            )}
+                        </section>
+                    )}
+                </article>
+            );
+        })}
+        
+        <footer class="moments-footer">
+            <p class="end-tip">{SITE_INFO.endTip}</p>
+            {SITE_INFO.icpNo && (
+                <p class="icp-info">
+                    {SITE_INFO.icpLink ? (
+                        <a href={SITE_INFO.icpLink} target="_blank" rel="noopener noreferrer">
+                            {SITE_INFO.icpNo}
+                        </a>
+                    ) : (
+                        <span>{SITE_INFO.icpNo}</span>
+                    )}
+                </p>
+            )}
+        </footer>
+    </section>
+</EmbedLayout>

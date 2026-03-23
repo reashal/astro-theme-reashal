@@ -1,0 +1,57 @@
+---
+/**
+ * 嵌入版布局
+ * 用途：专用于embed页面，提供简洁的HTML结构
+ * 特点：
+ *   - 禁止搜索引擎索引（noindex, nofollow, noarchive, nosnippet）
+ *   - 去除favicon、作者信息等元数据
+ *   - 只保留必要的样式和脚本
+ *   - 适合iframe嵌入调用
+ */
+import "../styles/base.css";
+import "../styles/iconfont.css";
+import "../styles/moments.css";
+import ImageViewer from "../components/ImageViewer.astro";
+const { pageTitle, pageDescription } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+            }
+            body {
+                background-color: rgb(255, 255, 255);
+                font-family: "HM";
+                padding: 20px;
+            }
+            .dark body {
+                background-color: rgb(17, 24, 38);
+            }
+        </style>
+    </head>
+    <body>
+        <slot />
+        <ImageViewer />
+        <script is:inline src="/static/scripts/view.js"></script>
+        <script>
+            const h = new Date().getHours();
+            if (h > 20 || h < 6) {
+                document.documentElement.classList.add("dark");
+            } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                document.documentElement.classList.add("dark");
+            }
+        </script>
+    </body>
+</html>
