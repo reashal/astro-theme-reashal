@@ -1,0 +1,60 @@
+---
+/**
+ * 动态路由文章列表页面
+ * 用途：根据 pages-config.json 配置自动生成多个文章列表页面（如笔记、随笔等）
+ * 特点：
+ *   - 通过 getStaticPaths 生成静态路径
+ *   - 配置文件修改后直接生效，无需重新生成
+ *   - URL 保持简洁：/docs, /life
+ */
+import "../styles/docs.css";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ArticleList from "../components/ArticleList.astro";
+import { processArticles } from "../utils/articles";
+import pagesConfig from "../pages-config.json";
+
+export async function getStaticPaths() {
+    return pagesConfig.pages
+        .filter(page => page.type === 'category')
+        .map(page => ({
+            params: { category: page.path.replace(/^\//, '') }
+        }));
+}
+
+const { category } = Astro.params;
+const config = pagesConfig.pages.find(page => page.path === `/${category}`);
+
+if (!config) {
+    return Astro.redirect('/404');
+}
+
+let allArticles: Array<{ frontmatter: { pinned?: boolean; pubDate?: string } }>;
+
+if (config.dataSource?.type === 'folder' && config.dataSource.path) {
+    const folderPath = config.dataSource.path;
+    
+    if (folderPath === 'src/pages/docs') {
+        const modules = await import.meta.glob("../pages/docs/*.md", { eager: true });
+        allArticles = Object.values(modules) as unknown as Array<{
+            frontmatter: { pinned?: boolean; pubDate?: string };
+        }>;
+    } else if (folderPath === 'src/pages/life') {
+        const modules = await import.meta.glob("../pages/life/*.md", { eager: true });
+        allArticles = Object.values(modules) as unknown as Array<{
+            frontmatter: { pinned?: boolean; pubDate?: string };
+        }>;
+    } else {
+        allArticles = [];
+    }
+} else {
+    allArticles = [];
+}
+
+const displayArticles = processArticles(allArticles);
+const pageTitle = config.title;
+const pageDescription = config.description;
+---
+
+<BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
+    <ArticleList articles={displayArticles} />
+</BaseLayout>

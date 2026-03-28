@@ -14,8 +14,18 @@
  * - 卡片内部元素使用 {模块}-{元素} 格式，如 author-avatar、author-name
  */
 import "../styles/aside.css";
-import { AUTHOR_INFO, NAV_LINKS, SITE_INFO } from "../consts";
+import { AUTHOR_INFO, SITE_INFO } from "../consts";
+import pagesConfig from "../pages-config.json";
 import GetTags from "./GetTags.astro";
+
+const navLinks = pagesConfig.pages.map(page => ({
+    label: page.title,
+    href: page.path,
+    icon: page.icon,
+    external: page.type === 'external'
+}));
+
+const currentPath = Astro.url.pathname;
 ---
 
 <aside>
@@ -40,15 +50,18 @@ import GetTags from "./GetTags.astro";
         <!-- 导航链接卡片：2x2 网格布局 -->
         <section class="aside-links-card">
             {
-                NAV_LINKS.map((link) => (
-                    <a
-                        href={link.href}
-                        target={link.external ? "_blank" : "_self"}
-                        class={link.icon}
-                    >
-                        {link.label}
-                    </a>
-                ))
+                navLinks.map((link) => {
+                    const isActive = currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href));
+                    return (
+                        <a
+                            href={link.href}
+                            target={link.external ? "_blank" : "_self"}
+                            class={`${link.icon} ${isActive ? 'active' : ''}`}
+                        >
+                            {link.label}
+                        </a>
+                    );
+                })
             }
         </section>
 
@@ -71,7 +84,7 @@ import GetTags from "./GetTags.astro";
                 >
             </div>
             <div>
-                Themed By <a href="//www.reashal.com" class="copy-a" target="_blank"
+                Themed By <a href="/about" class="copy-a"
                     >reashal</a
                 >
             </div>

@@ -262,26 +262,7 @@ aside {
 
 /* === 页面激活状态高亮 === */
 
-/* 动态页面（首页） */
-html[data-active-page="/"] .aside-body .aside-links-card a.icon-Home {
-    color: #ff6100 !important;
-    background-color: #007175 !important;
-}
-
-/* 随笔页面 */
-html[data-active-page^="/life"] .aside-body .aside-links-card a.icon-pencil {
-    color: #ff6100 !important;
-    background-color: #007175 !important;
-}
-
-/* 笔记页面 */
-html[data-active-page^="/docs"] .aside-body .aside-links-card a.icon-pc {
-    color: #ff6100 !important;
-    background-color: #007175 !important;
-}
-
-/* 链接页面 */
-html[data-active-page^="/links"] .aside-body .aside-links-card a.icon-plane {
+.aside-links-card a.active {
     color: #ff6100 !important;
     background-color: #007175 !important;
 }

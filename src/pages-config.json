@@ -1,0 +1,67 @@
+{
+  "pages": [
+    {
+      "title": "动态",
+      "description": "以碎片化的记录汇聚时光的川流",
+      "path": "/",
+      "type": "moments",
+      "icon": "iconfont icon-Home",
+      "dataSource": {
+        "type": "file",
+        "path": "src/moments.json"
+      }
+    },
+    {
+      "title": "随笔",
+      "description": "希望我的文字不止可以与自己共鸣",
+      "path": "/life",
+      "type": "category",
+      "icon": "iconfont icon-pencil",
+      "dataSource": {
+        "type": "folder",
+        "path": "src/pages/life"
+      }
+    },
+    {
+      "title": "笔记",
+      "description": "积跬步以至千里",
+      "path": "/docs",
+      "type": "category",
+      "icon": "iconfont icon-pc",
+      "dataSource": {
+        "type": "folder",
+        "path": "src/pages/docs"
+      }
+    },
+    {
+      "title": "链接",
+      "description": "备用镜像、互链朋友与推荐站点",
+      "path": "/links",
+      "type": "article",
+      "icon": "iconfont icon-plane",
+      "dataSource": {
+        "type": "none"
+      }
+    },
+    {
+      "title": "仓库",
+      "description": "GitHub 代码仓库",
+      "path": "https://github.com/reashal",
+      "type": "external",
+      "icon": "iconfont icon-github",
+      "dataSource": {
+        "type": "none"
+      }
+    },
+    {
+      "title": "游弋",
+      "description": "探索更多内容",
+      "path": "https://uuuu.ee",
+      "type": "external",
+      "icon": "iconfont icon-planet",
+      "dataSource": {
+        "type": "none"
+      }
+    }
+  ]
+}

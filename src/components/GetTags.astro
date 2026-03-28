@@ -14,18 +14,20 @@
 import { SITE_INFO } from "../consts";
 
 // 获取所有文章
-const docsArticles = await Astro.glob("../pages/docs/*.md");
-const lifeArticles = await Astro.glob("../pages/life/*.md");
-const allArticles = [...docsArticles, ...lifeArticles];
+const docsModules = await import.meta.glob("../pages/docs/*.md", { eager: true });
+const lifeModules = await import.meta.glob("../pages/life/*.md", { eager: true });
+const allArticles = [...Object.values(docsModules), ...Object.values(lifeModules)] as unknown as Array<{
+    frontmatter: { tags?: string[] };
+}>;
 
 // 收集所有标签
 const allTags = new Set<string>();
 
 allArticles.forEach(post => {
-    if (post.frontmatter.tags) {
-        post.frontmatter.tags.forEach((tag: string) => allTags.add(tag));
-    }
-});
+        if (post.frontmatter.tags && post.frontmatter.tags.length > 0) {
+            post.frontmatter.tags.forEach((tag: string) => allTags.add(tag));
+        }
+    });
 
 // 统计每个标签的文章数量
 const tags = Array.from(allTags).sort();

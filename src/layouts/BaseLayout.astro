@@ -5,6 +5,7 @@ import Head from "../components/Head.astro";
 import Aside from "../components/Aside.astro";
 import Share from "../components/Share.astro";
 import ImageViewer from "../components/ImageViewer.astro";
+import { SITE_INFO } from "../consts";
 const { pageTitle, pageDescription, pageType, frontmatter } = Astro.props;
 
 // 获取当前路径，用于侧边栏高亮
@@ -16,7 +17,7 @@ const currentPath = Astro.url.pathname;
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{`${pageTitle}｜睿屿青衫`}</title>
+        <title>{`${pageTitle}｜${SITE_INFO.title}`}</title>
         <meta
             name="description"
             content=`『${pageDescription}』『有限的文字无法写尽余生,希望我们能在前行的路上久别重逢』`

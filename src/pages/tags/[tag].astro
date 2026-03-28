@@ -14,15 +14,17 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 
 // 生成所有标签的静态路径
 export async function getStaticPaths() {
-    const docsArticles = await Astro.glob("../docs/*.md");
-    const lifeArticles = await Astro.glob("../life/*.md");
-    const allArticles = [...docsArticles, ...lifeArticles];
+    const docsModules = await import.meta.glob("../docs/*.md", { eager: true });
+    const lifeModules = await import.meta.glob("../life/*.md", { eager: true });
+    const allArticles = [...Object.values(docsModules), ...Object.values(lifeModules)] as unknown as Array<{
+        frontmatter: { tags?: string[] };
+    }>;
     
     // 收集所有标签
     const allTags = new Set<string>();
     
     allArticles.forEach(post => {
-        if (post.frontmatter.tags) {
+        if (post.frontmatter.tags && post.frontmatter.tags.length > 0) {
             post.frontmatter.tags.forEach((tag: string) => allTags.add(tag));
         }
     });
@@ -36,9 +38,11 @@ export async function getStaticPaths() {
 
 // 获取当前标签的文章
 const { tag } = Astro.params;
-const docsArticles = await Astro.glob("../docs/*.md");
-const lifeArticles = await Astro.glob("../life/*.md");
-const allArticles = [...docsArticles, ...lifeArticles];
+const docsModules = await import.meta.glob("../docs/*.md", { eager: true });
+const lifeModules = await import.meta.glob("../life/*.md", { eager: true });
+const allArticles = [...Object.values(docsModules), ...Object.values(lifeModules)] as unknown as Array<{
+    frontmatter: { tags?: string[]; pubDate?: string };
+}>;
 
 // 筛选并排序文章
 const tagArticles = allArticles.filter(post => 

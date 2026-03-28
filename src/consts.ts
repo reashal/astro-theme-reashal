@@ -3,9 +3,9 @@ export const SITE_INFO = {
     // 网站标题
     title: "睿屿青衫",
     // 备案信息（可选，不需要则留空字符串）
-    // icpNo: "鲁ICP备2026003899号-1",
-    // 工信部链接（可选）
-    // icpLink: "https://beian.miit.gov.cn/",
+    icpNo: "",
+    // 工信部链接（可选，默认为工信部备案查询网站）
+    icpLink: "https://beian.miit.gov.cn/",
     // 页面底部结束提示文字
     endTip: "故事暂且讲到这里",
     // 顶部横幅壁纸路径
@@ -41,13 +41,3 @@ export const ERROR_404 = {
     // 引用文字
     quote: "人生就像一场旅行，总会遇到一些意外的风景",
 };
-
-// 导航链接
-export const NAV_LINKS: { label: string; href: string; icon: string; external?: boolean }[] = [
-    { label: "动态", href: "/",                          icon: "iconfont icon-Home" },
-    { label: "随笔", href: "/life",                      icon: "iconfont icon-pencil" },
-    { label: "笔记", href: "/docs",                      icon: "iconfont icon-pc" },
-    { label: "链接", href: "/links",                     icon: "iconfont icon-plane" },
-    { label: "仓库", href: "https://github.com/reashal", icon: "iconfont icon-github",  external: true },
-    { label: "游弋", href: "https://uuuu.ee",            icon: "iconfont icon-planet",  external: true },
-];

@@ -123,13 +123,9 @@ function getImgLayout(imgs: ImgItem[]): "single" | "grid2" | "grid3" | "overflow
                 <p class="end-tip">{SITE_INFO.endTip}</p>
                 {SITE_INFO.icpNo && (
                     <p class="icp-info">
-                        {SITE_INFO.icpLink ? (
-                            <a href={SITE_INFO.icpLink} target="_blank" rel="noopener noreferrer">
-                                {SITE_INFO.icpNo}
-                            </a>
-                        ) : (
-                            <span>{SITE_INFO.icpNo}</span>
-                        )}
+                        <a href={SITE_INFO.icpLink || "https://beian.miit.gov.cn/"} target="_blank" rel="noopener noreferrer">
+                            {SITE_INFO.icpNo}
+                        </a>
                     </p>
                 )}
             </footer>

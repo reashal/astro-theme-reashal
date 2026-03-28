@@ -13,5 +13,8 @@
     "@astrojs/partytown": "^2.1.4",
     "@astrojs/react": "^4.4.2",
     "astro": "^5.16.8"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0"
   }
 }
