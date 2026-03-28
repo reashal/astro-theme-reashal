@@ -17,7 +17,7 @@ export const AUTHOR_INFO = {
     // 昵称
     name: "睿屿青衫",
     // 头像路径
-    avatar: "/static/favicon.svg",
+    avatar: "https://www.reashal.com/static/images/reashal.svg",
     // 个性签名
     description: "希望我们能在前行的路上久别重逢",
     // 详细介绍（hover时展示，留空时采用description）

@@ -1,0 +1,203 @@
+---
+/**
+ * 卡片式页面模板 - 展示
+ * 用途：根据 showcase.json 配置自动生成卡片式页面（如友情链接、好物清单、工具推荐等）
+ * 特点：
+ *   - 支持四种卡片模式：无图片、小图标、大图片、纯文字
+ *   - 支持多个区域分组
+ *   - 支持页面介绍文字
+ *   - 顶部导航快速跳转
+ *   - 配置文件修改后直接生效
+ */
+import "../../styles/showcase.css";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Giscus from "../../components/Giscus.astro";
+import showcaseConfig from "../../showcase.json";
+import pagesConfig from "../../pages-config.json";
+import type { ShowcaseConfig } from "../../showcase-types";
+import { AUTHOR_INFO } from "../../consts";
+
+export async function getStaticPaths() {
+    return Object.keys(showcaseConfig.showcases).map(showcase => ({
+        params: { showcase }
+    }));
+}
+
+const { showcase } = Astro.params;
+const pageConfig = pagesConfig.pages.find(page => 
+    page.type === 'showcase' && page.dataSource?.collectionKey === showcase
+);
+const enableComments = pageConfig?.enableComments ?? false;
+
+const config = showcaseConfig.showcases[showcase as keyof typeof showcaseConfig.showcases] as ShowcaseConfig;
+
+if (!config) {
+    return Astro.redirect('/404');
+}
+
+const pageTitle = config.title;
+const pageDescription = config.description;
+
+const showcasePages = pagesConfig.pages.filter(page =>
+    page.type === 'showcase' && !page.isShowcaseParent
+);
+
+// 辅助函数：获取首字母
+const getInitial = (title: string) => title.charAt(0).toUpperCase();
+
+// 辅助函数：检查是否有有效图片
+const hasValidImage = (image: string | undefined): boolean => {
+    return !!image && image.trim() !== '';
+};
+---
+
+<BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
+    <article class="article-container showcase">
+        {/* 顶部导航 */}
+        {showcasePages.length > 1 && (
+            <nav class="showcase-nav">
+                {showcasePages.map(page => {
+                    const isActive = page.dataSource?.collectionKey === showcase;
+                    const href = page.path;
+                    return (
+                        <a href={href} class={isActive ? 'active' : ''}>
+                            <i class={page.icon}></i>
+                            <span>{page.title}</span>
+                        </a>
+                    );
+                })}
+            </nav>
+        )}
+
+        {config.intro && config.intro.length > 0 && (
+            <>
+                <h2 class="showcase-h showcase-intro">写在前面</h2>
+                {config.intro.map((paragraph: string) => (
+                    <p class="showcase-p">{paragraph}</p>
+                ))}
+            </>
+        )}
+        
+        {config.sections.map((section) => (
+            <>
+                <h2 class="showcase-h">{section.title}</h2>
+                <div class="showcase-body">
+                    {section.cards.map((card) => {
+                        const hasImage = hasValidImage(card.image);
+                        const hasLink = card.link && card.link.trim() !== '';
+                        const CardWrapper = hasLink ? 'a' : 'div';
+                        const linkProps = hasLink ? { href: card.link, target: '_blank' } : {};
+                        return (
+                            <CardWrapper {...linkProps} class={`showcase-${card.imageMode}`}>
+                                {(card.imageMode === 'icon-simple' || card.imageMode === 'app-card') && (
+                                    <div 
+                                        class={`showcase-avatar ${!hasImage ? 'no-image' : ''}`} 
+                                        data-initial={getInitial(card.title)}
+                                    >
+                                        {hasImage && (
+                                            <img
+                                                src={card.image}
+                                                alt={card.title}
+                                                title={card.title}
+                                                loading="lazy"
+                                                decoding="async"
+                                            />
+                                        )}
+                                    </div>
+                                )}
+                                {card.imageMode === 'product-card' && (
+                                    <div 
+                                        class={`showcase-large-image ${!hasImage ? 'no-image' : ''}`} 
+                                        data-title={getInitial(card.title)}
+                                    >
+                                        {hasImage && (
+                                            <img
+                                                src={card.image}
+                                                alt={card.title}
+                                                title={card.title}
+                                                loading="lazy"
+                                                decoding="async"
+                                            />
+                                        )}
+                                    </div>
+                                )}
+                                <div class="showcase-info">
+                                    <h3>{card.title}</h3>
+                                    {card.specs && card.specs.length > 0 && (
+                                        <div class="showcase-specs">
+                                            {card.specs.map((spec) => (
+                                                <span class="showcase-spec">{spec}</span>
+                                            ))}
+                                        </div>
+                                    )}
+                                    <p title={card.description}>{card.description}</p>
+                                </div>
+                            </CardWrapper>
+                        );
+                    })}
+                </div>
+            </>
+        ))}
+        
+        {(config as any).showFooter === true && (
+            <section class="article-copy">
+                <div>名称：{AUTHOR_INFO.name}</div>
+                <div>网址：https://www.reashal.com</div>
+                <div>头像：{AUTHOR_INFO.avatar}</div>
+                <div>描述：{AUTHOR_INFO.detailDescription || AUTHOR_INFO.description}</div>
+            </section>
+        )}
+        {enableComments && <Giscus />}
+    </article>
+    
+    <script is:inline>
+        (function() {
+            function handleImageError(img) {
+                img.style.display = 'none';
+                img.parentElement.classList.add('no-image');
+            }
+            
+            const images = document.querySelectorAll('.showcase-avatar img, .showcase-large-image img');
+            images.forEach(function(img) {
+                img.dataset.handled = 'false';
+                
+                function checkImage() {
+                    if (img.dataset.handled === 'true') return;
+                    
+                    if (img.complete) {
+                        if (img.naturalWidth === 0 || img.naturalHeight === 0) {
+                            img.dataset.handled = 'true';
+                            handleImageError(img);
+                        } else {
+                            img.dataset.handled = 'true';
+                            img.parentElement.classList.remove('no-image');
+                        }
+                    }
+                }
+                
+                checkImage();
+                
+                img.addEventListener('error', function() {
+                    if (img.dataset.handled === 'true') return;
+                    img.dataset.handled = 'true';
+                    handleImageError(this);
+                });
+                
+                img.addEventListener('load', function() {
+                    if (img.dataset.handled === 'true') return;
+                    img.dataset.handled = 'true';
+                    this.parentElement.classList.remove('no-image');
+                });
+                
+                setTimeout(function() {
+                    if (img.dataset.handled === 'false') {
+                        img.dataset.handled = 'true';
+                        if (!img.complete || img.naturalWidth === 0) {
+                            handleImageError(img);
+                        }
+                    }
+                }, 3000);
+            });
+        })();
+    </script>
+</BaseLayout>

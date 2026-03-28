@@ -1,0 +1,139 @@
+{
+  "showcases": {
+    "stuff": {
+      "title": "物品清单",
+      "description": "一些日常相伴的物品清单",
+      "showFooter": false,
+      "intro": [
+        "这里陈列着一些日常相伴的物品清单——或因实用而久处不厌，或因颜值而一见倾心。",
+        "注：纯属个人偏好，不作任何推荐。"
+      ],
+      "sections": [
+        {
+          "title": "电子产品",
+          "cards": [
+            {
+              "title": "HUAWEI Mate 70 RS",
+              "specs": ["Kirin 9020", "16GB", "512GB"],
+              "description": "华为手机美学设计的巅峰之作，综合质感拉满。有突出亮点及明显短板，品牌溢价严重。",
+              "link": "",
+              "image": "/images/showcase/stuff/Mate70RS.png",
+              "imageMode": "product-card"
+            },
+            {
+              "title": "LEGION Y7000P 2019",
+              "specs": ["Core i7-9750H", "GTX 1660Ti", "16GB", "1TB"],
+              "description": "大学期间的生产力工具，服役至今。有一定的品牌溢价，但其颜值、性能、做工、品控等方面足以弥补。",
+              "link": "",
+              "image": "/images/showcase/stuff/LEGION.png",
+              "imageMode": "product-card"
+            },
+            {
+              "title": "Mac Mini 2024",
+              "specs": ["Apple M4", "16GB", "256GB"],
+              "description": "低功耗的娱乐及开发工具，Mac系列中的性价比选手。",
+              "link": "",
+              "image": "/images/showcase/stuff/Macmini.png",
+              "imageMode": "product-card"
+            },
+            {
+              "title": "HUAWEI FreeClip 2",
+              "specs": ["蓝牙", "星闪"],
+              "description": "兼顾音质与舒适的理想形态，耳夹耳机中的绝对王者。性价比极高，产品力拉满。",
+              "link": "",
+              "image": "/images/showcase/stuff/FreeClip2.png",
+              "imageMode": "product-card"
+            }
+          ]
+        }
+      ]
+    },
+    "links": {
+      "title": "友情链接",
+      "description": "备用镜像、互链朋友与推荐站点",
+      "showFooter": true,
+      "intro": [
+        "1.本站仓库位于境外，在特殊时期可能会出现访问不稳定的情况，因此我将会在本页分别给出托管于国内外不同服务商的备用镜像。",
+        "2.由于精力受限，暂仅与少量友站互链，还望理解。然而，我也会以个人视角向您单方面推荐一些优质站点。"
+      ],
+      "sections": [
+        {
+          "title": "国内备份",
+          "cards": [
+            {
+              "title": "Tencent",
+              "description": "www.reashal.com",
+              "link": "https://www.reashal.com",
+              "image": "",
+              "imageMode": "text-only"
+            },
+            {
+              "title": "Ucloud",
+              "description": "bak.reashal.com",
+              "link": "https://bak.reashal.com",
+              "image": "",
+              "imageMode": "text-only"
+            }
+          ]
+        },
+        {
+          "title": "海外镜像",
+          "cards": [
+            {
+              "title": "Netlify",
+              "description": "reash.al",
+              "link": "https://reash.al",
+              "image": "",
+              "imageMode": "text-only"
+            },
+            {
+              "title": "Vercel",
+              "description": "vc.uuuu.ee",
+              "link": "https://vc.uuuu.ee",
+              "image": "",
+              "imageMode": "text-only"
+            },
+            {
+              "title": "Cloudflare",
+              "description": "cf.uuuu.ee",
+              "link": "https://cf.uuuu.ee",
+              "image": "",
+              "imageMode": "text-only"
+            }
+          ]
+        },
+        {
+          "title": "互链朋友",
+          "cards": [
+            {
+              "title": "银河渡舟",
+              "description": "醉后不知天在水，满船清梦压星河",
+              "link": "https://suborbit.net",
+              "image": "https://suborbit.net/assets/avatar.png",
+              "imageMode": "app-card"
+            }
+          ]
+        },
+        {
+          "title": "单向推荐",
+          "cards": [
+            {
+              "title": "张洪HEO",
+              "description": "惊艳设计",
+              "link": "https://blog.zhheo.com/",
+              "image": "https://bu.dusays.com/2022/12/28/63ac2812183aa.png",
+              "imageMode": "app-card"
+            },
+            {
+              "title": "莫比乌斯",
+              "description": "文字共鸣",
+              "link": "https://onojyun.com/",
+              "image": "https://onojyun.files.wordpress.com/2022/12/cropped-mobius_icon_black.jpg",
+              "imageMode": "app-card"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

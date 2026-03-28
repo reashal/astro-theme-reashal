@@ -18,12 +18,15 @@ import { AUTHOR_INFO, SITE_INFO } from "../consts";
 import pagesConfig from "../pages-config.json";
 import GetTags from "./GetTags.astro";
 
-const navLinks = pagesConfig.pages.map(page => ({
-    label: page.title,
-    href: page.path,
-    icon: page.icon,
-    external: page.type === 'external'
-}));
+const navLinks = pagesConfig.pages
+    .filter(page => !page.hiddenInAside)
+    .map(page => ({
+        label: page.title,
+        href: page.path,
+        icon: page.icon,
+        external: page.type === 'external',
+        isShowcaseParent: !!page.isShowcaseParent
+    }));
 
 const currentPath = Astro.url.pathname;
 ---
@@ -51,7 +54,11 @@ const currentPath = Astro.url.pathname;
         <section class="aside-links-card">
             {
                 navLinks.map((link) => {
-                    const isActive = currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href));
+                    let isActive = currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href));
+                    // 对于展示父页面，任何 /showcase/ 路径都应该是 active
+                    if (link.isShowcaseParent && currentPath.startsWith('/showcase/')) {
+                        isActive = true;
+                    }
                     return (
                         <a
                             href={link.href}

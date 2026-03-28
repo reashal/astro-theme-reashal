@@ -34,13 +34,44 @@
       }
     },
     {
-      "title": "链接",
-      "description": "备用镜像、互链朋友与推荐站点",
-      "path": "/links",
-      "type": "article",
-      "icon": "iconfont icon-plane",
+      "title": "展示",
+      "description": "物品清单与友情链接",
+      "path": "/showcase/stuff",
+      "type": "showcase",
+      "icon": "iconfont icon-fenleiclassify",
+      "isShowcaseParent": true,
       "dataSource": {
-        "type": "none"
+        "type": "config",
+        "path": "src/showcase.json",
+        "collectionKey": "stuff"
+      }
+    },
+    {
+      "title": "物品清单",
+      "description": "记录身边的一些物品",
+      "path": "/showcase/stuff",
+      "type": "showcase",
+      "icon": "iconfont icon-pc",
+      "enableComments": false,
+      "hiddenInAside": true,
+      "dataSource": {
+        "type": "config",
+        "path": "src/showcase.json",
+        "collectionKey": "stuff"
+      }
+    },
+    {
+      "title": "友情链接",
+      "description": "备用镜像、互链朋友与推荐站点",
+      "path": "/showcase/links",
+      "type": "showcase",
+      "icon": "iconfont icon-plane",
+      "enableComments": true,
+      "hiddenInAside": true,
+      "dataSource": {
+        "type": "config",
+        "path": "src/showcase.json",
+        "collectionKey": "links"
       }
     },
     {
