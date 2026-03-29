@@ -2,43 +2,43 @@
     {
       "date": "2025.10.24",
       "para": ["节日快乐！"],
-      "imgs": [{"alt": "程序员节", "url": "/images/CodersDay.jpg"}],
+      "imgs": [{"alt": "程序员节", "url": "/images/comments/CodersDay.jpg"}],
       "stars": ["reashal"]
     },
     {
       "date": "2025.09.27",
       "para": ["小城·围炉"],
-      "imgs": [{"alt": "小城围炉", "url": "/images/smallCity.jpg"}],
+      "imgs": [{"alt": "小城围炉", "url": "/images/comments/smallCity.jpg"}],
       "stars": ["reashal"]
     },
     {
       "date": "2025.08.08",
       "para": ["𝘾𝙖𝙙𝙞𝙡𝙡𝙖𝙘"],
-      "imgs": [{"alt": "Cadillac", "url": "/images/Cadillac.jpg"}],
+      "imgs": [{"alt": "Cadillac", "url": "/images/comments/Cadillac.jpg"}],
       "stars": ["reashal"]
     },
     {
       "date": "2025.04.13",
       "para": ["𝙊𝙣𝙡𝙮 𝙗𝙮 𝙜𝙤𝙞𝙣𝙜 𝙖𝙡𝙡 𝙤𝙪𝙩 𝙖𝙩 𝙚𝙖𝙩𝙝 𝙨𝙩𝙖𝙜𝙚 𝙘𝙖𝙣 𝙬𝙚 𝙘𝙝𝙖𝙣𝙜𝙚 𝙩𝙝𝙚 𝙢𝙚𝙙𝙞𝙤𝙘𝙧𝙚 𝙡𝙞𝙛𝙚."],
-      "imgs": [{"alt": "Spring", "url": "/images/Spring.jpg"}],
+      "imgs": [{"alt": "Spring", "url": "/images/comments/Spring.jpg"}],
       "stars": ["reashal"]
     },
     {
       "date": "2024.05.20",
       "para": ["跃见·釉白"],
-      "imgs": [{"alt": "釉白", "url": "/images/Mate40.jpg"}],
+      "imgs": [{"alt": "釉白", "url": "/images/comments/Mate40.jpg"}],
       "stars": ["reashal"],
       "comments": ["初见乍欢，久处仍怦然。"]
     },
     {
       "date": "2023.12.12",
       "para": ["崎岖平坦、离合悲欢"],
-      "imgs": [{"alt": "sail", "url": "/images/sail.jpg"}]
+      "imgs": [{"alt": "sail", "url": "/images/comments/sail.jpg"}]
     },
     {
       "date": "2023.11.07",
       "para": ["一个奇妙的计划破产了！"],
-      "imgs": [{"alt": "N1", "url": "/images/N1.jpg"}],
+      "imgs": [{"alt": "N1", "url": "/images/comments/N1.jpg"}],
       "stars": ["reashal"],
       "comments": [
         "『踩坑日记』",
@@ -56,7 +56,7 @@
         "2018年，第一次在景安备案，书房里至今还保存着当初的幕布与核验单。",
         "2023年，亲手为这段运营了将近六年的编号，画上句号。"
       ],
-      "imgs": [{"alt": "ICP注销通知", "url": "/images/icp.jpg"}],
+      "imgs": [{"alt": "ICP注销通知", "url": "/images/comments/icp.jpg"}],
       "comments": ["心情很复杂"]
     },
     {
@@ -80,7 +80,7 @@
         "第一次抽中实物！",
         "早日看尽长安花！"
       ],
-      "imgs": [{"alt": "月饼礼盒", "url": "/images/moon-cake.jpg"}],
+      "imgs": [{"alt": "月饼礼盒", "url": "/images/comments/moon-cake.jpg"}],
       "loc": "潍坊市·中百大厦(昌邑店)"
     },
     {
