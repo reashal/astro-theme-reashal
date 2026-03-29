@@ -45,6 +45,35 @@
               "imageMode": "product-card"
             }
           ]
+        },
+        {
+          "title": "时光藏品",
+          "cards": [
+            {
+              "title": "HUAWEI P30",
+              "specs": ["Kirin 980", "8GB", "256GB"],
+              "description": "设计优雅、性能均衡的\"未来影像\"，陪伴我四年半的主力机。",
+              "link": "",
+              "image": "/images/showcase/stuff/P30.png",
+              "imageMode": "product-card"
+            },
+            {
+              "title": "VIVO X100",
+              "specs": ["天玑9300", "16GB", "512GB"],
+              "description": "性能极其强悍的水桶机，几乎没有短板。遗憾的是其月牙设计理念的摄像头模组不太符合我的审美。",
+              "link": "",
+              "image": "/images/showcase/stuff/X100.png",
+              "imageMode": "product-card"
+            },
+            {
+              "title": "HUAWEI Mate40",
+              "specs": ["Kirin 9000E", "8GB", "128GB"],
+              "description": "胡杨不死，麒麟绝唱。高端设计的经典之作，性能释放时\"跃见非凡\"。一代电子茅台，我的日常备用机。",
+              "link": "",
+              "image": "/images/showcase/stuff/Mate40.png",
+              "imageMode": "product-card"
+            }
+          ]
         }
       ]
     },
