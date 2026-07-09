@@ -1,38 +1,18 @@
 ---
-/**
- * 标签卡片组件
- * 职责：
- * 1. 获取所有文章的标签
- * 2. 按文章数量排序标签
- * 3. 渲染横向滚动的标签卡片
- * 
- * 功能：
- * - 标签从左向右无缝循环滚动
- * - 鼠标悬停暂停滚动
- * - 点击标签跳转到标签详情页
- */
-import { SITE_INFO } from "../consts";
-
-// 获取所有文章
 const docsModules = await import.meta.glob("../pages/docs/*.md", { eager: true });
 const lifeModules = await import.meta.glob("../pages/life/*.md", { eager: true });
 const allArticles = [...Object.values(docsModules), ...Object.values(lifeModules)] as unknown as Array<{
     frontmatter: { tags?: string[] };
 }>;
 
-// 收集所有标签
 const allTags = new Set<string>();
-
 allArticles.forEach(post => {
-        if (post.frontmatter.tags && post.frontmatter.tags.length > 0) {
-            post.frontmatter.tags.forEach((tag: string) => allTags.add(tag));
-        }
-    });
+    if (post.frontmatter.tags && post.frontmatter.tags.length > 0) {
+        post.frontmatter.tags.forEach((tag: string) => allTags.add(tag));
+    }
+});
 
-// 统计每个标签的文章数量
-const tags = Array.from(allTags).sort();
 const tagCounts = new Map<string, number>();
-
 allArticles.forEach(post => {
     if (post.frontmatter.tags) {
         post.frontmatter.tags.forEach((tag: string) => {
@@ -41,84 +21,181 @@ allArticles.forEach(post => {
     }
 });
 
-// 按文章数量排序标签
-const sortedTags = tags.sort((a, b) => {
+const sortedTags = Array.from(allTags).sort((a, b) => {
     const countA = tagCounts.get(a) || 0;
     const countB = tagCounts.get(b) || 0;
     return countB - countA;
 });
 
-const displayTags = sortedTags;
-const totalTags = sortedTags.length;
 const tagCountsObj = Object.fromEntries(tagCounts);
+const cardList = sortedTags.map((tag) => ({ tag, count: tagCountsObj[tag] }));
 ---
 
 <section class="aside-tags-card">
-    <div class="tags-scroll-container" id="tags-scroll-container">
-        <div class="tags-content" id="tags-content"></div>
-    </div>
+  <div class="card-stack" id="card-stack">
+    {cardList.map((item) => (
+      <a href={`/tags/${item.tag}`} class="message-card">
+        <span class="msg-hashtag">#</span>
+        <span class="msg-name">{item.tag}</span>
+        <span class="msg-count">{item.count}</span>
+      </a>
+    ))}
+  </div>
+  <div class="stack-footer" id="stack-footer"></div>
 </section>
 
-<script define:vars={{ displayTags, tagCountsObj }}>
-    if (typeof document !== 'undefined') {
-        const container = document.getElementById('tags-content');
-        
-        function createTagElement(tag) {
-            const tagEl = document.createElement('a');
-            tagEl.href = `/tags/${tag}`;
-            tagEl.className = 'tag-item';
-            tagEl.innerHTML = `
-                <span class="tag-name">#${tag}</span>
-                <span class="tag-count">${tagCountsObj[tag]}</span>
-            `;
-            return tagEl;
-        }
-        
-        displayTags.forEach((tag) => {
-            container.appendChild(createTagElement(tag));
-        });
-        
-        displayTags.forEach((tag) => {
-            container.appendChild(createTagElement(tag));
-        });
-        
-        const scrollContainer = document.getElementById('tags-scroll-container');
-        let currentTranslateX = 0;
-        let isPaused = false;
-        let lastTime = 0;
-        const speed = 25;
-        
-        setTimeout(() => {
-            currentTranslateX = -container.scrollWidth / 2;
-            requestAnimationFrame(animate);
-        }, 100);
-        
-        function animate(currentTime) {
-            if (!lastTime) lastTime = currentTime;
-            const deltaTime = (currentTime - lastTime) / 1000;
-            lastTime = currentTime;
-            
-            if (!isPaused) {
-                currentTranslateX += speed * deltaTime;
-                
-                const halfWidth = container.scrollWidth / 2;
-                
-                if (currentTranslateX >= 0) {
-                    currentTranslateX = -halfWidth;
-                }
-                
-                container.style.transform = `translateX(${currentTranslateX}px)`;
-            }
-            
-            requestAnimationFrame(animate);
-        }
-        
-        scrollContainer.addEventListener('mouseenter', () => {
-            isPaused = true;
-        });
-        
-        scrollContainer.addEventListener('mouseleave', () => {
-            isPaused = false;
-        });
+<script>
+(function() {
+  const stack = document.getElementById('card-stack');
+  const footer = document.getElementById('stack-footer');
+  if (!stack) return;
+
+  let cards = Array.from(stack.querySelectorAll('.message-card'));
+  const total = cards.length;
+  if (total === 0) return;
+
+  const VISIBLE = 3;
+  const PEEK = 10;
+  const DURATION = 350;
+  let isAnimating = false;
+  let touchStartY = 0;
+
+  function layoutCards(animate) {
+    cards.forEach((card, i) => {
+      const y = i * PEEK;
+      card.style.transition = animate ? 'transform 0.3s ease, opacity 0.3s ease' : 'none';
+      card.style.display = '';
+      card.style.pointerEvents = 'none';
+
+      if (i < VISIBLE) {
+        card.style.transform = `translateY(${y}px)`;
+        card.style.zIndex = VISIBLE - i;
+        card.style.opacity = 1;
+        if (i === 0) card.style.pointerEvents = '';
+      } else {
+        card.style.transform = `translateY(${y}px)`;
+        card.style.zIndex = 0;
+        card.style.opacity = 0;
+      }
+    });
+    footer.textContent = total <= 1 ? '1 / 1' : `1 / ${total}`;
+  }
+
+  function dismissTop() {
+    if (isAnimating || total <= 1) return;
+    isAnimating = true;
+
+    const top = cards[0];
+
+    top.style.transition = `transform ${DURATION}ms cubic-bezier(.4,0,.2,1), opacity ${DURATION * 0.85}ms ease`;
+    top.style.transform = 'translateY(-80px)';
+    top.style.opacity = '0';
+    top.style.zIndex = '999';
+
+    const second = cards[1];
+    const third = cards[2];
+    if (second) {
+      second.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
+      second.style.transform = 'translateY(0)';
     }
+    if (third) {
+      third.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
+      third.style.transform = `translateY(${PEEK}px)`;
+    }
+
+    setTimeout(() => {
+      stack.appendChild(top);
+      cards = Array.from(stack.querySelectorAll('.message-card'));
+
+      top.style.transition = 'none';
+      const lastIdx = cards.length - 1;
+      top.style.transform = `translateY(${lastIdx * PEEK}px)`;
+      top.style.opacity = '0';
+      top.style.zIndex = '0';
+      top.style.pointerEvents = 'none';
+
+      void top.offsetHeight;
+      layoutCards(true);
+
+      setTimeout(() => {
+        cards.forEach(c => c.style.transition = '');
+        isAnimating = false;
+      }, DURATION);
+    }, DURATION);
+  }
+
+  function restoreTop() {
+    if (isAnimating || total <= 1) return;
+    isAnimating = true;
+
+    const last = cards[cards.length - 1];
+    const first = cards[0];
+    const second = cards[1];
+
+    if (first) {
+      first.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
+      first.style.transform = `translateY(${PEEK}px)`;
+    }
+    if (second) {
+      second.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
+      second.style.transform = `translateY(${2 * PEEK}px)`;
+    }
+
+    const restoreY = cards.length * PEEK;
+    last.style.transition = 'none';
+    last.style.display = '';
+    last.style.transform = `translateY(${restoreY}px)`;
+    last.style.opacity = '0.5';
+    last.style.zIndex = '999';
+    last.style.pointerEvents = 'none';
+
+    void last.offsetHeight;
+
+    last.style.transition = `transform ${DURATION}ms cubic-bezier(.4,0,.2,1), opacity ${DURATION * 0.85}ms ease`;
+    last.style.transform = 'translateY(0)';
+    last.style.opacity = '1';
+
+    setTimeout(() => {
+      stack.insertBefore(last, stack.firstChild);
+      cards = Array.from(stack.querySelectorAll('.message-card'));
+
+      last.style.transition = 'none';
+      const lastIdx = cards.length - 1;
+      last.style.transform = `translateY(${lastIdx * PEEK}px)`;
+      last.style.opacity = '0';
+      last.style.zIndex = '0';
+
+      void last.offsetHeight;
+      layoutCards(true);
+
+      setTimeout(() => {
+        cards.forEach(c => c.style.transition = '');
+        isAnimating = false;
+      }, DURATION);
+    }, DURATION);
+  }
+
+  stack.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    if (e.deltaY > 0) dismissTop();
+    else restoreTop();
+  }, { passive: false });
+
+  stack.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  stack.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+  }, { passive: false });
+
+  stack.addEventListener('touchend', (e) => {
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (dy < -20) dismissTop();
+    else if (dy > 20) restoreTop();
+  }, { passive: true });
+
+  layoutCards(false);
+  setTimeout(() => cards.forEach(c => c.style.transition = ''), 50);
+})();
 </script>

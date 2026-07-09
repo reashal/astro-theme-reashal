@@ -60,6 +60,7 @@ aside {
 .aside-body .aside-author-card,
 .aside-body .aside-links-card,
 .aside-body .aside-share-card,
+.aside-body .aside-tags-card,
 .aside-body .aside-copyright-card {
     padding: 0.8rem;
     margin-bottom: 1.2rem;
@@ -73,6 +74,7 @@ aside {
 .aside-body .aside-author-card:hover,
 .aside-body .aside-links-card:hover,
 .aside-body .aside-share-card:hover,
+.aside-body .aside-tags-card:hover,
 .aside-body .aside-copyright-card:hover {
     transform: translateY(4px) scale(0.98);
     box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 8px;
@@ -327,6 +329,7 @@ aside {
 .dark .aside-body .aside-author-card,
 .dark .aside-body .aside-links-card,
 .dark .aside-body .aside-share-card,
+.dark .aside-body .aside-tags-card,
 .dark .aside-body .aside-copyright-card {
     box-shadow: 
         rgba(0, 0, 0, 0.5) 0px 8px 20px,
@@ -339,6 +342,7 @@ aside {
 .dark .aside-body .aside-author-card:hover,
 .dark .aside-body .aside-links-card:hover,
 .dark .aside-body .aside-share-card:hover,
+.dark .aside-body .aside-tags-card:hover,
 .dark .aside-body .aside-copyright-card:hover {
     transform: translateY(4px) scale(0.98);
     box-shadow: 
@@ -394,156 +398,129 @@ aside {
 }
 
 /* ============================================
- * 侧边栏标签卡片
- * 包含横向滚动的标签列表
- * 标签使用渐变背景和圆角设计
+ * 侧边栏标签卡片 — 消息堆叠
+ * 标签以卡片形式向上堆叠展示
+ * 至多 3 张可见，滑动向上消失，循环流转
  * ============================================ */
-.aside-body .aside-tags-card {
-    padding: 0.6rem 0.4rem;
-    margin-bottom: 1rem;
-    border-radius: 0.6rem;
-    box-shadow: rgba(0, 0, 0, 0.6) 0px 5px 15px;
-    transition: all 0.3s ease;
-    background-color: rgba(255, 255, 255, 0.8);
-    overflow: hidden;
-    position: relative;
-    min-height: 2.5rem;
+
+/* --- 卡片堆叠容器 --- */
+.aside-body .card-stack {
+  position: relative;
+  height: 62px;
+  overflow: hidden;
+  cursor: grab;
 }
 
-/* 标签卡片 hover：与其他卡片一致的"按下去"效果 */
-.aside-body .aside-tags-card:hover {
-    transform: translateY(4px) scale(0.98);
-    box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 8px;
-    background-color: rgba(0, 113, 117, 0.05);
+.aside-body .card-stack:active {
+  cursor: grabbing;
 }
 
-.aside-body .tags-wrapper {
-    position: relative;
-    height: 100%;
+/* --- 消息卡片 --- */
+.aside-body .message-card {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.65rem 0.7rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 113, 117, 0.08);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.06);
+  transform-origin: center center;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  cursor: pointer;
+  text-decoration: none;
+  pointer-events: none;
 }
 
-.aside-body .tags-scroll-container {
-    overflow-y: hidden;
-    overflow-x: hidden;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    scroll-behavior: auto;
+.aside-body .message-card:hover {
+  border-color: rgba(0, 113, 117, 0.25);
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
-.aside-body .tags-scroll-container::-webkit-scrollbar {
-    display: none;
+/* 标签名称前的 # 符号 */
+.aside-body .msg-hashtag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #007175;
+  flex-shrink: 0;
 }
 
-.aside-body .tags-content {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 0.3rem;
-    will-change: transform;
-    white-space: nowrap;
+/* 标签名称 */
+.aside-body .msg-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #1c1c1e;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* 标签项：渐变背景 + 圆角边框 */
-.aside-body .tag-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.1rem;
-    padding: 0.12rem 0.3rem;
-    background: linear-gradient(135deg, rgba(130, 216, 221, 0.15), rgba(130, 216, 221, 0.05));
-    border: 1px solid rgba(130, 216, 221, 0.3);
-    border-radius: 0.2rem;
-    text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    flex-shrink: 0;
+/* 计数徽标 */
+.aside-body .msg-count {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #fff;
+  background: #007175;
+  padding: 0.06rem 0.35rem;
+  border-radius: 0.15rem;
+  flex-shrink: 0;
+  line-height: 1.3;
 }
 
-/* 标签 hover：背景变深，边框变深 */
-.aside-body .tag-item:hover {
-    background: linear-gradient(135deg, rgba(0, 113, 117, 0.9), rgba(0, 113, 117, 0.8));
-    border-color: rgba(0, 113, 117, 0.5);
-}
-
-/* 标签名称：小字号，黑色 */
-.aside-body .aside-tags-card .tag-name {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #000;
-    transition: color 0.3s ease;
-}
-
-/* 标签 hover 时名称颜色变深 */
-.aside-body .aside-tags-card .tag-item:hover .tag-name {
-    color: #033a4a;
-}
-
-/* 标签计数：小圆角背景 */
-.aside-body .aside-tags-card .tag-count {
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: #82d8dd;
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 0.05rem 0.15rem;
-    border-radius: 0.15rem;
-    min-width: 0.7rem;
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-.aside-body .aside-tags-card .tag-item:hover .tag-count {
-    background-color: rgba(255, 255, 255, 0.95);
-    color: #007175;
+/* 底部指示器 */
+.aside-body .stack-footer {
+  text-align: center;
+  padding: 0.45rem 0 0;
+  font-size: 0.55rem;
+  color: rgba(0, 113, 117, 0.35);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1;
 }
 
 /* ============================================
- * 暗黑模式 - 标签卡片
+ * 暗黑模式 — 消息堆叠
+ * 深色玻璃效果
  * ============================================ */
 
-/* 暗黑模式标签卡片：与其他卡片一致的深色主题 */
-.dark .aside-body .aside-tags-card {
-    box-shadow: 
-        rgba(0, 0, 0, 0.5) 0px 8px 20px,
-        rgba(0, 0, 0, 0.3) 0px 2px 6px;
-    background-color: rgba(36, 43, 61, 0.8);
+.dark .aside-body .message-card {
+  background: rgba(30, 38, 54, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(130, 216, 221, 0.1);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.35);
 }
 
-/* 暗黑模式标签卡片 hover："按下去"效果 */
-.dark .aside-body .aside-tags-card:hover {
-    transform: translateY(4px) scale(0.98);
-    box-shadow: 
-        rgba(0, 0, 0, 0.15) 0px 1px 3px;
-    background-color: rgba(25, 31, 45, 0.95);
+.dark .aside-body .message-card:hover {
+  border-color: rgba(130, 216, 221, 0.3);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.45);
 }
 
-/* 暗黑模式标签项：降低透明度的渐变背景 */
-.dark .aside-body .tag-item {
-    background: linear-gradient(135deg, rgba(130, 216, 221, 0.1), rgba(130, 216, 221, 0.05));
-    border-color: rgba(130, 216, 221, 0.2);
+.dark .aside-body .msg-hashtag {
+  color: #82d8dd;
 }
 
-/* 暗黑模式标签 hover：高亮背景 + 发光阴影 */
-.dark .aside-body .tag-item:hover {
-    background: linear-gradient(135deg, rgba(130, 216, 221, 0.9), rgba(130, 216, 221, 0.8));
-    border-color: rgba(130, 216, 221, 0.5);
-    box-shadow: 0 4px 12px rgba(130, 216, 221, 0.2);
+.dark .aside-body .msg-name {
+  color: #dcebf2;
 }
 
-/* 暗黑模式标签名称：青色 */
-.dark .aside-body .tag-name {
-    color: #82d8dd;
+.dark .aside-body .msg-count {
+  background: #82d8dd;
+  color: #1e293b;
 }
 
-/* 暗黑模式标签 hover 时名称变深色 */
-.dark .aside-body .tag-item:hover .tag-name {
-    color: #1e293b;
-}
-
-/* 暗黑模式标签计数：深色背景 + 浅色文字 */
-.dark .aside-body .tag-count {
-    background-color: rgba(36, 43, 61, 0.9);
-    color: #a8e5e9;
-}
-
-/* 暗黑模式标签 hover 时计数器颜色变化 */
-.dark .aside-body .tag-item:hover .tag-count {
-    background-color: rgba(36, 43, 61, 0.95);
-    color: #82d8dd;
+.dark .aside-body .stack-footer {
+  color: rgba(130, 216, 221, 0.35);
 }
