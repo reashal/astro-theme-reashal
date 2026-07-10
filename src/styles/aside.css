@@ -81,7 +81,8 @@ aside {
     background-color: rgba(0, 113, 117, 0.05);
 }
 
-/* 站长信息 */
+/* 站长信息 — "墨染" 微动效卡片
+ * 常态即完整展示，hover 只变换颜色/光影，不改变布局 */
 .aside-body .aside-author-card {
     position: relative;
     display: flex;
@@ -91,129 +92,70 @@ aside {
     cursor: default;
 }
 
-/* 遮罩层：hover 时从透明过渡到半透明背景色 */
-.aside-body .aside-author-card::before {
+/* 右下角光晕 —— hover 时浮现 */
+.aside-body .aside-author-card::after {
     content: '';
     position: absolute;
-    inset: 0;
-    background-color: rgba(0, 113, 117, 0);
-    border-radius: inherit;
-    transition: background-color .35s ease;
+    right: -20px;
+    bottom: -20px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 113, 117, .12), transparent 70%);
     pointer-events: none;
-    z-index: 1;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity .45s ease;
 }
 
-.aside-body .aside-author-card:hover::before {
-    background-color: rgba(0, 113, 117, .1);
+.aside-body .aside-author-card:hover::after {
+    opacity: 1;
 }
 
-/* 头像 */
+/* 头像：常态圆润，hover 时出现青色光环 */
 .aside-body .author-avatar {
     flex-shrink: 0;
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    opacity: 1;
     transition:
-        opacity .3s ease,
-        width .3s ease,
-        height .3s ease;
+        box-shadow .35s ease,
+        transform .35s ease;
 }
 
 .aside-body .aside-author-card:hover .author-avatar {
-    opacity: 0;
-    width: 0;
-    height: 0;
+    box-shadow: 0 0 0 3px rgba(0, 113, 117, .2);
+    transform: scale(1.03);
 }
 
 /* 文字区域 */
 .aside-body .author-info {
-    position: relative;
     flex: 1;
     min-width: 0;
-    overflow: hidden;
 }
 
-/* 网名：默认正常位置，hover 时移到左上角 */
+/* 网名 */
 .aside-body .author-name {
     font-size: 1rem;
-    padding-bottom: .3rem;
+    font-weight: 700;
+    color: #007175;
+    padding-bottom: .15rem;
     display: block;
-    transition:
-        font-size .3s ease,
-        position .3s ease,
-        opacity .3s ease;
+    transition: color .3s ease;
 }
 
 .aside-body .aside-author-card:hover .author-name {
-    position: absolute;
-    top: 0;
-    left: 0;
-    font-size: .75rem;
-    opacity: .7;
-    padding-bottom: 0;
+    color: #005257;
 }
 
-/* 原签名：默认显示，hover 时淡出隐藏 */
+/* 个签 — 常态展示，无 hover 变化 */
 .aside-body .author-desc {
-    font-size: .8rem;
-    font-weight: bold;
-    line-height: 1rem;
-    animation: breathe 6s linear infinite;
-    opacity: 1;
-    max-height: 2rem;
-    transition:
-        opacity .2s ease .1s,
-        max-height .3s ease .1s;
-}
-
-.aside-body .aside-author-card:hover .author-desc {
-    opacity: 0;
-    max-height: 0;
-}
-
-/* 详细介绍：默认隐藏，hover 时展开 */
-.aside-body .author-bio {
     font-size: .78rem;
-    line-height: 1.5;
-    color: #444;
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    margin-top: 0;
-    transition:
-        max-height .4s ease,
-        opacity .3s ease,
-        margin-top .3s ease;
+    line-height: 1.4;
+    color: #666;
+    margin: 0;
 }
 
-.aside-body .aside-author-card:hover .author-bio {
-    max-height: 6rem;
-    opacity: 1;
-    margin-top: 1.2rem;
-}
-
-@keyframes breathe {
-    0% {
-        color: #000;
-    }
-
-    25% {
-        color: #f8fef3;
-    }
-
-    50% {
-        color: #d33a4a;
-    }
-
-    75% {
-        color: #f8f0e0;
-    }
-
-    100% {
-        color: #000;
-    }
-}
 
 /* 链接 */
 .aside-body .aside-links-card {
@@ -355,12 +297,24 @@ aside {
     background-color: rgba(130, 216, 221, 0);
 }
 
-.dark .aside-body .aside-author-card:hover::before {
-    background-color: rgba(130, 216, 221, .08);
+.dark .aside-body .aside-author-card::after {
+    background: radial-gradient(circle, rgba(130, 216, 221, .15), transparent 70%);
 }
 
-.dark .aside-body .author-bio {
-    color: #a0b4c0;
+.dark .aside-body .aside-author-card:hover .author-avatar {
+    box-shadow: 0 0 0 3px rgba(130, 216, 221, .25);
+}
+
+.dark .aside-body .author-name {
+    color: #82d8dd !important;
+}
+
+.dark .aside-body .aside-author-card:hover .author-name {
+    color: #a8e5e9 !important;
+}
+
+.dark .aside-body .author-desc {
+    color: #8899a8;
 }
 
 /* 侧边栏三级标题 */
