@@ -59,6 +59,7 @@ const cardList = sortedTags.map((tag) => ({ tag, count: tagCountsObj[tag] }));
   const DURATION = 350;
   let isAnimating = false;
   let touchStartY = 0;
+  let currentIndex = 0;
 
   function layoutCards(animate) {
     cards.forEach((card, i) => {
@@ -71,14 +72,14 @@ const cardList = sortedTags.map((tag) => ({ tag, count: tagCountsObj[tag] }));
         card.style.transform = `translateY(${y}px)`;
         card.style.zIndex = VISIBLE - i;
         card.style.opacity = 1;
-        if (i === 0) card.style.pointerEvents = '';
+        if (i === 0) card.style.pointerEvents = 'auto';
       } else {
         card.style.transform = `translateY(${y}px)`;
         card.style.zIndex = 0;
         card.style.opacity = 0;
       }
     });
-    footer.textContent = total <= 1 ? '1 / 1' : `1 / ${total}`;
+    footer.textContent = `${(currentIndex % total) + 1} / ${total}`;
   }
 
   function dismissTop() {
@@ -106,6 +107,7 @@ const cardList = sortedTags.map((tag) => ({ tag, count: tagCountsObj[tag] }));
     setTimeout(() => {
       stack.appendChild(top);
       cards = Array.from(stack.querySelectorAll('.message-card'));
+      currentIndex = (currentIndex + 1) % total;
 
       top.style.transition = 'none';
       const lastIdx = cards.length - 1;
@@ -158,6 +160,7 @@ const cardList = sortedTags.map((tag) => ({ tag, count: tagCountsObj[tag] }));
     setTimeout(() => {
       stack.insertBefore(last, stack.firstChild);
       cards = Array.from(stack.querySelectorAll('.message-card'));
+      currentIndex = (currentIndex - 1 + total) % total;
 
       last.style.transition = 'none';
       const lastIdx = cards.length - 1;
