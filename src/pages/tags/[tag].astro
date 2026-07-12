@@ -15,8 +15,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 // 生成所有标签的静态路径
 export async function getStaticPaths() {
     const docsModules = await import.meta.glob("../docs/*.md", { eager: true });
-    const lifeModules = await import.meta.glob("../life/*.md", { eager: true });
-    const allArticles = [...Object.values(docsModules), ...Object.values(lifeModules)] as unknown as Array<{
+    const allArticles = [...Object.values(docsModules)] as unknown as Array<{
         frontmatter: { tags?: string[] };
     }>;
     
@@ -39,8 +38,7 @@ export async function getStaticPaths() {
 // 获取当前标签的文章
 const { tag } = Astro.params;
 const docsModules = await import.meta.glob("../docs/*.md", { eager: true });
-const lifeModules = await import.meta.glob("../life/*.md", { eager: true });
-const allArticles = [...Object.values(docsModules), ...Object.values(lifeModules)] as unknown as Array<{
+const allArticles = [...Object.values(docsModules)] as unknown as Array<{
     frontmatter: { tags?: string[]; pubDate?: string };
 }>;
 

@@ -14,20 +14,9 @@
     {
       "title": "随笔",
       "description": "希望我的文字不止可以与自己共鸣",
-      "path": "/life",
-      "type": "category",
-      "icon": "iconfont icon-pencil",
-      "dataSource": {
-        "type": "folder",
-        "path": "src/pages/life"
-      }
-    },
-    {
-      "title": "笔记",
-      "description": "积跬步以至千里",
       "path": "/docs",
       "type": "category",
-      "icon": "iconfont icon-pc",
+      "icon": "iconfont icon-pencil",
       "dataSource": {
         "type": "folder",
         "path": "src/pages/docs"
@@ -38,7 +27,7 @@
       "description": "物品清单与友情链接",
       "path": "/showcase/stuff",
       "type": "showcase",
-      "icon": "iconfont icon-fenleiclassify",
+      "icon": "iconfont icon-pc",
       "isShowcaseParent": true,
       "dataSource": {
         "type": "config",

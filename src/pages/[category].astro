@@ -38,11 +38,6 @@ if (config.dataSource?.type === 'folder' && config.dataSource.path) {
         allArticles = Object.values(modules) as unknown as Array<{
             frontmatter: { pinned?: boolean; pubDate?: string };
         }>;
-    } else if (folderPath === 'src/pages/life') {
-        const modules = await import.meta.glob("../pages/life/*.md", { eager: true });
-        allArticles = Object.values(modules) as unknown as Array<{
-            frontmatter: { pinned?: boolean; pubDate?: string };
-        }>;
     } else {
         allArticles = [];
     }
