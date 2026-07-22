@@ -1,0 +1,210 @@
+---
+import "../styles/showcase.css";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Giscus from "../components/Giscus.astro";
+import showcaseConfig from "../showcase.json";
+import type { ShowcaseConfig } from "../showcase-types";
+import { AUTHOR_INFO } from "../consts";
+
+const showcases = Object.entries(showcaseConfig.showcases).map(([id, config]) => ({
+    id,
+    config: config as ShowcaseConfig,
+    icon: id === "links" ? "iconfont icon-plane" : "iconfont icon-pc",
+}));
+
+const pageTitle = "展示";
+const pageDescription = "物品清单与友情链接";
+
+const getInitial = (title: string) => title.charAt(0).toUpperCase();
+const hasValidImage = (image: string | undefined): boolean => !!image && image.trim() !== "";
+---
+
+<BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
+    <article class="article-container showcase">
+        <nav class="showcase-nav" aria-label="展示分类">
+            {showcases.map(({ id, config, icon }, index) => (
+                <a
+                    href={`/show#${id}`}
+                    class={index === 0 ? "active" : ""}
+                    data-showcase-tab={id}
+                    aria-current={index === 0 ? "page" : undefined}
+                >
+                    <i class={icon}></i>
+                    <span>{config.title}</span>
+                </a>
+            ))}
+        </nav>
+
+        {showcases.map(({ id, config }, index) => (
+            <div data-showcase-panel={id} hidden={index !== 0}>
+                {config.intro && config.intro.length > 0 && (
+                    <>
+                        <h2 class="showcase-h showcase-intro">写在前面</h2>
+                        {config.intro.map((paragraph) => (
+                            <p class="showcase-p">{paragraph}</p>
+                        ))}
+                    </>
+                )}
+
+                {config.sections.map((section) => (
+                    <>
+                        <h2 class="showcase-h">{section.title}</h2>
+                        <div class="showcase-body">
+                            {section.cards.map((card) => {
+                                const hasImage = hasValidImage(card.image);
+                                const hasLink = card.link && card.link.trim() !== "";
+                                const CardWrapper = hasLink ? "a" : "div";
+                                const linkProps = hasLink ? { href: card.link, target: "_blank" } : {};
+
+                                return (
+                                    <CardWrapper {...linkProps} class={`showcase-${card.imageMode}`}>
+                                        {(card.imageMode === "icon-simple" || card.imageMode === "app-card") && (
+                                            <div
+                                                class={`showcase-avatar ${!hasImage ? "no-image" : ""}`}
+                                                data-initial={getInitial(card.title)}
+                                            >
+                                                {hasImage && (
+                                                    <img
+                                                        src={card.image}
+                                                        alt={card.title}
+                                                        title={card.title}
+                                                        loading="lazy"
+                                                        decoding="async"
+                                                    />
+                                                )}
+                                            </div>
+                                        )}
+                                        {card.imageMode === "product-card" && (
+                                            <div
+                                                class={`showcase-large-image ${!hasImage ? "no-image" : ""}`}
+                                                data-title={getInitial(card.title)}
+                                            >
+                                                {hasImage && (
+                                                    <img
+                                                        src={card.image}
+                                                        alt={card.title}
+                                                        title={card.title}
+                                                        loading="lazy"
+                                                        decoding="async"
+                                                    />
+                                                )}
+                                            </div>
+                                        )}
+                                        <div class="showcase-info">
+                                            <h3>{card.title}</h3>
+                                            {card.specs && card.specs.length > 0 && (
+                                                <div class="showcase-specs">
+                                                    {card.specs.map((spec) => (
+                                                        <span class="showcase-spec">{spec}</span>
+                                                    ))}
+                                                </div>
+                                            )}
+                                            <p title={card.description}>{card.description}</p>
+                                        </div>
+                                    </CardWrapper>
+                                );
+                            })}
+                        </div>
+                    </>
+                ))}
+
+                {config.showFooter === true && (
+                    <section class="article-copy">
+                        <div>名称：{AUTHOR_INFO.name}</div>
+                        <div>网址：https://www.reashal.com</div>
+                        <div>头像：{AUTHOR_INFO.avatar}</div>
+                        <div>描述：{AUTHOR_INFO.detailDescription || AUTHOR_INFO.description}</div>
+                    </section>
+                )}
+
+                {id === "links" && <Giscus />}
+            </div>
+        ))}
+    </article>
+
+    <script is:inline>
+        (function() {
+            const tabs = Array.from(document.querySelectorAll('[data-showcase-tab]'));
+            const panels = Array.from(document.querySelectorAll('[data-showcase-panel]'));
+
+            function activateShowcase(id, updateUrl) {
+                const exists = panels.some(function(panel) {
+                    return panel.dataset.showcasePanel === id;
+                });
+                if (!exists) id = panels[0]?.dataset.showcasePanel;
+                if (!id) return;
+
+                tabs.forEach(function(tab) {
+                    const active = tab.dataset.showcaseTab === id;
+                    tab.classList.toggle('active', active);
+                    if (active) tab.setAttribute('aria-current', 'page');
+                    else tab.removeAttribute('aria-current');
+                });
+
+                panels.forEach(function(panel) {
+                    panel.hidden = panel.dataset.showcasePanel !== id;
+                });
+
+                if (updateUrl) history.pushState(null, '', '/show#' + id);
+            }
+
+            tabs.forEach(function(tab) {
+                tab.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    activateShowcase(tab.dataset.showcaseTab, true);
+                });
+            });
+
+            window.addEventListener('popstate', function() {
+                activateShowcase(location.hash.slice(1), false);
+            });
+
+            activateShowcase(location.hash.slice(1), false);
+
+            function handleImageError(img) {
+                img.style.display = 'none';
+                img.parentElement.classList.add('no-image');
+            }
+
+            const images = document.querySelectorAll('.showcase-avatar img, .showcase-large-image img');
+            images.forEach(function(img) {
+                img.dataset.handled = 'false';
+
+                function checkImage() {
+                    if (img.dataset.handled === 'true') return;
+
+                    if (img.complete) {
+                        if (img.naturalWidth === 0 || img.naturalHeight === 0) {
+                            img.dataset.handled = 'true';
+                            handleImageError(img);
+                        } else {
+                            img.dataset.handled = 'true';
+                            img.parentElement.classList.remove('no-image');
+                        }
+                    }
+                }
+
+                checkImage();
+
+                img.addEventListener('error', function() {
+                    if (img.dataset.handled === 'true') return;
+                    img.dataset.handled = 'true';
+                    handleImageError(this);
+                });
+
+                img.addEventListener('load', function() {
+                    if (img.dataset.handled === 'true') return;
+                    img.dataset.handled = 'true';
+                    this.parentElement.classList.remove('no-image');
+                });
+
+                setTimeout(function() {
+                    if (img.dataset.handled === 'false') {
+                        img.dataset.handled = 'true';
+                        if (!img.complete || img.naturalWidth === 0) handleImageError(img);
+                    }
+                }, 3000);
+            });
+        })();
+    </script>
+</BaseLayout>

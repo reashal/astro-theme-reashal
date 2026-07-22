@@ -21,6 +21,9 @@ function initElements() {
 
 function collectImages() {
     momentGroups = {}
+
+    collectArticleImages()
+
     let moments = document.querySelectorAll('.moment-images')
     moments.forEach(function(momentSection) {
         let momentId = momentSection.getAttribute('data-moment-id')
@@ -61,6 +64,32 @@ function collectImages() {
                 }
             })
         }
+    })
+}
+
+function collectArticleImages() {
+    let articleImages = Array.from(document.querySelectorAll('.doc img:not(.view-none)'))
+    if (articleImages.length === 0) return
+
+    let articleGroupId = 'article-images'
+    momentGroups[articleGroupId] = articleImages.map(function(img) {
+        return {
+            url: img.currentSrc || img.getAttribute('src') || '',
+            alt: img.getAttribute('alt') || ''
+        }
+    })
+
+    articleImages.forEach(function(img, idx) {
+        img.addEventListener('click', function(event) {
+            if (!mainElement.classList.contains('aside-show')) {
+                event.preventDefault()
+                currentMomentId = articleGroupId
+                currentIndex = idx
+                showImage()
+                viewBox.className = 'view-box-show'
+                document.body.style.overflow = 'hidden'
+            }
+        })
     })
 }
 
