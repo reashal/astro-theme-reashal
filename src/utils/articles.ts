@@ -2,6 +2,19 @@
  * 文章处理工具函数
  * 提供文章获取、排序等通用功能
  */
+import { articleModuleSchema, type ArticleModule } from "../types";
+
+const docsModules = import.meta.glob("../pages/docs/*.md", { eager: true });
+
+export function getDocsArticles(): ArticleModule[] {
+    const result = articleModuleSchema.array().safeParse(Object.values(docsModules));
+    if (!result.success) {
+        throw new Error(
+            `随笔数据校验失败：${JSON.stringify(result.error.issues)}`,
+        );
+    }
+    return result.data;
+}
 
 /**
  * 按时间排序文章
@@ -10,10 +23,10 @@
  * @returns 排序后的文章列表
  */
 export function sortArticlesByDate<T extends { frontmatter: { pubDate?: string } }>(
-    articles: T[],
+    articles: readonly T[],
     order: "desc" | "asc" = "desc"
 ): T[] {
-    return articles.sort((a, b) => {
+    return [...articles].sort((a, b) => {
         const dateA = new Date(a.frontmatter.pubDate || '1970-01-01');
         const dateB = new Date(b.frontmatter.pubDate || '1970-01-01');
         return order === "desc" 

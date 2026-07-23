@@ -2,13 +2,14 @@
 import "../styles/showcase.css";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Giscus from "../components/Giscus.astro";
-import showcaseConfig from "../showcase.json";
-import type { ShowcaseConfig } from "../showcase-types";
+import showcaseConfigJson from "../showcase.json";
+import { showcasesSchema } from "../showcase-types";
 import { AUTHOR_INFO } from "../consts";
 
+const showcaseConfig = showcasesSchema.parse(showcaseConfigJson);
 const showcases = Object.entries(showcaseConfig.showcases).map(([id, config]) => ({
     id,
-    config: config as ShowcaseConfig,
+    config,
     icon: id === "links" ? "iconfont icon-plane" : "iconfont icon-pc",
 }));
 
@@ -54,7 +55,13 @@ const hasValidImage = (image: string | undefined): boolean => !!image && image.t
                                 const hasImage = hasValidImage(card.image);
                                 const hasLink = card.link && card.link.trim() !== "";
                                 const CardWrapper = hasLink ? "a" : "div";
-                                const linkProps = hasLink ? { href: card.link, target: "_blank" } : {};
+                                const linkProps = hasLink
+                                    ? {
+                                        href: card.link,
+                                        target: "_blank",
+                                        rel: "noopener noreferrer",
+                                    }
+                                    : {};
 
                                 return (
                                     <CardWrapper {...linkProps} class={`showcase-${card.imageMode}`}>
@@ -168,42 +175,26 @@ const hasValidImage = (image: string | undefined): boolean => !!image && image.t
 
             const images = document.querySelectorAll('.showcase-avatar img, .showcase-large-image img');
             images.forEach(function(img) {
-                img.dataset.handled = 'false';
-
-                function checkImage() {
-                    if (img.dataset.handled === 'true') return;
-
-                    if (img.complete) {
-                        if (img.naturalWidth === 0 || img.naturalHeight === 0) {
-                            img.dataset.handled = 'true';
-                            handleImageError(img);
-                        } else {
-                            img.dataset.handled = 'true';
-                            img.parentElement.classList.remove('no-image');
-                        }
-                    }
+                function handleImageLoad() {
+                    img.parentElement.classList.remove('no-image');
                 }
 
-                checkImage();
+                if (img.complete) {
+                    if (img.naturalWidth === 0 || img.naturalHeight === 0) {
+                        handleImageError(img);
+                    } else {
+                        handleImageLoad();
+                    }
+                    return;
+                }
 
                 img.addEventListener('error', function() {
-                    if (img.dataset.handled === 'true') return;
-                    img.dataset.handled = 'true';
                     handleImageError(this);
-                });
+                }, { once: true });
 
                 img.addEventListener('load', function() {
-                    if (img.dataset.handled === 'true') return;
-                    img.dataset.handled = 'true';
-                    this.parentElement.classList.remove('no-image');
-                });
-
-                setTimeout(function() {
-                    if (img.dataset.handled === 'false') {
-                        img.dataset.handled = 'true';
-                        if (!img.complete || img.naturalWidth === 0) handleImageError(img);
-                    }
-                }, 3000);
+                    handleImageLoad();
+                }, { once: true });
             });
         })();
     </script>

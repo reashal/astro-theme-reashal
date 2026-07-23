@@ -2,8 +2,14 @@
 import "../styles/md.css";
 import "../styles/tags.css";
 import Giscus from "../components/Giscus.astro";
+import type { ArticleFrontmatter } from "../types";
 import BaseLayout from "./BaseLayout.astro";
-const { pageTitle, pageDescription, pageType, frontmatter } = Astro.props;
+
+interface Props {
+    frontmatter: ArticleFrontmatter;
+}
+
+const { frontmatter } = Astro.props as Props;
 const tags = frontmatter.tags || [];
 ---
 
@@ -19,19 +25,20 @@ const tags = frontmatter.tags || [];
         </section>
         <section class="article-copy">
             <div>
-                本文作者：<a href={frontmatter.source} target="_blank"
+                本文作者：<a href={frontmatter.source} target="_blank" rel="noopener noreferrer"
                     >{frontmatter.author}</a
                 >
             </div>
             <div>
-                本文来源：<a href={frontmatter.source} target="_blank"
+                本文来源：<a href={frontmatter.source} target="_blank" rel="noopener noreferrer"
                     >{frontmatter.source}</a
                 >
             </div>
             <div class="article-copy-info">
                 许可协议：<a
                     href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans"
-                    target="_blank">CC BY-NC-SA 4.0</a
+                    target="_blank"
+                    rel="noopener noreferrer">CC BY-NC-SA 4.0</a
                 >
             </div>
             <div class="article-copy-info">

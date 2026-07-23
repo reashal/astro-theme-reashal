@@ -11,13 +11,14 @@
  * <ArticleList articles={articleArray} />
  */
 import { SITE_INFO } from "../consts";
+import type { ArticleModule } from "../types";
 import "../styles/docs.css";
 
 interface Props {
-    articles: any[];
+    articles: ArticleModule[];
 }
 
-const { articles } = Astro.props;
+const { articles } = Astro.props as Props;
 ---
 
 <article class="article-container docs" id="docs-container">
@@ -54,7 +55,6 @@ const { articles } = Astro.props;
         (function () {
             const container = document.getElementById("docs-container")!;
             const pagination = document.getElementById("docs-pagination")!;
-            const footer = document.getElementById("docs-footer")!;
             const endTip = document.getElementById("docs-end-tip")!;
             
             const allItems = Array.from(
@@ -115,7 +115,7 @@ const { articles } = Astro.props;
                 currentPage = Math.max(0, Math.min(page, totalPages() - 1));
                 const start = currentPage * perPage;
                 const end = start + perPage;
-                const isLastPage = currentPage === totalPages() - 1;
+                const lastVisibleIndex = Math.min(end, allItems.length) - 1;
 
                 // 检查空间
                 checkEnoughSpace();
@@ -128,7 +128,7 @@ const { articles } = Astro.props;
                     item.style.display = isVisible ? "" : "none";
                     item.classList.toggle(
                         "docs-last",
-                        isVisible && i === end - 1,
+                        isVisible && i === lastVisibleIndex,
                     );
                 });
 

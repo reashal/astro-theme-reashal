@@ -1,9 +1,7 @@
 ---
-const docsModules = await import.meta.glob("../pages/docs/*.md", { eager: true });
-const lifeModules = await import.meta.glob("../pages/life/*.md", { eager: true });
-const allArticles = [...Object.values(docsModules), ...Object.values(lifeModules)] as unknown as Array<{
-    frontmatter: { tags?: string[] };
-}>;
+import { getDocsArticles } from "../utils/articles";
+
+const allArticles = getDocsArticles();
 
 const allTags = new Set<string>();
 allArticles.forEach(post => {

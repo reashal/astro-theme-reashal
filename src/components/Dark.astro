@@ -1,4 +1,9 @@
-<button id="themeToggle" class="themeToggle">
+<button
+  id="themeToggle"
+  class="themeToggle"
+  type="button"
+  aria-label="切换到深色模式"
+>
   <svg width="30px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path
       class="sun"
@@ -68,6 +73,16 @@
     document.documentElement.classList.remove("dark");
   }
 
+  const themeButton = document.getElementById("themeToggle");
+  const syncThemeButtonLabel = () => {
+    const isDark = document.documentElement.classList.contains("dark");
+    themeButton?.setAttribute(
+      "aria-label",
+      isDark ? "切换到浅色模式" : "切换到深色模式",
+    );
+  };
+  syncThemeButtonLabel();
+
   // 点击切换：写入手动记录和时间戳
   const handleToggleClick = () => {
     const element = document.documentElement;
@@ -75,9 +90,9 @@
     const isDark = element.classList.contains("dark");
     localStorage.setItem("theme", isDark ? "dark" : "light");
     localStorage.setItem("themeTs", String(Date.now()));
+    syncThemeButtonLabel();
   };
 
-  const themeButton = document.getElementById("themeToggle");
   if (themeButton) {
     themeButton.addEventListener("click", handleToggleClick);
   }

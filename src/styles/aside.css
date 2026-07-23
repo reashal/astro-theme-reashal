@@ -36,6 +36,8 @@ aside {
     border-radius: 0 0.4rem 0.4rem 0;
     backdrop-filter: blur(2px);
     background-color: rgb(var(--rgb-toggle) / 36%);
+    border: 0;
+    padding: 0;
     z-index: 999;
 }
 
@@ -202,6 +204,10 @@ aside {
     transition: all 0.3s ease;
     grid-column: 1 / -1;
     cursor: pointer;
+    width: 100%;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
 }
 
 /* === 页面激活状态高亮 === */

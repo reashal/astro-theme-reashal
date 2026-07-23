@@ -1,57 +1,74 @@
-<section class="giscus">
-    <script
-        id="giscus"
-        src="https://giscus.app/client.js"
-        data-repo="reashal/comments"
-        data-repo-id="R_kgDOJ3Grhw"
-        data-category="Announcements"
-        data-category-id="DIC_kwDOJ3Grh84CXprQ"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="bottom"
-        data-theme="light"
-        data-lang="zh-CN"
-        crossorigin="anonymous"
-        async></script>
-</section>
+<section class="giscus" data-giscus-container></section>
 
 <script>
-    // 同步 Giscus 主题与当前深色/浅色模式
-    function syncGiscusTheme() {
-        const isDark = document.documentElement.classList.contains("dark");
-        const theme = isDark ? "dark" : "light";
-        const giscusFrame = document.querySelector<HTMLIFrameElement>("iframe.giscus-frame");
-        if (giscusFrame) {
-            giscusFrame.contentWindow?.postMessage(
-                { giscus: { setConfig: { theme } } },
-                "https://giscus.app"
+    const giscusContainer = document.querySelector<HTMLElement>(
+        "[data-giscus-container]",
+    );
+
+    if (giscusContainer) {
+        const getGiscusTheme = () =>
+            document.documentElement.classList.contains("dark")
+                ? "dark"
+                : "light";
+
+        const syncGiscusTheme = () => {
+            const giscusFrame =
+                giscusContainer.querySelector<HTMLIFrameElement>(
+                    "iframe.giscus-frame",
+                );
+            giscusFrame?.contentWindow?.postMessage(
+                {
+                    giscus: {
+                        setConfig: {
+                            theme: getGiscusTheme(),
+                        },
+                    },
+                },
+                "https://giscus.app",
             );
-        } else {
-            // iframe 尚未加载，直接修改 script 属性让 Giscus 初始化时读取正确主题
-            const script = document.getElementById("giscus");
-            if (script) script.setAttribute("data-theme", theme);
-        }
-    }
+        };
 
-    // 页面加载时同步一次
-    syncGiscusTheme();
+        // 先读取页面已经恢复的主题，再加载 Giscus，避免刷新时以浅色初始化。
+        const giscusScript = document.createElement("script");
+        giscusScript.src = "https://giscus.app/client.js";
+        giscusScript.dataset.repo = "reashal/comments";
+        giscusScript.dataset.repoId = "R_kgDOJ3Grhw";
+        giscusScript.dataset.category = "Announcements";
+        giscusScript.dataset.categoryId = "DIC_kwDOJ3Grh84CXprQ";
+        giscusScript.dataset.mapping = "pathname";
+        giscusScript.dataset.strict = "0";
+        giscusScript.dataset.reactionsEnabled = "1";
+        giscusScript.dataset.emitMetadata = "0";
+        giscusScript.dataset.inputPosition = "bottom";
+        giscusScript.dataset.theme = getGiscusTheme();
+        giscusScript.dataset.lang = "zh-CN";
+        giscusScript.crossOrigin = "anonymous";
+        giscusScript.async = true;
+        giscusContainer.append(giscusScript);
 
-    // 监听 Giscus iframe 加载完成后再同步一次
-    window.addEventListener("message", (event) => {
-        if (event.origin !== "https://giscus.app") return;
-        if (event.data?.giscus?.discussion !== undefined) {
+        // Giscus iframe 就绪后再次同步，覆盖加载期间发生的主题变化。
+        const frameObserver = new MutationObserver(() => {
+            const giscusFrame =
+                giscusContainer.querySelector<HTMLIFrameElement>(
+                    "iframe.giscus-frame",
+                );
+            if (!giscusFrame || giscusFrame.dataset.themeListener === "true") {
+                return;
+            }
+            giscusFrame.dataset.themeListener = "true";
+            giscusFrame.addEventListener("load", syncGiscusTheme);
             syncGiscusTheme();
-        }
-    });
+        });
+        frameObserver.observe(giscusContainer, {
+            childList: true,
+            subtree: true,
+        });
 
-    // 监听主题切换按钮（复用 themeToggle 的 click 事件）
-    const themeToggleBtn = document.getElementById("themeToggle");
-    if (themeToggleBtn) {
-        themeToggleBtn.addEventListener("click", () => {
-            // 等待 dark 类切换完成后再同步
-            requestAnimationFrame(syncGiscusTheme);
+        // 页面主题切换时同步评论区，不依赖按钮或 Giscus 的消息时序。
+        const themeObserver = new MutationObserver(syncGiscusTheme);
+        themeObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ["class"],
         });
     }
 </script>

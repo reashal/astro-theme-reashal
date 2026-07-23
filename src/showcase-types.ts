@@ -1,22 +1,36 @@
-export interface Card {
-  title: string;
-  description: string;
-  link?: string;
-  image?: string;
-  imageMode: 'text-only' | 'icon-simple' | 'app-card' | 'product-card';
-  specs?: string[];
-}
+import { z } from "astro/zod";
 
-export interface Section {
-  title: string;
-  cards: Card[];
-}
+const cardSchema = z.object({
+    title: z.string(),
+    description: z.string(),
+    link: z.string().optional(),
+    image: z.string().optional(),
+    imageMode: z.enum([
+        "text-only",
+        "icon-simple",
+        "app-card",
+        "product-card",
+    ]),
+    specs: z.array(z.string()).optional(),
+});
 
-export interface ShowcaseConfig {
-  title: string;
-  description: string;
-  showFooter?: boolean;
-  intro?: string[];
-  sections: Section[];
-  enableComments?: boolean;
-}
+const sectionSchema = z.object({
+    title: z.string(),
+    cards: z.array(cardSchema),
+});
+
+export const showcaseConfigSchema = z.object({
+    title: z.string(),
+    description: z.string(),
+    showFooter: z.boolean().optional(),
+    intro: z.array(z.string()).optional(),
+    sections: z.array(sectionSchema),
+});
+
+export const showcasesSchema = z.object({
+    showcases: z.record(showcaseConfigSchema),
+});
+
+export type Card = z.infer<typeof cardSchema>;
+export type Section = z.infer<typeof sectionSchema>;
+export type ShowcaseConfig = z.infer<typeof showcaseConfigSchema>;

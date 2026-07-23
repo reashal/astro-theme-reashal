@@ -32,16 +32,18 @@ function getImgLayout(imgs: ImgItem[]): "single" | "grid2" | "grid3" | "overflow
             
             {sortedMoments.map((moment) => {
                 const { date, para, imgs, loc, stars, comments } = moment.data;
+                const machineDate = date.replaceAll(".", "-");
+                const momentId = date.replaceAll(".", "");
 
                 return (
-                    <article class="moment" id={date.split('.').join('')}>
+                    <article class="moment" id={momentId}>
                         <header class="moment-author">
                             <figure class="author-avatar">
                                 <img src={AUTHOR_INFO.avatar} alt={AUTHOR_INFO.name} loading="lazy" decoding="async" class="view-none" />
                             </figure>
                             <div class="author-info">
                                 <span class="author-name">{AUTHOR_INFO.name}</span>
-                                <time class="author-date" datetime={date}>{date}</time>
+                                <time class="author-date" datetime={machineDate}>{date}</time>
                             </div>
                         </header>
 
@@ -54,7 +56,7 @@ function getImgLayout(imgs: ImgItem[]): "single" | "grid2" | "grid3" | "overflow
                         )}
 
                         {imgs && imgs.length > 0 && (
-                            <section class="moment-images" data-moment-id={date.split('.').join('')} data-imgs={JSON.stringify(imgs)}>
+                            <section class="moment-images" data-moment-id={momentId} data-imgs={JSON.stringify(imgs)}>
                                 {getImgLayout(imgs) === "single" && (
                                     <figure class="img-single">
                                         <img src={imgs[0].url} alt={imgs[0].alt} loading="lazy" decoding="async" />
@@ -93,9 +95,9 @@ function getImgLayout(imgs: ImgItem[]): "single" | "grid2" | "grid3" | "overflow
                             </div>
                         )}
 
-                        {(stars || comments) && (
+                        {(stars.length > 0 || comments.length > 0) && (
                             <section class="moment-interaction">
-                                {stars && (
+                                {stars.length > 0 && (
                                     <div class="interaction-stars">
                                         {stars.map((star) => (
                                             <span class="star-item">{star}</span>
@@ -103,7 +105,7 @@ function getImgLayout(imgs: ImgItem[]): "single" | "grid2" | "grid3" | "overflow
                                     </div>
                                 )}
                                 
-                                {comments && (
+                                {comments.length > 0 && (
                                     <div class="interaction-comments">
                                         {comments.map((comment) => (
                                             <p class="comment-item">

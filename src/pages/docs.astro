@@ -1,0 +1,20 @@
+---
+import ArticleList from "../components/ArticleList.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import pagesConfigJson from "../pages-config.json";
+import { pagesConfigSchema } from "../types";
+import { getDocsArticles, processArticles } from "../utils/articles";
+
+const pagesConfig = pagesConfigSchema.parse(pagesConfigJson);
+const config = pagesConfig.pages.find((page) => page.path === "/docs");
+
+if (!config) {
+    throw new Error('pages-config.json 缺少 "/docs" 页面配置');
+}
+
+const displayArticles = processArticles(getDocsArticles());
+---
+
+<BaseLayout pageTitle={config.title} pageDescription={config.description}>
+    <ArticleList articles={displayArticles} />
+</BaseLayout>

@@ -14,18 +14,19 @@
  * - 卡片内部元素使用 {模块}-{元素} 格式，如 author-avatar、author-name
  */
 import "../styles/aside.css";
-import { AUTHOR_INFO, SITE_INFO } from "../consts";
-import pagesConfig from "../pages-config.json";
+import { AUTHOR_INFO } from "../consts";
+import pagesConfigJson from "../pages-config.json";
+import { pagesConfigSchema } from "../types";
 import GetTags from "./GetTags.astro";
 
+const pagesConfig = pagesConfigSchema.parse(pagesConfigJson);
 const navLinks = pagesConfig.pages
     .filter(page => !page.hiddenInAside)
     .map(page => ({
         label: page.title,
         href: page.path,
         icon: page.icon,
-        external: page.type === 'external',
-        isShowcaseParent: !!page.isShowcaseParent
+        external: page.type === 'external'
     }));
 
 const currentPath = Astro.url.pathname;
@@ -53,15 +54,12 @@ const currentPath = Astro.url.pathname;
         <section class="aside-links-card">
             {
                 navLinks.map((link) => {
-                    let isActive = currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href));
-                    // 对于展示父页面，任何 /showcase/ 路径都应该是 active
-                    if (link.isShowcaseParent && currentPath.startsWith('/showcase/')) {
-                        isActive = true;
-                    }
+                    const isActive = currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href));
                     return (
                         <a
                             href={link.href}
                             target={link.external ? "_blank" : "_self"}
+                            rel={link.external ? "noopener noreferrer" : undefined}
                             class={`${link.icon} ${isActive ? 'active' : ''}`}
                         >
                             {link.label}
@@ -73,10 +71,10 @@ const currentPath = Astro.url.pathname;
 
         <!-- 分享按钮卡片 -->
         <section class="aside-share-card">
-            <a class="share-link" id="aside-share-btn" aria-label="分享当前页面">
+            <button type="button" class="share-link" id="aside-share-btn">
                 <i class="iconfont icon-share"></i>
                 分享当前页面
-            </a>
+            </button>
         </section>
 
         <!-- 标签云卡片 -->
@@ -98,33 +96,54 @@ const currentPath = Astro.url.pathname;
     </section>
 
     <!-- 侧边栏折叠/展开按钮 -->
-    <div class="aside-toggle-btn" onclick="clickAsideBtn()"></div>
+    <button
+        type="button"
+        class="aside-toggle-btn"
+        aria-label="展开侧边栏"
+        aria-expanded="false"
+    ></button>
 </aside>
 
-<script define:vars={{ SITE_INFO }}>
+<script>
+    const layout = document.querySelector("main");
+    const mainContent = layout?.querySelector(".main");
+    const asideToggle = document.querySelector(".aside-toggle-btn");
+    const asideShareBtn = document.getElementById("aside-share-btn");
+
+    function setAsideOpen(isOpen: boolean) {
+        if (!layout) return;
+
+        layout.classList.remove("aside-init", "aside-show", "aside-hide");
+        layout.classList.add(isOpen ? "aside-show" : "aside-hide");
+
+        if (asideToggle) {
+            asideToggle.setAttribute("aria-expanded", String(isOpen));
+            asideToggle.setAttribute(
+                "aria-label",
+                isOpen ? "收起侧边栏" : "展开侧边栏",
+            );
+        }
+    }
+
+    asideToggle?.addEventListener("click", () => {
+        setAsideOpen(!layout?.classList.contains("aside-show"));
+    });
+
+    mainContent?.addEventListener("click", () => {
+        if (layout?.classList.contains("aside-show")) {
+            setAsideOpen(false);
+        }
+    });
+
     // 分享按钮点击事件：先折叠侧边栏，再弹出分享卡片
-    const asideShareBtn = document.getElementById('aside-share-btn');
-    
     if (asideShareBtn) {
-        asideShareBtn.addEventListener('click', () => {
-            // 折叠侧边栏
-            if (typeof clickAsideBtn === 'function') {
-                clickAsideBtn();
-            }
-            
-            // 延迟弹出分享卡片，等待侧边栏折叠动画完成
+        asideShareBtn.addEventListener("click", () => {
+            const wasOpen = layout?.classList.contains("aside-show") ?? false;
+            if (wasOpen) setAsideOpen(false);
+
             setTimeout(() => {
-                // 动态获取当前页面信息
-                const url = window.location.href;
-                const title = document.title.split('｜')[0].trim();
-                const description = document.querySelector('meta[name="description"]')?.getAttribute('content') || '';
-                
-                // 触发分享卡片
-                const shareBtn = document.getElementById('share-btn');
-                if (shareBtn) {
-                    shareBtn.click();
-                }
-            }, 300);
+                document.getElementById("share-btn")?.click();
+            }, wasOpen ? 300 : 0);
         });
     }
 </script>

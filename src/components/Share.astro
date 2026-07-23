@@ -38,7 +38,6 @@ const siteName = SITE_INFO.title;
 <script define:vars={{ siteName }}>
     const shareBtn = document.getElementById('share-btn');
     const overlay = document.getElementById('share-overlay');
-    const shareCard = document.getElementById('share-card');
     const copyBtn = document.getElementById('copy-btn');
     const titleEl = document.getElementById('share-card-title');
     const descEl = document.getElementById('share-card-desc');
@@ -47,6 +46,8 @@ const siteName = SITE_INFO.title;
     let currentTitle = '';
     let currentUrl = '';
     let currentDescription = '';
+    /** @type {Promise<void> | undefined} */
+    let qrCodeLibraryPromise;
 
     const getPaletteColor = (name) =>
         getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -83,7 +84,7 @@ const siteName = SITE_INFO.title;
         });
     });
 
-    function generateQRCode() {
+    async function generateQRCode() {
         const canvas = document.getElementById('qrcode-canvas');
         const ctx = canvas.getContext('2d');
         const size = 150;
@@ -93,9 +94,12 @@ const siteName = SITE_INFO.title;
         
         // 检查库是否加载
         if (typeof qrcode === 'undefined') {
-            console.log('QRCode library not loaded, loading...');
-            loadQRCodeLibrary();
-            return;
+            try {
+                await loadQRCodeLibrary();
+            } catch {
+                drawFallbackQRCode();
+                return;
+            }
         }
         
         try {
@@ -127,7 +131,6 @@ const siteName = SITE_INFO.title;
                 }
             }
             
-            console.log('QRCode generated successfully');
         } catch (error) {
             console.error('QRCode generation error:', error);
             drawFallbackQRCode();
@@ -135,17 +138,17 @@ const siteName = SITE_INFO.title;
     }
 
     function loadQRCodeLibrary() {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js';
-        script.onload = () => {
-            console.log('QRCode library loaded');
-            generateQRCode();
-        };
-        script.onerror = () => {
-            console.error('Failed to load QRCode library');
-            drawFallbackQRCode();
-        };
-        document.head.appendChild(script);
+        if (qrCodeLibraryPromise) return qrCodeLibraryPromise;
+
+        qrCodeLibraryPromise = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js';
+            script.onload = () => resolve();
+            script.onerror = () => reject(new Error('二维码组件加载失败'));
+            document.head.appendChild(script);
+        });
+
+        return qrCodeLibraryPromise;
     }
 
     function drawFallbackQRCode() {
