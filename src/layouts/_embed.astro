@@ -32,12 +32,12 @@ const { pageTitle, pageDescription } = Astro.props;
                 overflow: auto;
             }
             body {
-                background-color: rgb(255, 255, 255);
+                background-color: var(--surface-page);
                 font-family: "HM";
                 padding: 20px;
             }
             .dark body {
-                background-color: rgb(17, 24, 38);
+                background-color: var(--surface-page-dark);
             }
         </style>
     </head>

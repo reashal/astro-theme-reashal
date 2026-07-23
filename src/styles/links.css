@@ -50,7 +50,7 @@
     flex: 1 1 auto;
     padding: 8px;
     margin-right: auto;
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 15px;
+    box-shadow: rgb(var(--rgb-black) / 20%) 0px 5px 15px;
     border-radius: 8px;
 }
 
@@ -72,19 +72,19 @@
 }
 
 .link-info h3 {
-    color: #ec6fa3;
+    color: var(--color-accent-pink);
     font-size: 1.2rem;
 }
 
 .link-info p {
-    color: #000;
+    color: var(--color-black);
     font-size: 1rem;
     font-weight: normal;
 }
 
 .aside-links a.icon-plane {
-    color: #db6220 !important;
-    background-color: #007175 !important;
+    color: var(--color-orange) !important;
+    background-color: var(--color-brand) !important;
 }
 
 /* ============================================ */
@@ -96,10 +96,10 @@
 .dark .links-reashal,
 .dark .links-friends,
 .dark .links-webs {
-    color: #fcfdfb;
+    color: var(--text-on-dark-strong);
 }
 
 /* 友链卡片阴影 */
 .dark .links-single {
-    box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px !important;
+    box-shadow: rgb(var(--rgb-accent-cyan) / 40%) 0px 0px 8px !important;
 }

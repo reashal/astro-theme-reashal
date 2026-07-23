@@ -18,8 +18,8 @@
 .tag {
     display: inline-block;
     padding: 0.3rem 0.8rem;
-    background-color: #007175;
-    color: #f8fef3;
+    background-color: var(--color-brand);
+    color: var(--color-white);
     border-radius: 0.5rem;
     font-size: 0.85rem;
     font-weight: 500;
@@ -27,9 +27,9 @@
 }
 
 .tag:hover {
-    background-color: #005a5e;
+    background-color: var(--color-brand-hover);
     transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(0, 113, 117, 0.3);
+    box-shadow: 0 2px 8px rgb(var(--rgb-brand) / 30%);
 }
 
 /* 暗黑模式 */
@@ -38,13 +38,13 @@
 }
 
 .dark .tag {
-    background-color: #007175;
-    color: #f8fef3;
+    background-color: var(--color-brand);
+    color: var(--color-white);
 }
 
 .dark .tag:hover {
-    background-color: #005a5e;
-    box-shadow: 0 2px 8px rgba(0, 113, 117, 0.3);
+    background-color: var(--color-brand-hover);
+    box-shadow: 0 2px 8px rgb(var(--rgb-brand) / 30%);
 }
 
 /* ============================================
@@ -59,15 +59,15 @@
 
 .tag-article-item {
     padding: 1rem;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgb(var(--rgb-white) / 80%);
     border-radius: 0.8rem;
-    box-shadow: rgba(0, 0, 0, 0.6) 0px 5px 15px;
+    box-shadow: rgb(var(--rgb-black) / 60%) 0px 5px 15px;
     transition: all 0.3s ease;
 }
 
 .tag-article-item:hover {
     transform: translateY(-4px);
-    box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 8px;
+    box-shadow: rgb(var(--rgb-black) / 30%) 0px 2px 8px;
 }
 
 .tag-article-link {
@@ -78,44 +78,44 @@
 
 .tag-article-title {
     font-size: 1.2rem;
-    color: #007175;
+    color: var(--color-brand);
     margin-bottom: 0.5rem;
 }
 
 .tag-article-desc {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--text-secondary);
     margin-bottom: 0.5rem;
 }
 
 .tag-article-date {
     font-size: 0.8rem;
-    color: #999;
+    color: var(--text-muted);
 }
 
 /* 暗黑模式 */
 .dark .tag-article-item {
-    background-color: rgba(36, 43, 61, 0.8);
+    background-color: rgb(var(--rgb-dark-glass) / 80%);
     box-shadow:
-        rgba(0, 0, 0, 0.5) 0px 8px 20px,
-        rgba(0, 0, 0, 0.3) 0px 2px 6px;
+        rgb(var(--rgb-black) / 50%) 0px 8px 20px,
+        rgb(var(--rgb-black) / 30%) 0px 2px 6px;
 }
 
 .dark .tag-article-item:hover {
     box-shadow:
-        rgba(0, 0, 0, 0.15) 0px 1px 3px;
+        rgb(var(--rgb-black) / 15%) 0px 1px 3px;
 }
 
 .dark .tag-article-title {
-    color: #82d8dd;
+    color: var(--color-accent-cyan);
 }
 
 .dark .tag-article-desc {
-    color: #a0b4c0;
+    color: var(--text-on-dark-secondary);
 }
 
 .dark .tag-article-date {
-    color: #718096;
+    color: var(--text-on-dark-muted);
 }
 
 /* ============================================
@@ -132,21 +132,21 @@
 .tag-card {
     display: block;
     padding: 1.5rem;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgb(var(--rgb-white) / 80%);
     border-radius: 0.8rem;
-    box-shadow: rgba(0, 0, 0, 0.6) 0px 5px 15px;
+    box-shadow: rgb(var(--rgb-black) / 60%) 0px 5px 15px;
     text-decoration: none;
     transition: all 0.3s ease;
 }
 
 .tag-card:hover {
     transform: translateY(-4px);
-    box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 8px;
+    box-shadow: rgb(var(--rgb-black) / 30%) 0px 2px 8px;
 }
 
 .tag-name {
     font-size: 1.1rem;
-    color: #007175;
+    color: var(--color-brand);
     font-weight: 600;
 }
 
@@ -156,17 +156,17 @@
 }
 
 .dark .tag-card {
-    background-color: rgba(36, 43, 61, 0.8);
+    background-color: rgb(var(--rgb-dark-glass) / 80%);
     box-shadow:
-        rgba(0, 0, 0, 0.5) 0px 8px 20px,
-        rgba(0, 0, 0, 0.3) 0px 2px 6px;
+        rgb(var(--rgb-black) / 50%) 0px 8px 20px,
+        rgb(var(--rgb-black) / 30%) 0px 2px 6px;
 }
 
 .dark .tag-card:hover {
     box-shadow:
-        rgba(0, 0, 0, 0.15) 0px 1px 3px;
+        rgb(var(--rgb-black) / 15%) 0px 1px 3px;
 }
 
 .dark .tag-name {
-    color: #82d8dd;
+    color: var(--color-accent-cyan);
 }

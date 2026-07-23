@@ -8,8 +8,8 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background-color: #007175;
-    color: white;
+    background-color: var(--color-brand);
+    color: var(--color-white);
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;
@@ -18,7 +18,7 @@
 }
 
 .share-btn:hover {
-    background-color: #005a5e;
+    background-color: var(--color-brand-hover);
     transform: translateY(-2px);
 }
 
@@ -28,7 +28,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(var(--rgb-black) / 70%);
     display: none;
     justify-content: center;
     align-items: center;
@@ -43,12 +43,12 @@
 }
 
 .share-card {
-    background-color: white;
+    background-color: var(--color-white);
     border-radius: 1rem;
     width: 90%;
     max-width: 400px;
     overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 60px rgb(var(--rgb-black) / 30%);
     transform: scale(0.9);
     transition: transform 0.3s ease;
     position: relative;
@@ -80,13 +80,13 @@
     font-size: 1.3rem;
     font-weight: 600;
     margin: 0 0 0.5rem 0;
-    color: #1a1a1a;
+    color: var(--text-primary);
     line-height: 1.4;
 }
 
 .share-card-desc {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--text-secondary);
     margin: 0 0 1rem 0;
     line-height: 1.6;
 }
@@ -100,11 +100,11 @@
 .share-card-link input {
     flex: 1;
     padding: 0.5rem 1rem;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border-light);
     border-radius: 0.5rem;
     font-size: 0.85rem;
-    background-color: #f8f9fa;
-    color: #333;
+    background-color: var(--surface-soft);
+    color: var(--text-strong);
 }
 
 .copy-btn {
@@ -112,8 +112,8 @@
     align-items: center;
     gap: 0.3rem;
     padding: 0.5rem 1rem;
-    background-color: #007175;
-    color: white;
+    background-color: var(--color-brand);
+    color: var(--color-white);
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;
@@ -123,7 +123,7 @@
 }
 
 .copy-btn:hover {
-    background-color: #005a5e;
+    background-color: var(--color-brand-hover);
     transform: translateY(-1px);
 }
 
@@ -133,60 +133,60 @@
 }
 
 .share-card-qrcode canvas {
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--border-light);
     border-radius: 0.5rem;
     padding: 0.5rem;
-    background-color: white;
+    background-color: var(--color-white);
     display: block;
     margin: 0 auto;
 }
 
 .qrcode-tip {
     font-size: 0.8rem;
-    color: #999;
+    color: var(--text-muted);
     margin: 0.2rem 0 0 0;
     line-height: 1;
 }
 
 /* 暗黑模式 */
 html.dark .share-btn {
-    background-color: #82d8dd;
+    background-color: var(--color-accent-cyan);
 }
 
 html.dark .share-btn:hover {
-    background-color: #a8e5e9;
+    background-color: var(--color-accent-cyan-hover);
 }
 
 html.dark .share-card {
-    background-color: #1e293b;
+    background-color: var(--surface-dark-panel);
 }
 
 html.dark .share-card-title {
-    color: #dcebf2;
+    color: var(--text-on-dark);
 }
 
 html.dark .share-card-desc {
-    color: #a0b4c0;
+    color: var(--text-on-dark-secondary);
 }
 
 html.dark .share-card-link input {
-    background-color: #2d3748;
-    border-color: #4a5568;
-    color: #dcebf2;
+    background-color: var(--surface-dark-input);
+    border-color: var(--border-dark-input);
+    color: var(--text-on-dark);
 }
 
 html.dark .copy-btn {
-    background-color: #82d8dd;
+    background-color: var(--color-accent-cyan);
 }
 
 html.dark .copy-btn:hover {
-    background-color: #a8e5e9;
+    background-color: var(--color-accent-cyan-hover);
 }
 
 html.dark .share-card-qrcode canvas {
-    border-color: #4a5568;
+    border-color: var(--border-dark-input);
 }
 
 html.dark .qrcode-tip {
-    color: #718096;
+    color: var(--text-on-dark-muted);
 }

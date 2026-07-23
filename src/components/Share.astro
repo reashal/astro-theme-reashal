@@ -48,6 +48,9 @@ const siteName = SITE_INFO.title;
     let currentUrl = '';
     let currentDescription = '';
 
+    const getPaletteColor = (name) =>
+        getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
     shareBtn.addEventListener('click', () => {
         // 动态获取当前页面信息
         currentUrl = window.location.href;
@@ -102,7 +105,7 @@ const siteName = SITE_INFO.title;
             qr.make();
             
             // 清空画布
-            ctx.fillStyle = '#ffffff';
+            ctx.fillStyle = getPaletteColor('--color-white');
             ctx.fillRect(0, 0, size, size);
             
             // 计算模块大小
@@ -110,7 +113,7 @@ const siteName = SITE_INFO.title;
             const moduleSize = size / moduleCount;
             
             // 绘制二维码
-            ctx.fillStyle = '#000000';
+            ctx.fillStyle = getPaletteColor('--color-black');
             for (let row = 0; row < moduleCount; row++) {
                 for (let col = 0; col < moduleCount; col++) {
                     if (qr.isDark(row, col)) {
@@ -152,9 +155,9 @@ const siteName = SITE_INFO.title;
         canvas.width = size;
         canvas.height = size;
         
-        ctx.fillStyle = '#ffffff';
+        ctx.fillStyle = getPaletteColor('--color-white');
         ctx.fillRect(0, 0, size, size);
-        ctx.fillStyle = '#000000';
+        ctx.fillStyle = getPaletteColor('--color-black');
         ctx.font = '12px Arial';
         ctx.textAlign = 'center';
         ctx.fillText('二维码生成失败', size / 2, size / 2);

@@ -1,0 +1,96 @@
+/*
+ * 全站配色配置
+ *
+ * 品牌色和基础色只在这里维护；组件通过语义变量使用颜色。
+ * RGB 通道变量用于带透明度的阴影、遮罩和玻璃效果，需与对应颜色同步。
+ */
+:root {
+    /* 品牌与强调色 */
+    --color-brand: #007175;
+    --color-brand-hover: #005a5e;
+    --color-accent-pink: #ec6fa3;
+    --color-accent-cyan: #82d8dd;
+    --color-accent-cyan-hover: #a8e5e9;
+    --color-orange: #ff6100;
+
+    /* 基础色 */
+    --color-white: #fff;
+    --color-black: #000;
+    --color-indigo: #202e78;
+    --color-slate: #9ea4b8;
+
+    /* 浅色模式文字层级 */
+    --text-primary: #1a1a1a;
+    --text-strong: #333;
+    --text-secondary: #666;
+    --text-medium: #555;
+    --text-tertiary: #888;
+    --text-muted: #999;
+    --text-faint: #b2b2b2;
+    --text-subtle: #c0c0c0;
+    --text-disabled: #d0d0d0;
+    --text-blue: #576b95;
+    --text-on-brand-dark: #033a4a;
+
+    /* 深色模式文字层级 */
+    --text-on-dark-strong: #fcfdfb;
+    --text-on-dark: #dcebf2;
+    --text-on-dark-body: #c8c8c8;
+    --text-on-dark-secondary: #a0b4c0;
+    --text-on-dark-soft: #8899a8;
+    --text-on-dark-muted: #718096;
+    --text-on-dark-faint: #707070;
+    --text-blue-dark: #82a4ca;
+    --text-link-dark-hover: #a8c8d8;
+
+    /* 表面与容器 */
+    --surface-page: var(--color-white);
+    --surface-page-dark: #111826;
+    --surface-soft: #f8f9fa;
+    --surface-muted: #f0f0f0;
+    --surface-code: #e8e8e8;
+    --surface-header-fallback: #575757;
+    --surface-dark-panel: #1e293b;
+    --surface-dark-card: #191f2d;
+    --surface-dark-card-hover: #242b3d;
+    --surface-dark-control: #3b3e43;
+    --surface-dark-code: #1e1e1e;
+    --surface-dark-row: #252525;
+    --surface-dark-input: #2d3748;
+
+    /* 边框与分隔线 */
+    --border-light: #e0e0e0;
+    --border-light-subtle: #eee;
+    --border-light-soft: #f2f2f2;
+    --border-code: #d5d5d7;
+    --border-dark: #4a4a4a;
+    --border-dark-soft: #3d3d3d;
+    --border-dark-code: #4a4d55;
+    --border-dark-input: #4a5568;
+    --border-dark-divider: #313131;
+    --rule-dark: #7e8fa6;
+
+    /* Markdown 标题层级：这些差异用于增强内容结构，不合并 */
+    --heading-h1-border: #f00;
+    --heading-h1: #d33a4a;
+    --heading-h3-border: #114f9e;
+    --heading-h3: #44362f;
+    --heading-h5: #224e95;
+
+    /* 代码块窗口指示灯：功能性辨识色，不合并 */
+    --terminal-red: #ff5f57;
+    --terminal-yellow: #ffbd2e;
+    --terminal-green: #28ca42;
+
+    /* 透明色所需 RGB 通道 */
+    --rgb-black: 0 0 0;
+    --rgb-white: 255 255 255;
+    --rgb-brand: 0 113 117;
+    --rgb-accent-pink: 236 111 163;
+    --rgb-accent-cyan: 130 216 221;
+    --rgb-dark-glass: 36 43 61;
+    --rgb-dark-card: 25 31 45;
+    --rgb-dark-message: 30 38 54;
+    --rgb-toggle: 106 126 154;
+    --rgb-shadow-neutral: 100 100 111;
+}

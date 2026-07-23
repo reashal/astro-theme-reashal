@@ -5,6 +5,8 @@
 
 /* === 全局重置 === */
 
+@import "./colors.css";
+
 * {
     margin: 0;
     padding: 0;
@@ -23,12 +25,12 @@ body {
 }
 
 body {
-    background-color: rgb(255, 255, 255);
+    background-color: var(--surface-page);
     font-family: "HM";
 }
 
 .dark body {
-    background-color: rgb(17, 24, 38);
+    background-color: var(--surface-page-dark);
 }
 
 /* === 字体定义 === */
@@ -45,7 +47,7 @@ a {
     list-style: none;
     text-decoration: none;
     font-weight: bold;
-    color: #202e78;
+    color: var(--color-indigo);
 }
 
 /* 图片 */
@@ -85,7 +87,7 @@ main {
     margin-top: 3.4vh;
     margin-bottom: 3.4vh;
     padding: 1rem;
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    box-shadow: rgb(var(--rgb-shadow-neutral) / 20%) 0px 7px 29px 0px;
 }
 
 /* === 侧边栏动画控制 === */
@@ -102,7 +104,7 @@ main {
 }
 
 .aside-show aside {
-    box-shadow: #00000059 0 5px 15px;
+    box-shadow: rgb(var(--rgb-black) / 35%) 0 5px 15px;
 }
 
 /* 侧边栏隐藏状态 */
@@ -137,22 +139,22 @@ main {
     display: block;
     margin: 1rem 0;
     padding: .6rem;
-    background-color: #007175;
+    background-color: var(--color-brand);
     border-radius: .3rem;
-    color: #f8fef3;
+    color: var(--color-white);
 }
 
 .article-copy a {
-    color: #fff;
+    color: var(--color-white);
 }
 
 .article-copy .article-copy-info {
     margin-top: .2rem;
-    color: rgb(178, 178, 178);
+    color: var(--text-faint);
 }
 
 .article-copy-info a {
-    color: rgb(178, 178, 178);
+    color: var(--text-faint);
     font-weight: normal;
 }
 

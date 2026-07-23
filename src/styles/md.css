@@ -3,13 +3,13 @@
     margin-top: 2vh;
     margin-bottom: 2vh;
     padding: 1rem;
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    box-shadow: rgb(var(--rgb-shadow-neutral) / 20%) 0px 7px 29px 0px;
     overflow-wrap: break-word;
     counter-reset: h1-counter h2-counter h3-counter h4-counter h5-counter h6-counter;
 }
 
 .dark .article-container {
-    box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px;
+    box-shadow: rgb(var(--rgb-accent-cyan) / 40%) 0px 0px 8px;
 }
 
 /* 标题通用样式 */
@@ -27,9 +27,9 @@
 
 /* H1 标题 */
 .doc h1 {
-    border-left: 16px solid #ff0000;
+    border-left: 16px solid var(--heading-h1-border);
     font-size: 1.8rem;
-    color: #d33a4a;
+    color: var(--heading-h1);
     font-weight: bold;
     counter-increment: h1-counter;
 }
@@ -42,9 +42,9 @@
 
 /* H2 标题 */
 .doc h2 {
-    border-left: 20px solid #ff6100;
+    border-left: 20px solid var(--color-orange);
     font-size: 1.6rem;
-    color: #007175 !important;
+    color: var(--color-brand);
     font-weight: bold;
     counter-increment: h2-counter;
 }
@@ -56,14 +56,14 @@
 }
 
 .dark .article-container h2 {
-    color: #fcfdfb;
+    color: var(--text-on-dark-strong);
 }
 
 /* H3 标题 */
 .doc h3 {
-    border-left: 24px solid #114f9e;
+    border-left: 24px solid var(--heading-h3-border);
     font-size: 1.4rem;
-    color: #44362f;
+    color: var(--heading-h3);
     font-weight: bold;
     counter-increment: h3-counter;
 }
@@ -75,14 +75,14 @@
 }
 
 .dark .article-container h3 {
-    color: #dcebf2;
+    color: var(--text-on-dark);
 }
 
 /* H4 标题 */
 .doc h4 {
-    border-left: 28px solid #007175;
+    border-left: 28px solid var(--color-brand);
     font-size: 1.2rem;
-    color: #ff6100;
+    color: var(--color-orange);
     font-weight: normal;
     counter-increment: h4-counter;
 }
@@ -95,9 +95,9 @@
 
 /* H5 标题 */
 .doc h5 {
-    border-left: 32px solid #202e78;
+    border-left: 32px solid var(--color-indigo);
     font-size: 1rem;
-    color: #224e95;
+    color: var(--heading-h5);
     font-weight: normal;
     counter-increment: h5-counter;
 }
@@ -110,10 +110,10 @@
 
 /* H6 标题 */
 .doc h6 {
-    border-left: 36px solid #9ea4b8;
+    border-left: 36px solid var(--color-slate);
     font-size: 1rem;
     font-weight: normal;
-    color: #9ea4b8;
+    color: var(--color-slate);
     counter-increment: h6-counter;
 }
 
@@ -132,7 +132,7 @@
 }
 
 .dark .article-container p {
-    color: #dcebf2;
+    color: var(--text-on-dark);
 }
 
 /* 引用块 */
@@ -142,11 +142,11 @@
     padding: .2rem;
     margin-right: .2rem;
     font-family: "iconfont" !important;
-    color: #007175;
+    color: var(--color-brand);
 }
 
 .dark .article-container blockquote p::before {
-    color: #82a4ca;
+    color: var(--text-blue-dark);
 }
 
 /* 代码块 */
@@ -155,9 +155,9 @@
     padding: 2.4rem .6rem .6rem .6rem;
     border-radius: .5rem;
     font-size: 1rem;
-    background-color: #e8e8ea !important;
-    border: 1px solid #d5d5d7;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    background-color: var(--surface-code) !important;
+    border: 1px solid var(--border-code);
+    box-shadow: 0 2px 8px rgb(var(--rgb-black) / 8%);
     position: relative;
     margin: .8rem 0;
     overflow: hidden;
@@ -171,15 +171,15 @@
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background-color: #ff5f57;
-    box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #28ca42;
+    background-color: var(--terminal-red);
+    box-shadow: 20px 0 0 var(--terminal-yellow), 40px 0 0 var(--terminal-green);
     z-index: 1;
 }
 
 .dark .doc pre {
-    background-color: #1e1e1e !important;
-    border-color: #333;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    background-color: var(--surface-dark-code) !important;
+    border-color: var(--text-strong);
+    box-shadow: 0 2px 8px rgb(var(--rgb-black) / 30%);
 }
 
 .doc pre code {
@@ -188,11 +188,11 @@
     overflow-wrap: break-word;
     overflow-x: auto;
     background-color: transparent;
-    color: #2d2d2d !important;
+    color: var(--text-strong) !important;
 }
 
 .dark .doc pre code {
-    color: #dcebf2 !important;
+    color: var(--text-on-dark) !important;
 }
 
 /* 行内代码 */
@@ -204,22 +204,22 @@
     line-height: 1rem;
     font-weight: bold;
     border-radius: .2rem;
-    background-color: #9ea4b8;
-    color: #dcebf2;
+    background-color: var(--color-slate);
+    color: var(--text-on-dark);
 }
 
 .doc > p code,
 .doc blockquote p code {
-    background-color: #9ea4b8;
-    color: #dcebf2;
+    background-color: var(--color-slate);
+    color: var(--text-on-dark);
     border: none;
 }
 
 .dark .doc > p code,
 .dark .doc blockquote p code {
-    color: #dcebf2;
-    background-color: rgb(59, 62, 67);
-    border: 1px solid #4a4d55;
+    color: var(--text-on-dark);
+    background-color: var(--surface-dark-control);
+    border: 1px solid var(--border-dark-code);
 }
 
 /* 列表 */
@@ -236,7 +236,7 @@
 
 .dark .article-container ul,
 .dark .article-container ol {
-    color: #dcebf2;
+    color: var(--text-on-dark);
 }
 
 /* 表格 */
@@ -251,39 +251,39 @@
     padding: .6rem 1rem;
     text-align: left;
     font-weight: bold;
-    color: #2d2d2d;
-    border: 1px solid #e5e5e7;
+    color: var(--text-strong);
+    border: 1px solid var(--border-light);
 }
 
 .dark .doc th {
-    color: #dcebf2;
-    border-color: #3d3d3d;
+    color: var(--text-on-dark);
+    border-color: var(--border-dark-soft);
 }
 
 .doc tbody tr {
-    border-bottom: 1px solid #e5e5e7;
+    border-bottom: 1px solid var(--border-light);
 }
 
 .dark .doc tbody tr {
-    border-color: #3d3d3d;
+    border-color: var(--border-dark-soft);
 }
 
 .doc tbody tr:nth-child(even) {
-    background-color: #fafafa;
+    background-color: var(--surface-soft);
 }
 
 .dark .doc tbody tr:nth-child(even) {
-    background-color: #252525;
+    background-color: var(--surface-dark-row);
 }
 
 .doc td {
     padding: .6rem 1rem;
-    border: 1px solid #e5e5e7;
+    border: 1px solid var(--border-light);
 }
 
 .dark .doc td {
-    border-color: #3d3d3d;
-    color: #dcebf2;
+    border-color: var(--border-dark-soft);
+    color: var(--text-on-dark);
 }
 
 /* 分隔线 */
@@ -292,7 +292,7 @@
 }
 
 .dark .article-container hr {
-    color: rgb(126, 143, 166);
+    color: var(--rule-dark);
 }
 
 /* 图片 */
@@ -316,24 +316,24 @@
 
 /* 链接 */
 .doc a {
-    color: #007175;
+    color: var(--color-brand);
     text-decoration: none;
 }
 
 .doc a:hover {
-    color: #005a5a;
+    color: var(--color-brand-hover);
 }
 
 .dark .article-container a {
-    color: #dcebf2;
+    color: var(--text-on-dark);
 }
 
 .dark .article-container a:hover {
-    color: #a8c8d8;
+    color: var(--text-link-dark-hover);
 }
 
 /* 暗黑模式引用块代码 */
 .dark .article-container blockquote code {
-    color: #dcebf2;
-    background-color: rgb(59, 62, 67);
+    color: var(--text-on-dark);
+    background-color: var(--surface-dark-control);
 }

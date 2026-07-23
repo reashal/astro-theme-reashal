@@ -4,7 +4,7 @@
     font-size: 1.3rem;
     font-weight: 600;
     margin-bottom: 4px;
-    color: #333;
+    color: var(--text-strong);
 }
 
 .showcase-intro::before {
@@ -21,7 +21,7 @@
 
 .showcase-p {
     padding: 4px 6px 4px 20px;
-    color: #666;
+    color: var(--text-secondary);
     line-height: 1.6;
     margin: 0;
 }
@@ -35,7 +35,7 @@
     gap: 4px;
     padding: 0;
     margin-bottom: 12px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--border-light);
 }
 
 .showcase-nav a {
@@ -44,7 +44,7 @@
     gap: 6px;
     padding: 12px 16px;
     text-decoration: none;
-    color: #999;
+    color: var(--text-muted);
     font-size: 0.85rem;
     font-weight: 400;
     transition: all 0.2s ease;
@@ -54,12 +54,12 @@
 }
 
 .showcase-nav a:hover {
-    color: #666;
+    color: var(--text-secondary);
 }
 
 .showcase-nav a.active {
-    color: #333;
-    border-bottom-color: #ec6fa3;
+    color: var(--text-strong);
+    border-bottom-color: var(--color-accent-pink);
 }
 
 .showcase-nav a i {
@@ -98,7 +98,7 @@
 }
 
 .showcase-icon-simple:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgb(var(--rgb-black) / 5%);
 }
 
 .showcase-icon-simple .showcase-avatar {
@@ -110,7 +110,7 @@
     justify-content: center;
     border-radius: 12px;
     font-size: 24px;
-    color: white;
+    color: var(--color-white);
     font-weight: 600;
     overflow: hidden;
     position: relative;
@@ -131,7 +131,7 @@
 
 /* 无图片时的背景色和首字母 */
 .showcase-icon-simple .showcase-avatar.no-image {
-    background: #ec6fa3 !important;
+    background: var(--color-accent-pink) !important;
 }
 
 .showcase-icon-simple .showcase-avatar.no-image::after {
@@ -148,7 +148,7 @@
 }
 
 .showcase-icon-simple .showcase-info h3 {
-    color: #333;
+    color: var(--text-strong);
     font-size: 0.95rem;
     font-weight: 500;
     margin: 0;
@@ -170,18 +170,18 @@
     align-items: center;
     gap: 12px;
     padding: 24px 16px;
-    background: #f8f9fa;
+    background: var(--surface-soft);
     border-radius: 16px;
     text-decoration: none;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     text-align: center;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px;
+    box-shadow: rgb(var(--rgb-black) / 10%) 0px 2px 8px;
 }
 
 .showcase-app-card:hover {
     transform: translateY(-2px);
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 12px;
-    background: #fff;
+    box-shadow: rgb(var(--rgb-black) / 15%) 0px 4px 12px;
+    background: var(--color-white);
 }
 
 .showcase-app-card .showcase-avatar {
@@ -193,7 +193,7 @@
     justify-content: center;
     border-radius: 16px;
     font-size: 28px;
-    color: white;
+    color: var(--color-white);
     font-weight: 600;
     overflow: hidden;
     position: relative;
@@ -214,7 +214,7 @@
 
 /* 无图片时的背景色和首字母 */
 .showcase-app-card .showcase-avatar.no-image {
-    background: #ec6fa3 !important;
+    background: var(--color-accent-pink) !important;
 }
 
 .showcase-app-card .showcase-avatar.no-image::after {
@@ -231,14 +231,14 @@
 }
 
 .showcase-app-card .showcase-info h3 {
-    color: #1a1a1a;
+    color: var(--text-primary);
     font-size: 1rem;
     font-weight: 600;
     margin: 0 0 8px 0;
 }
 
 .showcase-app-card .showcase-info p {
-    color: #666;
+    color: var(--text-secondary);
     font-size: 0.85rem;
     line-height: 1.5;
     margin: 0;
@@ -254,19 +254,19 @@
 .showcase-product-card {
     display: flex;
     flex-direction: column;
-    background: #f8f9fa;
+    background: var(--surface-soft);
     border-radius: 16px;
     overflow: hidden;
     text-decoration: none;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     height: 100%;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px;
+    box-shadow: rgb(var(--rgb-black) / 10%) 0px 2px 8px;
 }
 
 .showcase-product-card:hover {
     transform: translateY(-2px);
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 12px;
-    background: #fff;
+    box-shadow: rgb(var(--rgb-black) / 15%) 0px 4px 12px;
+    background: var(--color-white);
 }
 
 .showcase-product-card .showcase-large-image {
@@ -277,7 +277,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    background: #f0f0f0;
+    background: var(--surface-muted);
 }
 
 .showcase-product-card .showcase-large-image img {
@@ -291,7 +291,7 @@
     content: attr(data-title);
     font-size: 4rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.3);
+    color: rgb(var(--rgb-white) / 30%);
     text-transform: uppercase;
     letter-spacing: 2px;
     display: none;
@@ -299,7 +299,7 @@
 
 /* 无图片时的背景色和首字母 */
 .showcase-product-card .showcase-large-image.no-image {
-    background: #ec6fa3 !important;
+    background: var(--color-accent-pink) !important;
 }
 
 .showcase-product-card .showcase-large-image.no-image::after {
@@ -324,7 +324,7 @@
 }
 
 .showcase-product-card .showcase-info h3 {
-    color: #1a1a1a;
+    color: var(--text-primary);
     font-size: 1rem;
     font-weight: 600;
     margin: 0 0 10px 0;
@@ -344,17 +344,17 @@
 }
 
 .showcase-product-card .showcase-spec {
-    color: #888;
+    color: var(--text-tertiary);
     font-size: 0.7rem;
     line-height: 1;
     padding: 4px 8px;
-    background: rgba(0, 0, 0, 0.04);
+    background: rgb(var(--rgb-black) / 4%);
     border-radius: 4px;
     white-space: nowrap;
 }
 
 .showcase-product-card .showcase-info p {
-    color: #666;
+    color: var(--text-secondary);
     font-size: 0.85rem;
     line-height: 1.6;
     margin: 0;
@@ -375,19 +375,19 @@
     justify-content: center;
     gap: 4px;
     padding: 12px 10px;
-    background: #f8f9fa;
+    background: var(--surface-soft);
     border-radius: 12px;
     text-decoration: none;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     text-align: center;
     min-height: 60px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px;
+    box-shadow: rgb(var(--rgb-black) / 10%) 0px 2px 8px;
 }
 
 .showcase-text-only:hover {
     transform: translateY(-2px);
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 12px;
-    background: #fff;
+    box-shadow: rgb(var(--rgb-black) / 15%) 0px 4px 12px;
+    background: var(--color-white);
 }
 
 .showcase-text-only .showcase-info {
@@ -395,7 +395,7 @@
 }
 
 .showcase-text-only .showcase-info h3 {
-    color: #ec6fa3;
+    color: var(--color-accent-pink);
     font-size: 0.95rem;
     font-weight: 600;
     margin: 0;
@@ -405,7 +405,7 @@
 }
 
 .showcase-text-only .showcase-info p {
-    color: #666;
+    color: var(--text-secondary);
     font-size: 0.7rem;
     line-height: 1.2;
     margin: 2px 0 0 0;
@@ -482,104 +482,104 @@
 /* === 暗黑模式 === */
 /* ============================================ */
 .dark .showcase-h {
-    color: #fcfdfb;
+    color: var(--text-on-dark-strong);
 }
 
 .dark .showcase-intro::after {
-    color: #444;
+    color: var(--border-dark);
 }
 
 .dark .showcase-p {
-    color: #aaa;
+    color: var(--text-on-dark-secondary);
 }
 
 .dark .showcase-nav {
-    border-bottom-color: #444;
+    border-bottom-color: var(--border-dark);
 }
 
 .dark .showcase-nav a {
-    color: #777;
+    color: var(--text-on-dark-muted);
 }
 
 .dark .showcase-nav a:hover {
-    color: #aaa;
+    color: var(--text-on-dark-secondary);
 }
 
 .dark .showcase-nav a.active {
-    color: #e0e0e0;
-    border-bottom-color: #ec6fa3;
+    color: var(--text-on-dark);
+    border-bottom-color: var(--color-accent-pink);
 }
 
 .dark .showcase-icon-simple:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgb(var(--rgb-white) / 5%);
 }
 
 .dark .showcase-icon-simple .showcase-info h3 {
-    color: #e0e0e0;
+    color: var(--text-on-dark);
 }
 
 .dark .showcase-icon-simple .showcase-avatar.no-image {
-    background: #ec6fa3;
+    background: var(--color-accent-pink);
 }
 
 .dark .showcase-app-card,
 .dark .showcase-product-card {
-    background: #191f2d;
-    box-shadow: rgba(142, 208, 220, 0.2) 0px 2px 8px;
+    background: var(--surface-dark-card);
+    box-shadow: rgb(var(--rgb-accent-cyan) / 20%) 0px 2px 8px;
 }
 
 .dark .showcase-app-card:hover,
 .dark .showcase-product-card:hover {
-    box-shadow: rgba(142, 208, 220, 0.3) 0px 4px 12px;
-    background: #242b3d;
+    box-shadow: rgb(var(--rgb-accent-cyan) / 30%) 0px 4px 12px;
+    background: var(--surface-dark-card-hover);
 }
 
 .dark .showcase-app-card .showcase-info h3,
 .dark .showcase-product-card .showcase-info h3 {
-    color: #f0f0f0;
+    color: var(--text-on-dark);
 }
 
 .dark .showcase-app-card .showcase-info p,
 .dark .showcase-product-card .showcase-info p {
-    color: #aaa;
+    color: var(--text-on-dark-secondary);
 }
 
 .dark .showcase-product-card .showcase-spec {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgb(var(--rgb-white) / 8%);
 }
 
 .dark .showcase-app-card .showcase-avatar.no-image {
-    background: #ec6fa3;
+    background: var(--color-accent-pink);
 }
 
 .dark .showcase-product-card .showcase-large-image {
-    background: #1a1e28;
+    background: var(--surface-dark-card);
 }
 
 .dark .showcase-product-card .showcase-large-image.no-image {
-    background: #ec6fa3;
+    background: var(--color-accent-pink);
 }
 
 .dark .showcase-product-card .showcase-large-image::after {
-    color: rgba(255, 255, 255, 0.3);
+    color: rgb(var(--rgb-white) / 30%);
 }
 
 .dark .showcase-text-only {
-    background: #191f2d;
-    box-shadow: rgba(142, 208, 220, 0.2) 0px 2px 8px;
+    background: var(--surface-dark-card);
+    box-shadow: rgb(var(--rgb-accent-cyan) / 20%) 0px 2px 8px;
 }
 
 .dark .showcase-text-only:hover {
-    background: #242b3d;
-    box-shadow: rgba(142, 208, 220, 0.3) 0px 4px 12px;
+    background: var(--surface-dark-card-hover);
+    box-shadow: rgb(var(--rgb-accent-cyan) / 30%) 0px 4px 12px;
 }
 
 .dark .showcase-text-only .showcase-info h3 {
-    color: #ec6fa3;
+    color: var(--color-accent-pink);
 }
 
 .dark .showcase-text-only .showcase-info p {
-    color: #aaa;
+    color: var(--text-on-dark-secondary);
 }
 
 /* Giscus 评论区间距 */

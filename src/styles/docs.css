@@ -61,11 +61,11 @@
 /* hover 的条目：微微凸起 */
 .docs-body:hover {
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px -4px rgba(0, 113, 117, .18);
+    box-shadow: 0 2px 8px -4px rgb(var(--rgb-brand) / 18%);
 }
 
 .docs-fixed:hover {
-    box-shadow: 0 2px 8px -4px rgba(236, 111, 163, .2);
+    box-shadow: 0 2px 8px -4px rgb(var(--rgb-accent-pink) / 20%);
 }
 
 .docs-h {
@@ -75,7 +75,7 @@
 
 .docs-p {
     font-size: 1rem;
-    color: #000;
+    color: var(--color-black);
     display: -webkit-box;
     display: -moz-box;
     display: box;
@@ -96,8 +96,8 @@
     display: block;
     padding-bottom: .6rem;
     font-size: .8rem;
-    color: rgb(178, 178, 178);
-    border-bottom: .2rem rgb(242, 242, 242) solid;
+    color: var(--text-faint);
+    border-bottom: .2rem var(--border-light-soft) solid;
 }
 
 /* === 置顶文章样式 === */
@@ -109,7 +109,7 @@
 
 /* 置顶文章标题颜色 */
 .docs-fixed h2 {
-    color: #ec6fa3;
+    color: var(--color-accent-pink);
 }
 
 
@@ -155,8 +155,8 @@
     padding: 0 .5rem;
     border: none;
     border-radius: .3rem;
-    background-color: #f0f0f0;
-    color: #555;
+    background-color: var(--surface-muted);
+    color: var(--text-medium);
     font-size: .85rem;
     font-family: inherit;
     cursor: pointer;
@@ -165,8 +165,8 @@
 }
 
 .page-btn:hover:not(:disabled) {
-    background-color: #007175;
-    color: #fff;
+    background-color: var(--color-brand);
+    color: var(--color-white);
 }
 
 .page-btn:disabled {
@@ -175,8 +175,8 @@
 }
 
 .page-btn.page-active {
-    background-color: #007175;
-    color: #fff;
+    background-color: var(--color-brand);
+    color: var(--color-white);
     font-weight: bold;
 }
 
@@ -187,7 +187,7 @@
 }
 
 .page-sep {
-    color: #b2b2b2;
+    color: var(--text-faint);
     font-size: .85rem;
     line-height: 2rem;
     user-select: none;
@@ -196,22 +196,22 @@
 
 /* 暗黑模式 */
 .dark .page-btn {
-    background-color: rgb(59, 62, 67);
-    color: #dcebf2;
+    background-color: var(--surface-dark-control);
+    color: var(--text-on-dark);
 }
 
 .dark .page-btn:hover:not(:disabled) {
-    background-color: #007175;
-    color: #fff;
+    background-color: var(--color-brand);
+    color: var(--color-white);
 }
 
 .dark .page-btn.page-active {
-    background-color: #007175;
-    color: #fff;
+    background-color: var(--color-brand);
+    color: var(--color-white);
 }
 
 .dark .page-sep {
-    color: #707070;
+    color: var(--text-on-dark-faint);
 }
 
 /* "故事暂且讲到这里"提示文字 */
@@ -220,7 +220,7 @@
     margin: 0;
     font-size: .7rem;
     line-height: 1.2rem;
-    color: #d0d0d0;
+    color: var(--text-disabled);
     user-select: none;
     position: relative;
     display: flex;
@@ -237,15 +237,15 @@
     min-width: 0.5rem;
     max-width: 2rem;
     height: 1px;
-    background: linear-gradient(to right, transparent, #e8e8e8);
+    background: linear-gradient(to right, transparent, var(--surface-code));
 }
 
 .docs-footer .end-tip::before {
-    background: linear-gradient(to right, transparent, #e8e8e8);
+    background: linear-gradient(to right, transparent, var(--surface-code));
 }
 
 .docs-footer .end-tip::after {
-    background: linear-gradient(to left, transparent, #e8e8e8);
+    background: linear-gradient(to left, transparent, var(--surface-code));
 }
 
 /* ============================================ */
@@ -259,22 +259,22 @@
 
 /* hover 阴影换为浅青色系 */
 .dark .docs-body:hover {
-    box-shadow: 0 2px 8px -4px rgba(130, 216, 221, .18);
+    box-shadow: 0 2px 8px -4px rgb(var(--rgb-accent-cyan) / 18%);
 }
 
 .dark .docs-fixed:hover {
-    box-shadow: 0 2px 8px -4px rgba(240, 139, 184, .2);
+    box-shadow: 0 2px 8px -4px rgb(var(--rgb-accent-pink) / 20%);
 }
 
 
 /* 笔记标题底部：深灰色边框 */
 .dark .docs-t {
-    border-bottom: .2rem rgb(49, 49, 49) solid;
+    border-bottom: .2rem var(--border-dark-divider) solid;
 }
 
 /* 置顶文章标题：浅青色 */
 .dark .article-container .docs-fixed .docs-h {
-    color: #007175 !important;
+    color: var(--color-accent-cyan) !important;
 }
 
 /* 最后一篇文章：移除分隔条 */
@@ -284,19 +284,19 @@
 
 /* 底部提示文字暗黑模式 */
 .dark .docs-footer .end-tip {
-    color: #707070;
+    color: var(--text-on-dark-faint);
 }
 
 /* 底部装饰线暗黑模式 */
 .dark .docs-footer .end-tip::before,
 .dark .docs-footer .end-tip::after {
-    background: linear-gradient(to right, transparent, #4a4a4a, transparent);
+    background: linear-gradient(to right, transparent, var(--border-dark), transparent);
 }
 
 .dark .docs-footer .end-tip::before {
-    background: linear-gradient(to right, transparent, #4a4a4a);
+    background: linear-gradient(to right, transparent, var(--border-dark));
 }
 
 .dark .docs-footer .end-tip::after {
-    background: linear-gradient(to left, transparent, #4a4a4a);
+    background: linear-gradient(to left, transparent, var(--border-dark));
 }

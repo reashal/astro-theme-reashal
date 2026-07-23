@@ -3,7 +3,7 @@ aside {
     position: relative;
     width: 240px;
     height: 100vh;
-    background-color: #fafbfc;
+    background-color: var(--surface-soft);
 }
 
 .aside-body {
@@ -35,7 +35,7 @@ aside {
     height: 60px;
     border-radius: 0 0.4rem 0.4rem 0;
     backdrop-filter: blur(2px);
-    background-color: rgba(106, 126, 154, 0.36);
+    background-color: rgb(var(--rgb-toggle) / 36%);
     z-index: 999;
 }
 
@@ -49,7 +49,7 @@ aside {
     left: 6px;
     top: 20px;
     display: block;
-    color: #ffffff;
+    color: var(--color-white);
 }
 
 /* ============================================
@@ -65,9 +65,9 @@ aside {
     padding: 0.8rem;
     margin-bottom: 1.2rem;
     border-radius: 0.8rem;
-    box-shadow: rgba(0, 0, 0, 0.6) 0px 5px 15px;
+    box-shadow: rgb(var(--rgb-black) / 60%) 0px 5px 15px;
     transition: all 0.3s ease;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgb(var(--rgb-white) / 80%);
 }
 
 /* 卡片 hover 效果："按下去"的视觉反馈 */
@@ -77,8 +77,8 @@ aside {
 .aside-body .aside-tags-card:hover,
 .aside-body .aside-copyright-card:hover {
     transform: translateY(4px) scale(0.98);
-    box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 8px;
-    background-color: rgba(0, 113, 117, 0.05);
+    box-shadow: rgb(var(--rgb-black) / 30%) 0px 2px 8px;
+    background-color: rgb(var(--rgb-brand) / 5%);
 }
 
 /* 站长信息 — "墨染" 微动效卡片
@@ -101,7 +101,7 @@ aside {
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(0, 113, 117, .12), transparent 70%);
+    background: radial-gradient(circle, rgb(var(--rgb-brand) / 12%), transparent 70%);
     pointer-events: none;
     z-index: 0;
     opacity: 0;
@@ -124,7 +124,7 @@ aside {
 }
 
 .aside-body .aside-author-card:hover .author-avatar {
-    box-shadow: 0 0 0 3px rgba(0, 113, 117, .2);
+    box-shadow: 0 0 0 3px rgb(var(--rgb-brand) / 20%);
     transform: scale(1.03);
 }
 
@@ -138,21 +138,21 @@ aside {
 .aside-body .author-name {
     font-size: 1rem;
     font-weight: 700;
-    color: #007175;
+    color: var(--color-brand);
     padding-bottom: .15rem;
     display: block;
     transition: color .3s ease;
 }
 
 .aside-body .aside-author-card:hover .author-name {
-    color: #005257;
+    color: var(--color-brand-hover);
 }
 
 /* 个签 — 常态展示，无 hover 变化 */
 .aside-body .author-desc {
     font-size: .78rem;
     line-height: 1.4;
-    color: #666;
+    color: var(--text-secondary);
     margin: 0;
 }
 
@@ -163,7 +163,7 @@ aside {
     grid-template-columns: 1fr 1fr;
     gap: 6px;
     text-align: center;
-    background-color: rgba(0, 113, 117, 0);
+    background-color: rgb(var(--rgb-brand) / 0%);
     transition: all 0.3s ease;
 }
 
@@ -172,13 +172,13 @@ aside {
     padding: 0.12rem 0.3rem;
     margin: 0.2rem 0;
     border-radius: 4px;
-    color: #000;
-    box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
+    color: var(--color-black);
+    box-shadow: rgb(var(--rgb-black) / 10%) 0px 10px 10px -10px;
 }
 
 .aside-body .aside-links-card a:hover {
-    background-color: #007175;
-    color: #033a4a;
+    background-color: var(--color-brand);
+    color: var(--text-on-brand-dark);
 }
 
 /* 分享按钮 */
@@ -187,7 +187,7 @@ aside {
     grid-template-columns: 1fr 1fr;
     gap: 6px;
     text-align: center;
-    background-color: rgba(0, 113, 117, 0);
+    background-color: rgb(var(--rgb-brand) / 0%);
     transition: all 0.3s ease;
 }
 
@@ -196,7 +196,7 @@ aside {
     padding: 0.12rem 0.3rem;
     margin: 0.2rem 0;
     border-radius: 4px;
-    color: #000;
+    color: var(--color-black);
     text-decoration: none;
     font-size: 0.9rem;
     transition: all 0.3s ease;
@@ -207,8 +207,8 @@ aside {
 /* === 页面激活状态高亮 === */
 
 .aside-links-card a.active {
-    color: #ff6100 !important;
-    background-color: #007175 !important;
+    color: var(--color-orange) !important;
+    background-color: var(--color-brand) !important;
 }
 
 /* 主题信息 */
@@ -220,11 +220,11 @@ aside {
     align-self: end;
     width: calc(240px - 2rem);
     margin-bottom: 0;
-    background-color: rgba(0, 113, 117, 0);
+    background-color: rgb(var(--rgb-brand) / 0%);
     font-size: 0.85rem;
     padding: 0.6rem;
     border-radius: 0.8rem;
-    box-shadow: rgba(0, 0, 0, 0.6) 0px 5px 15px;
+    box-shadow: rgb(var(--rgb-black) / 60%) 0px 5px 15px;
     transition: all 0.3s ease;
 }
 
@@ -237,7 +237,7 @@ aside {
 }
 
 .aside-body .aside-copyright-card a {
-    color: #007175;
+    color: var(--color-brand);
     text-decoration: none;
     font-weight: 500;
     transition: all 0.2s ease;
@@ -245,8 +245,8 @@ aside {
 }
 
 .aside-body .aside-copyright-card a:hover {
-    color: #004d52;
-    border-bottom-color: #007175;
+    color: var(--color-brand-hover);
+    border-bottom-color: var(--color-brand);
 }
 
 /* ============================================
@@ -259,12 +259,12 @@ aside {
 
 /* 侧边栏背景 */
 .dark aside {
-    background-color: rgb(30, 41, 59) !important;
+    background-color: var(--surface-dark-panel) !important;
 }
 
 /* 侧边栏展开时阴影 */
 .dark .aside-show aside {
-    box-shadow: rgba(142, 208, 220, .4) 0px 0px 8px;
+    box-shadow: rgb(var(--rgb-accent-cyan) / 40%) 0px 0px 8px;
 }
 
 /* 暗黑模式卡片基础样式：更深的阴影和深色背景 */
@@ -274,9 +274,9 @@ aside {
 .dark .aside-body .aside-tags-card,
 .dark .aside-body .aside-copyright-card {
     box-shadow: 
-        rgba(0, 0, 0, 0.5) 0px 8px 20px,
-        rgba(0, 0, 0, 0.3) 0px 2px 6px;
-    background-color: rgba(36, 43, 61, 0.8);
+        rgb(var(--rgb-black) / 50%) 0px 8px 20px,
+        rgb(var(--rgb-black) / 30%) 0px 2px 6px;
+    background-color: rgb(var(--rgb-dark-glass) / 80%);
     transition: all 0.3s ease;
 }
 
@@ -288,67 +288,67 @@ aside {
 .dark .aside-body .aside-copyright-card:hover {
     transform: translateY(4px) scale(0.98);
     box-shadow: 
-        rgba(0, 0, 0, 0.15) 0px 1px 3px;
-    border-color: rgba(130, 216, 221, 0.4);
-    background-color: rgba(25, 31, 45, 0.95);
+        rgb(var(--rgb-black) / 15%) 0px 1px 3px;
+    border-color: rgb(var(--rgb-accent-cyan) / 40%);
+    background-color: rgb(var(--rgb-dark-card) / 95%);
 }
 
 .dark .aside-body .aside-links-card {
-    background-color: rgba(130, 216, 221, 0);
+    background-color: rgb(var(--rgb-accent-cyan) / 0%);
 }
 
 .dark .aside-body .aside-author-card::after {
-    background: radial-gradient(circle, rgba(130, 216, 221, .15), transparent 70%);
+    background: radial-gradient(circle, rgb(var(--rgb-accent-cyan) / 15%), transparent 70%);
 }
 
 .dark .aside-body .aside-author-card:hover .author-avatar {
-    box-shadow: 0 0 0 3px rgba(130, 216, 221, .25);
+    box-shadow: 0 0 0 3px rgb(var(--rgb-accent-cyan) / 25%);
 }
 
 .dark .aside-body .author-name {
-    color: #82d8dd !important;
+    color: var(--color-accent-cyan) !important;
 }
 
 .dark .aside-body .aside-author-card:hover .author-name {
-    color: #a8e5e9 !important;
+    color: var(--color-accent-cyan-hover) !important;
 }
 
 .dark .aside-body .author-desc {
-    color: #8899a8;
+    color: var(--text-on-dark-soft);
 }
 
 /* 侧边栏三级标题 */
 .dark aside h3 {
-    color: #dcebf2 !important;
+    color: var(--text-on-dark) !important;
 }
 
 /* 侧边栏链接 */
 .dark aside a {
-    color: #dcebf2 !important;
+    color: var(--text-on-dark) !important;
 }
 
 /* 侧边栏版权信息 */
 .dark .aside-body .aside-copyright-card {
-    color: #dcebf2;
-    background-color: rgba(130, 216, 221, 0);
+    color: var(--text-on-dark);
+    background-color: rgb(var(--rgb-accent-cyan) / 0%);
 }
 
 .dark .aside-body .aside-copyright-card a {
-    color: #82d8dd;
+    color: var(--color-accent-cyan);
 }
 
 .dark .aside-body .aside-copyright-card a:hover {
-    color: #a8e5e9;
-    border-bottom-color: #82d8dd;
+    color: var(--color-accent-cyan-hover);
+    border-bottom-color: var(--color-accent-cyan);
 }
 
 /* 暗黑模式 - 分享按钮 */
 .dark .aside-body .aside-share-card {
-    background-color: rgba(130, 216, 221, 0);
+    background-color: rgb(var(--rgb-accent-cyan) / 0%);
 }
 
 .dark .aside-body .share-link {
-    color: #dcebf2;
+    color: var(--text-on-dark);
 }
 
 /* ============================================
@@ -380,27 +380,27 @@ aside {
     gap: 0.2rem;
     padding: 0.65rem 0.7rem;
     border-radius: 0.5rem;
-    background: rgba(255, 255, 255, 0.78);
+    background: rgb(var(--rgb-white) / 78%);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 113, 117, 0.08);
+    border: 1px solid rgb(var(--rgb-brand) / 8%);
     box-shadow:
-        0 1px 3px rgba(0, 0, 0, 0.06);
+        0 1px 3px rgb(var(--rgb-black) / 6%);
     text-decoration: none;
     pointer-events: none;
 }
 
 .aside-body .message-card:hover {
-    border-color: rgba(0, 113, 117, 0.25);
+    border-color: rgb(var(--rgb-brand) / 25%);
     box-shadow:
-        0 3px 10px rgba(0, 0, 0, 0.1);
+        0 3px 10px rgb(var(--rgb-black) / 10%);
 }
 
 /* 标签名称前的 # 符号 */
 .aside-body .msg-hashtag {
     font-size: 0.75rem;
     font-weight: 700;
-    color: #007175;
+    color: var(--color-brand);
     flex-shrink: 0;
 }
 
@@ -408,7 +408,7 @@ aside {
 .aside-body .msg-name {
     font-size: 0.8rem;
     font-weight: 600;
-    color: #1c1c1e;
+    color: var(--text-primary);
     flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -419,8 +419,8 @@ aside {
 .aside-body .msg-count {
     font-size: 0.6rem;
     font-weight: 700;
-    color: #fff;
-    background: #007175;
+    color: var(--color-white);
+    background: var(--color-brand);
     padding: 0.06rem 0.35rem;
     border-radius: 0.15rem;
     flex-shrink: 0;
@@ -432,7 +432,7 @@ aside {
     text-align: center;
     padding: 0.45rem 0 0;
     font-size: 0.55rem;
-    color: rgba(0, 113, 117, 0.35);
+    color: rgb(var(--rgb-brand) / 35%);
     font-weight: 500;
     letter-spacing: 0.02em;
     line-height: 1;
@@ -444,33 +444,33 @@ aside {
  * ============================================ */
 
 .dark .aside-body .message-card {
-    background: rgba(30, 38, 54, 0.75);
+    background: rgb(var(--rgb-dark-message) / 75%);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(130, 216, 221, 0.1);
+    border: 1px solid rgb(var(--rgb-accent-cyan) / 10%);
     box-shadow:
-        0 2px 6px rgba(0, 0, 0, 0.35);
+        0 2px 6px rgb(var(--rgb-black) / 35%);
 }
 
 .dark .aside-body .message-card:hover {
-    border-color: rgba(130, 216, 221, 0.3);
+    border-color: rgb(var(--rgb-accent-cyan) / 30%);
     box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.45);
+        0 4px 12px rgb(var(--rgb-black) / 45%);
 }
 
 .dark .aside-body .msg-hashtag {
-    color: #82d8dd;
+    color: var(--color-accent-cyan);
 }
 
 .dark .aside-body .msg-name {
-    color: #dcebf2;
+    color: var(--text-on-dark);
 }
 
 .dark .aside-body .msg-count {
-    background: #82d8dd;
-    color: #1e293b;
+    background: var(--color-accent-cyan);
+    color: var(--surface-dark-panel);
 }
 
 .dark .aside-body .stack-footer {
-    color: rgba(130, 216, 221, 0.35);
+    color: rgb(var(--rgb-accent-cyan) / 35%);
 }
