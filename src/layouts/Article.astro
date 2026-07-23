@@ -2,6 +2,7 @@
 import "../styles/md.css";
 import "../styles/tags.css";
 import Giscus from "../components/Giscus.astro";
+import ReadingProgress from "../components/ReadingProgress.astro";
 import type { ArticleFrontmatter } from "../types";
 import BaseLayout from "./BaseLayout.astro";
 
@@ -14,6 +15,7 @@ const tags = frontmatter.tags || [];
 ---
 
 <BaseLayout pageTitle={frontmatter.title} pageDescription={frontmatter.desc}>
+    <ReadingProgress />
     <article class="article-container doc">
         <slot />
         <section class="article-tags">
