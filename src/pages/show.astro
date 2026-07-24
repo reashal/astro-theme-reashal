@@ -106,7 +106,12 @@ const hasValidImage = (image: string | undefined): boolean => !!image && image.t
                                                     ))}
                                                 </div>
                                             )}
-                                            <p title={card.description}>{card.description}</p>
+                                            <div class="showcase-description">
+                                                <p>{card.description}</p>
+                                                <span class="showcase-description-full" aria-hidden="true">
+                                                    {card.description}
+                                                </span>
+                                            </div>
                                         </div>
                                     </CardWrapper>
                                 );
@@ -133,6 +138,21 @@ const hasValidImage = (image: string | undefined): boolean => !!image && image.t
         (function() {
             const tabs = Array.from(document.querySelectorAll('[data-showcase-tab]'));
             const panels = Array.from(document.querySelectorAll('[data-showcase-panel]'));
+            const descriptions = Array.from(document.querySelectorAll('.showcase-description'));
+            let descriptionSyncFrame = 0;
+
+            function syncDescriptionOverflow() {
+                descriptions.forEach(function(description) {
+                    const summary = description.querySelector('p');
+                    const isTruncated = summary.scrollHeight - summary.clientHeight > 1;
+                    description.classList.toggle('is-truncated', isTruncated);
+                });
+            }
+
+            function scheduleDescriptionSync() {
+                cancelAnimationFrame(descriptionSyncFrame);
+                descriptionSyncFrame = requestAnimationFrame(syncDescriptionOverflow);
+            }
 
             function activateShowcase(id, updateUrl) {
                 const exists = panels.some(function(panel) {
@@ -152,6 +172,7 @@ const hasValidImage = (image: string | undefined): boolean => !!image && image.t
                     panel.hidden = panel.dataset.showcasePanel !== id;
                 });
 
+                scheduleDescriptionSync();
                 if (updateUrl) history.pushState(null, '', '/show#' + id);
             }
 
@@ -165,6 +186,7 @@ const hasValidImage = (image: string | undefined): boolean => !!image && image.t
             window.addEventListener('popstate', function() {
                 activateShowcase(location.hash.slice(1), false);
             });
+            window.addEventListener('resize', scheduleDescriptionSync);
 
             activateShowcase(location.hash.slice(1), false);
 
