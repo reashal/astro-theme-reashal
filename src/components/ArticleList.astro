@@ -78,19 +78,13 @@ const { articles } = Astro.props as Props;
             }
 
             function checkEnoughSpace(): void {
-                const mainEl = document.querySelector(".main") as HTMLElement | null;
-                if (!mainEl) {
-                    hasEnoughSpace = false;
-                    return;
-                }
-                
                 const footerEl = document.getElementById("docs-footer") as HTMLElement | null;
                 if (!footerEl) {
                     hasEnoughSpace = false;
                     return;
                 }
                 
-                const viewportH = mainEl.clientHeight;
+                const availableHeight = container.clientHeight;
                 const footerH = footerEl.offsetHeight;
                 const articleStyle = getComputedStyle(container);
                 const articlePaddingV =
@@ -107,7 +101,7 @@ const { articles } = Astro.props as Props;
                 });
                 
                 // 检查是否有足够的空间（至少 100px）
-                const available = viewportH - usedHeight - footerH;
+                const available = availableHeight - usedHeight - footerH;
                 hasEnoughSpace = available > 100;
             }
 
@@ -116,12 +110,6 @@ const { articles } = Astro.props as Props;
                 const start = currentPage * perPage;
                 const end = start + perPage;
                 const lastVisibleIndex = Math.min(end, allItems.length) - 1;
-
-                // 检查空间
-                checkEnoughSpace();
-                
-                // 只在所有文章都在一页展示完，并且底部有足够空间时显示"故事暂且讲到这里"
-                endTip.style.display = (totalPages() === 1 && hasEnoughSpace) ? "" : "none";
 
                 allItems.forEach((item, i) => {
                     const isVisible = i >= start && i < end;
@@ -133,6 +121,15 @@ const { articles } = Astro.props as Props;
                 });
 
                 renderPagination();
+
+                // 先隐藏提示并完成条目、分页布局，再检查真实剩余空间
+                endTip.style.display = "none";
+                if (totalPages() === 1) {
+                    checkEnoughSpace();
+                    endTip.style.display = hasEnoughSpace ? "" : "none";
+                } else {
+                    hasEnoughSpace = false;
+                }
             }
 
             function renderPagination(): void {
@@ -148,11 +145,11 @@ const { articles } = Astro.props as Props;
                     for (let i = 0; i < total; i++) pages.push(i);
                 } else {
                     pages.push(0);
-                    if (currentPage > 3) pages.push("…");
                     const lo = Math.max(1, currentPage - 1);
                     const hi = Math.min(total - 2, currentPage + 1);
+                    if (lo > 1) pages.push("…");
                     for (let i = lo; i <= hi; i++) pages.push(i);
-                    if (currentPage < total - 4) pages.push("…");
+                    if (hi < total - 2) pages.push("…");
                     pages.push(total - 1);
                 }
 
@@ -206,7 +203,6 @@ const { articles } = Astro.props as Props;
 
             function init(): void {
                 perPage = calcPerPage();
-                checkEnoughSpace();
                 showPage(0);
             }
 
@@ -220,10 +216,9 @@ const { articles } = Astro.props as Props;
             window.addEventListener("resize", () => {
                 clearTimeout(resizeTimer);
                 resizeTimer = setTimeout(() => {
-                    const prevPage = currentPage;
+                    const firstVisibleIndex = currentPage * perPage;
                     perPage = calcPerPage();
-                    checkEnoughSpace();
-                    showPage(Math.min(prevPage, totalPages() - 1));
+                    showPage(Math.floor(firstVisibleIndex / perPage));
                 }, 150);
             });
         })();
