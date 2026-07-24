@@ -1,6 +1,7 @@
 ---
 import { SITE_INFO } from "../consts";
 import Dark from "./Dark.astro";
+import Search from "./Search.astro";
 ---
 <style is:inline>
     .site-header {
@@ -15,4 +16,5 @@ import Dark from "./Dark.astro";
 </style>
 <header class="site-header" style={`--wallpaper: url('${SITE_INFO.wallpaper}')`}>
     <Dark />
+    <Search />
 </header>

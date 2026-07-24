@@ -16,16 +16,37 @@ const tags = frontmatter.tags || [];
 
 <BaseLayout pageTitle={frontmatter.title} pageDescription={frontmatter.desc}>
     <ReadingProgress />
-    <article class="article-container doc">
+    <article
+        class="article-container doc"
+        data-pagefind-body
+        data-pagefind-filter="section:docs"
+    >
+        <h1 class="article-search-meta" data-pagefind-meta="title">
+            {frontmatter.title}
+        </h1>
+        <span
+            class="article-search-meta"
+            data-pagefind-meta="description"
+            aria-hidden="true"
+        >
+            {frontmatter.desc}
+        </span>
+        <span
+            class="article-search-meta"
+            data-pagefind-meta="tags"
+            aria-hidden="true"
+        >
+            {tags.join(" ")}
+        </span>
         <slot />
         <section class="article-tags">
             {
                 tags.map((tag) => (
-                    <span class="tag">{tag}</span>
+                    <span class="tag" data-pagefind-filter="tag">{tag}</span>
                 ))
             }
         </section>
-        <section class="article-copy">
+        <section class="article-copy" data-pagefind-ignore="all">
             <div>
                 本文作者：<a href={frontmatter.source} target="_blank" rel="noopener noreferrer"
                     >{frontmatter.author}</a

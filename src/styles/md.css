@@ -8,6 +8,19 @@
     counter-reset: h1-counter h2-counter h3-counter h4-counter h5-counter h6-counter;
 }
 
+.doc .article-search-meta {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    counter-increment: none;
+}
+
 .dark .article-container {
     box-shadow: rgb(var(--rgb-accent-cyan) / 40%) 0px 0px 8px;
 }
