@@ -1,9 +1,13 @@
 ---
 import "../styles/md.css";
-import "../styles/tags.css";
 import Giscus from "../components/Giscus.astro";
 import ReadingProgress from "../components/ReadingProgress.astro";
 import type { ArticleFrontmatter } from "../types";
+import {
+    estimateReadingMinutes,
+    getDocsArticles,
+    sortArticlesByDate,
+} from "../utils/articles";
 import BaseLayout from "./BaseLayout.astro";
 
 interface Props {
@@ -12,6 +16,46 @@ interface Props {
 
 const { frontmatter } = Astro.props as Props;
 const tags = frontmatter.tags || [];
+
+const normalizePath = (path: string) =>
+    path.length > 1 ? path.replace(/\/+$/, "") : path;
+const currentPath = normalizePath(Astro.url.pathname);
+const isDocsArticle = currentPath.startsWith("/docs/");
+const articleSlug = currentPath.split("/").filter(Boolean).at(-1);
+
+const rawArticles = import.meta.glob("../pages/docs/*.md", {
+    eager: true,
+    query: "?raw",
+    import: "default",
+}) as Record<string, string>;
+const rawArticle = isDocsArticle
+    ? (rawArticles[`../pages/docs/${articleSlug}.md`] ?? "")
+    : "";
+const readingMinutes = estimateReadingMinutes(rawArticle);
+const rawPublishedDate = frontmatter.pubDate as string | Date;
+const publishedDate =
+    rawPublishedDate instanceof Date
+        ? rawPublishedDate.toISOString().slice(0, 10)
+        : String(rawPublishedDate).slice(0, 10);
+
+const articlesByDate = sortArticlesByDate(getDocsArticles(), "asc");
+const currentArticleIndex = articlesByDate.findIndex(
+    (article) => normalizePath(article.url) === currentPath,
+);
+const previousArticle =
+    currentArticleIndex > 0
+        ? articlesByDate[currentArticleIndex - 1]
+        : undefined;
+const nextArticle =
+    currentArticleIndex >= 0 &&
+    currentArticleIndex < articlesByDate.length - 1
+        ? articlesByDate[currentArticleIndex + 1]
+        : undefined;
+
+const formatDate = (date: string) => {
+    const [year, month, day] = date.split("-").map(Number);
+    return `${year}年${month}月${day}日`;
+};
 ---
 
 <BaseLayout pageTitle={frontmatter.title} pageDescription={frontmatter.desc}>
@@ -21,9 +65,56 @@ const tags = frontmatter.tags || [];
         data-pagefind-body
         data-pagefind-filter="section:docs"
     >
-        <h1 class="article-search-meta" data-pagefind-meta="title">
-            {frontmatter.title}
-        </h1>
+        {
+            isDocsArticle ? (
+                <header class="article-lead">
+                    <h1 class="article-title" data-pagefind-meta="title">
+                        {frontmatter.title}
+                    </h1>
+                    <p class="article-description">{frontmatter.desc}</p>
+                    <div class="article-lead-details">
+                        <div class="article-meta">
+                            <time datetime={publishedDate}>
+                                <i
+                                    class="iconfont icon-date"
+                                    aria-hidden="true"
+                                />
+                                {formatDate(publishedDate)}
+                            </time>
+                            <span>
+                                <svg aria-hidden="true" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="8.5" />
+                                    <path d="M12 7.5V12l3 2" />
+                                </svg>
+                                约 {readingMinutes} 分钟
+                            </span>
+                        </div>
+                        {tags.length > 0 && (
+                            <nav
+                                class="article-lead-tags"
+                                aria-label="文章标签"
+                            >
+                                {tags.map((tag) => (
+                                    <a
+                                        href={`/tags/${encodeURIComponent(tag)}`}
+                                    >
+                                        <i
+                                            class="iconfont icon-tag"
+                                            aria-hidden="true"
+                                        />
+                                        {tag}
+                                    </a>
+                                ))}
+                            </nav>
+                        )}
+                    </div>
+                </header>
+            ) : (
+                <h1 class="article-search-meta" data-pagefind-meta="title">
+                    {frontmatter.title}
+                </h1>
+            )
+        }
         <span
             class="article-search-meta"
             data-pagefind-meta="description"
@@ -38,14 +129,51 @@ const tags = frontmatter.tags || [];
         >
             {tags.join(" ")}
         </span>
-        <slot />
-        <section class="article-tags">
-            {
-                tags.map((tag) => (
-                    <span class="tag" data-pagefind-filter="tag">{tag}</span>
-                ))
-            }
-        </section>
+        <div class="article-content">
+            <slot />
+        </div>
+        {
+            (previousArticle || nextArticle) && (
+                <nav
+                    class="article-neighbors"
+                    aria-label="相邻随笔"
+                    data-pagefind-ignore="all"
+                >
+                    {previousArticle && (
+                        <a
+                            href={previousArticle.url}
+                            class="article-neighbor article-neighbor-previous"
+                            rel="prev"
+                        >
+                            <span class="article-neighbor-direction">
+                                <i
+                                    class="iconfont icon-left"
+                                    aria-hidden="true"
+                                />
+                                上一篇
+                            </span>
+                            <strong>{previousArticle.frontmatter.title}</strong>
+                        </a>
+                    )}
+                    {nextArticle && (
+                        <a
+                            href={nextArticle.url}
+                            class="article-neighbor article-neighbor-next"
+                            rel="next"
+                        >
+                            <span class="article-neighbor-direction">
+                                下一篇
+                                <i
+                                    class="iconfont icon-right"
+                                    aria-hidden="true"
+                                />
+                            </span>
+                            <strong>{nextArticle.frontmatter.title}</strong>
+                        </a>
+                    )}
+                </nav>
+            )
+        }
         <section class="article-copy" data-pagefind-ignore="all">
             <div>
                 本文作者：<a href={frontmatter.source} target="_blank" rel="noopener noreferrer"

@@ -65,3 +65,23 @@ export function processArticles<T extends { frontmatter: { pinned?: boolean; pub
     // 合并：置顶文章在前
     return [...sortedPinned, ...sortedNormal];
 }
+
+/**
+ * 根据 Markdown 正文估算阅读时间。
+ * 中文按每分钟 300 字、英文及数字按每分钟 200 词计算。
+ */
+export function estimateReadingMinutes(markdown: string): number {
+    const content = markdown
+        .replace(/^---[\s\S]*?---/, "")
+        .replace(/```[\s\S]*?```/g, (block) => block.replace(/[`]/g, " "))
+        .replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1")
+        .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+        .replace(/<[^>]+>/g, " ");
+
+    const chineseCharacters =
+        content.match(/[\p{Script=Han}]/gu)?.length ?? 0;
+    const words =
+        content.match(/[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*/g)?.length ?? 0;
+
+    return Math.max(1, Math.ceil(chineseCharacters / 300 + words / 200));
+}
