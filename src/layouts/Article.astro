@@ -1,5 +1,7 @@
 ---
+import type { MarkdownHeading } from "astro";
 import "../styles/md.css";
+import ArticleToc from "../components/ArticleToc.astro";
 import Giscus from "../components/Giscus.astro";
 import ReadingProgress from "../components/ReadingProgress.astro";
 import type { ArticleFrontmatter } from "../types";
@@ -12,26 +14,27 @@ import BaseLayout from "./BaseLayout.astro";
 
 interface Props {
     frontmatter: ArticleFrontmatter;
+    headings?: MarkdownHeading[];
+    rawContent?: () => string;
 }
 
-const { frontmatter } = Astro.props as Props;
+const {
+    frontmatter,
+    headings = [],
+    rawContent: getRawContent,
+} = Astro.props as Props;
 const tags = frontmatter.tags || [];
 
 const normalizePath = (path: string) =>
     path.length > 1 ? path.replace(/\/+$/, "") : path;
 const currentPath = normalizePath(Astro.url.pathname);
 const isDocsArticle = currentPath.startsWith("/docs/");
-const articleSlug = currentPath.split("/").filter(Boolean).at(-1);
-
-const rawArticles = import.meta.glob("../pages/docs/*.md", {
-    eager: true,
-    query: "?raw",
-    import: "default",
-}) as Record<string, string>;
-const rawArticle = isDocsArticle
-    ? (rawArticles[`../pages/docs/${articleSlug}.md`] ?? "")
-    : "";
+const rawArticle = isDocsArticle ? (getRawContent?.() ?? "") : "";
 const readingMinutes = estimateReadingMinutes(rawArticle);
+const tocHeadings = headings.filter(
+    (heading) => heading.depth >= 2 && heading.depth <= 6,
+);
+const hasArticleToc = isDocsArticle && tocHeadings.length >= 3;
 const rawPublishedDate = frontmatter.pubDate as string | Date;
 const publishedDate =
     rawPublishedDate instanceof Date
@@ -67,7 +70,7 @@ const formatDate = (date: string) => {
     >
         {
             isDocsArticle ? (
-                <header class="article-lead">
+                <header id="article-start" class="article-lead">
                     <h1 class="article-title" data-pagefind-meta="title">
                         {frontmatter.title}
                     </h1>
@@ -115,6 +118,7 @@ const formatDate = (date: string) => {
                 </h1>
             )
         }
+        {hasArticleToc && <ArticleToc headings={tocHeadings} />}
         <span
             class="article-search-meta"
             data-pagefind-meta="description"

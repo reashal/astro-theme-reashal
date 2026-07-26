@@ -1,0 +1,642 @@
+---
+import type { MarkdownHeading } from "astro";
+import "../styles/article-toc.css";
+
+interface Props {
+    headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props as Props;
+---
+
+<section
+    class="article-toc"
+    data-article-toc
+    data-pagefind-ignore="all"
+>
+    <button
+        class="article-toc-summary"
+        type="button"
+        aria-expanded="false"
+        aria-controls="articleTocPanel"
+        data-article-toc-toggle
+    >
+        <span data-toc-summary-current>
+            {headings[0]?.text || "标题"}
+        </span>
+    </button>
+    <nav
+        id="articleTocPanel"
+        aria-label="文章层级标题"
+        hidden
+    >
+        <div
+            class="article-toc-viewport"
+            data-toc-viewport
+            tabindex="0"
+            aria-label="左右滑动切换标题层级"
+        >
+            <div class="article-toc-track" data-toc-track />
+        </div>
+        <div class="article-toc-level-switcher">
+            <button
+                type="button"
+                data-toc-previous
+                aria-label="查看上一层标题"
+            >
+                <i aria-hidden="true" />
+                上一层
+            </button>
+            <span data-toc-level-status aria-live="polite" />
+            <button
+                type="button"
+                data-toc-next
+                aria-label="返回下一层标题"
+            >
+                下一层
+                <i aria-hidden="true" />
+            </button>
+        </div>
+    </nav>
+    <div class="article-toc-data" hidden>
+        {
+            headings.map((heading) => (
+                <span
+                    data-toc-heading
+                    data-depth={heading.depth}
+                    data-slug={heading.slug}
+                >
+                    {heading.text}
+                </span>
+            ))
+        }
+    </div>
+</section>
+
+<script>
+    interface TocNode {
+        id: string;
+        text: string;
+        depth: number;
+        heading: HTMLElement;
+        parent?: TocNode;
+        children: TocNode[];
+    }
+
+    interface TocSlide {
+        parent: TocNode;
+        activeChild: TocNode;
+    }
+
+    const TITLE_OVERFLOW_TOLERANCE = 5;
+    const TITLE_SCROLL_SPEED = 46;
+    const TITLE_SCROLL_TRAVEL_RATIO = .8;
+    const TITLE_SCROLL_MIN_DURATION = .8;
+    const TITLE_SCROLL_MAX_DURATION = 2.2;
+    const READING_LINE_OFFSET = 68;
+    const POINTER_CAPTURE_DISTANCE = 8;
+    const POINTER_SWITCH_DISTANCE = 38;
+    const LINK_CLICK_SUPPRESSION_TIME = 80;
+    const WHEEL_MIN_DELTA = 4;
+    const WHEEL_SWITCH_INTERVAL = 280;
+
+    const initArticleToc = () => {
+        const articleToc =
+            document.querySelector<HTMLElement>("[data-article-toc]");
+        const scrollContainer =
+            document.querySelector<HTMLElement>(".main");
+        if (!articleToc || !scrollContainer) return;
+
+        const tocToggleButton =
+            articleToc.querySelector<HTMLButtonElement>(
+                "[data-article-toc-toggle]",
+            );
+        const summaryCurrent =
+            articleToc.querySelector<HTMLElement>(
+                "[data-toc-summary-current]",
+            );
+        const tocPanel =
+            articleToc.querySelector<HTMLElement>("#articleTocPanel");
+        const tocViewport =
+            articleToc.querySelector<HTMLElement>("[data-toc-viewport]");
+        const tocTrack =
+            articleToc.querySelector<HTMLElement>("[data-toc-track]");
+        const previousLevelButton =
+            articleToc.querySelector<HTMLButtonElement>(
+                "[data-toc-previous]",
+            );
+        const nextLevelButton =
+            articleToc.querySelector<HTMLButtonElement>("[data-toc-next]");
+        const levelStatus =
+            articleToc.querySelector<HTMLElement>(
+                "[data-toc-level-status]",
+            );
+        const articleTitle =
+            document.querySelector<HTMLElement>(".article-title");
+        const articleLead =
+            document.querySelector<HTMLElement>(".article-lead");
+
+        if (
+            !tocToggleButton ||
+            !summaryCurrent ||
+            !tocPanel ||
+            !tocViewport ||
+            !tocTrack ||
+            !previousLevelButton ||
+            !nextLevelButton ||
+            !levelStatus ||
+            !articleTitle ||
+            !articleLead
+        ) {
+            return;
+        }
+
+        const headingData = Array.from(
+            articleToc.querySelectorAll<HTMLElement>("[data-toc-heading]"),
+        );
+        const rootNode: TocNode = {
+            id: "article-start",
+            text: articleTitle.textContent?.trim() || "本文",
+            depth: 1,
+            heading: articleLead,
+            children: [],
+        };
+        const headingNodes: TocNode[] = [];
+        const headingStack: TocNode[] = [rootNode];
+
+        for (const item of headingData) {
+            const depth = Number(item.dataset.depth);
+            const id = item.dataset.slug || "";
+            const heading = document.getElementById(id);
+            if (!heading || !Number.isFinite(depth)) continue;
+
+            while (
+                headingStack.length > 1 &&
+                headingStack.at(-1)!.depth >= depth
+            ) {
+                headingStack.pop();
+            }
+
+            const parent = headingStack.at(-1) || rootNode;
+            const node: TocNode = {
+                id,
+                text: item.textContent?.trim() || id,
+                depth,
+                heading,
+                parent,
+                children: [],
+            };
+            parent.children.push(node);
+            headingNodes.push(node);
+            headingStack.push(node);
+        }
+
+        const firstHeading = headingNodes[0];
+        if (!firstHeading) return;
+
+        let tocFrame = 0;
+        let summaryMarqueeFrame = 0;
+        let activeNode = firstHeading;
+        let tocSlides: TocSlide[] = [];
+        let activeSlideIndex = 0;
+        let pointerStartX: number | undefined;
+        let pointerStartY: number | undefined;
+        let activePointerId: number | undefined;
+        let suppressLinkClickUntil = 0;
+        let lastWheelSwitch = 0;
+
+        const syncSummaryMarquee = () => {
+            summaryMarqueeFrame = 0;
+            summaryCurrent.classList.remove("is-overflowing");
+            tocToggleButton.classList.remove("has-overflowing-title");
+
+            const buttonStyle = window.getComputedStyle(tocToggleButton);
+            const contentWidth =
+                tocToggleButton.clientWidth -
+                Number.parseFloat(buttonStyle.paddingLeft) -
+                Number.parseFloat(buttonStyle.paddingRight);
+            const overflowDistance = Math.max(
+                0,
+                summaryCurrent.scrollWidth - contentWidth,
+            );
+            const isOverflowing =
+                overflowDistance > TITLE_OVERFLOW_TOLERANCE;
+            const scrollDuration = Math.min(
+                TITLE_SCROLL_MAX_DURATION,
+                Math.max(
+                    TITLE_SCROLL_MIN_DURATION,
+                    overflowDistance /
+                        (TITLE_SCROLL_SPEED * TITLE_SCROLL_TRAVEL_RATIO),
+                ),
+            );
+
+            summaryCurrent.style.setProperty(
+                "--toc-title-scroll-distance",
+                `${overflowDistance}px`,
+            );
+            summaryCurrent.style.setProperty(
+                "--toc-title-duration",
+                `${scrollDuration}s`,
+            );
+            summaryCurrent.classList.toggle(
+                "is-overflowing",
+                isOverflowing,
+            );
+            tocToggleButton.classList.toggle(
+                "has-overflowing-title",
+                isOverflowing,
+            );
+        };
+
+        const requestSummaryMarqueeSync = () => {
+            cancelAnimationFrame(summaryMarqueeFrame);
+            summaryMarqueeFrame = requestAnimationFrame(
+                syncSummaryMarquee,
+            );
+        };
+
+        const createHeadingLink = (
+            node: TocNode,
+            className?: string,
+        ) => {
+            const link = document.createElement("a");
+            link.href = `#${node.id}`;
+            link.textContent = node.text;
+            link.title = node.text;
+            link.draggable = false;
+            if (className) link.className = className;
+            return link;
+        };
+
+        const updateSlidePosition = (
+            nextIndex: number,
+            focusViewport = false,
+        ) => {
+            if (tocSlides.length === 0) return;
+            activeSlideIndex = Math.max(
+                0,
+                Math.min(nextIndex, tocSlides.length - 1),
+            );
+            tocTrack.style.transform =
+                `translateX(-${activeSlideIndex * 100}%)`;
+            previousLevelButton.disabled = activeSlideIndex === 0;
+            nextLevelButton.disabled =
+                activeSlideIndex === tocSlides.length - 1;
+            levelStatus.textContent =
+                `${tocSlides.length - activeSlideIndex} / ${tocSlides.length}`;
+
+            if (focusViewport) {
+                tocViewport.focus({ preventScroll: true });
+            }
+        };
+
+        const renderHierarchy = (
+            node: TocNode,
+            showDefault = false,
+        ) => {
+            const previousDistanceFromDefault =
+                tocSlides.length - 1 - activeSlideIndex;
+            const nextSlides: TocSlide[] = [];
+            let pathNode: TocNode | undefined = node;
+
+            while (pathNode?.parent) {
+                nextSlides.unshift({
+                    parent: pathNode.parent,
+                    activeChild: pathNode,
+                });
+                pathNode = pathNode.parent;
+            }
+
+            tocSlides = nextSlides;
+            tocTrack.replaceChildren();
+
+            for (const { parent, activeChild } of tocSlides) {
+                const slide = document.createElement("section");
+                slide.className = "article-toc-slide";
+                slide.setAttribute(
+                    "aria-label",
+                    `${parent.text}的子标题`,
+                );
+
+                const headingList = document.createElement("ol");
+                headingList.className = "article-toc-heading-list";
+                const parentItem = document.createElement("li");
+                parentItem.className = "article-toc-parent-item";
+                parentItem.append(
+                    createHeadingLink(
+                        parent,
+                        "article-toc-parent-link",
+                    ),
+                );
+                headingList.append(parentItem);
+
+                for (const child of parent.children) {
+                    const listItem = document.createElement("li");
+                    const link = createHeadingLink(child);
+                    if (child === activeChild) {
+                        link.classList.add("is-active");
+                        link.setAttribute("aria-current", "location");
+                    }
+                    listItem.append(link);
+                    headingList.append(listItem);
+                }
+
+                slide.append(headingList);
+                tocTrack.append(slide);
+            }
+
+            const nextIndex = showDefault
+                ? tocSlides.length - 1
+                : tocSlides.length -
+                  1 -
+                  previousDistanceFromDefault;
+            updateSlidePosition(nextIndex);
+        };
+
+        const updateSummary = () => {
+            summaryCurrent.textContent = activeNode.text;
+            summaryCurrent.title = activeNode.text;
+            tocToggleButton.setAttribute(
+                "aria-label",
+                `展开标题导航，当前标题：${activeNode.text}`,
+            );
+            requestSummaryMarqueeSync();
+        };
+
+        const findActiveHeading = () => {
+            const readingLine =
+                scrollContainer.getBoundingClientRect().top +
+                READING_LINE_OFFSET;
+            let nextActiveNode = firstHeading;
+
+            for (const node of headingNodes) {
+                if (
+                    node.heading.getBoundingClientRect().top <= readingLine
+                ) {
+                    nextActiveNode = node;
+                } else {
+                    break;
+                }
+            }
+
+            return nextActiveNode;
+        };
+
+        const syncActiveHeading = () => {
+            tocFrame = 0;
+            const nextActiveNode = findActiveHeading();
+            if (activeNode === nextActiveNode) return;
+            activeNode = nextActiveNode;
+            updateSummary();
+            renderHierarchy(activeNode);
+        };
+
+        const requestTocSync = () => {
+            if (tocFrame) return;
+            tocFrame = requestAnimationFrame(syncActiveHeading);
+        };
+
+        const setTocOpen = (isOpen: boolean) => {
+            articleToc.classList.remove("is-closing");
+            articleToc.classList.toggle("is-open", isOpen);
+            tocToggleButton.setAttribute(
+                "aria-expanded",
+                String(isOpen),
+            );
+
+            if (isOpen) {
+                tocPanel.hidden = false;
+                renderHierarchy(activeNode, true);
+                tocToggleButton.setAttribute(
+                    "aria-label",
+                    "收起标题导航",
+                );
+            } else {
+                if (
+                    tocPanel.hidden ||
+                    window.matchMedia(
+                        "(prefers-reduced-motion: reduce)",
+                    ).matches
+                ) {
+                    tocPanel.hidden = true;
+                } else {
+                    articleToc.classList.add("is-closing");
+                }
+                tocToggleButton.setAttribute(
+                    "aria-label",
+                    `展开标题导航，当前标题：${activeNode.text}`,
+                );
+            }
+        };
+
+        tocPanel.addEventListener("animationend", (event) => {
+            if (
+                event.target !== tocPanel ||
+                event.animationName !== "article-toc-collapse" ||
+                !articleToc.classList.contains("is-closing")
+            ) {
+                return;
+            }
+
+            articleToc.classList.remove("is-closing");
+            tocPanel.hidden = true;
+        });
+
+        const jumpToHeading = (
+            target: HTMLElement,
+            hash: string,
+        ) => {
+            setTocOpen(false);
+            if (window.location.hash === hash) {
+                window.history.replaceState(null, "", hash);
+            } else {
+                window.history.pushState(null, "", hash);
+            }
+            target.scrollIntoView({
+                behavior: "auto",
+                block: "start",
+            });
+        };
+
+        const resetPointerState = (pointerId: number) => {
+            pointerStartX = undefined;
+            pointerStartY = undefined;
+            activePointerId = undefined;
+            tocViewport.classList.remove("is-dragging");
+            if (tocViewport.hasPointerCapture(pointerId)) {
+                tocViewport.releasePointerCapture(pointerId);
+            }
+        };
+
+        tocToggleButton.addEventListener("click", () => {
+            if (articleToc.classList.contains("is-open")) {
+                jumpToHeading(
+                    activeNode.heading,
+                    `#${encodeURIComponent(activeNode.id)}`,
+                );
+            } else {
+                setTocOpen(true);
+            }
+        });
+
+        tocPanel.addEventListener("click", (event) => {
+            if (performance.now() < suppressLinkClickUntil) {
+                event.preventDefault();
+                event.stopPropagation();
+                return;
+            }
+            if (!(event.target instanceof Element)) return;
+            const link = event.target.closest<HTMLAnchorElement>(
+                'a[href^="#"]',
+            );
+            if (!link) return;
+
+            event.preventDefault();
+            const id = decodeURIComponent(link.hash.slice(1));
+            const target = document.getElementById(id);
+            if (target) jumpToHeading(target, link.hash);
+        });
+
+        tocPanel.addEventListener("dragstart", (event) => {
+            event.preventDefault();
+        });
+
+        previousLevelButton.addEventListener("click", () => {
+            updateSlidePosition(activeSlideIndex - 1, true);
+        });
+        nextLevelButton.addEventListener("click", () => {
+            updateSlidePosition(activeSlideIndex + 1, true);
+        });
+
+        tocViewport.addEventListener("keydown", (event) => {
+            if (event.key === "ArrowLeft") {
+                event.preventDefault();
+                updateSlidePosition(activeSlideIndex - 1);
+            }
+            if (event.key === "ArrowRight") {
+                event.preventDefault();
+                updateSlidePosition(activeSlideIndex + 1);
+            }
+        });
+
+        tocViewport.addEventListener("pointerdown", (event) => {
+            if (!event.isPrimary || event.button !== 0) return;
+            pointerStartX = event.clientX;
+            pointerStartY = event.clientY;
+            activePointerId = event.pointerId;
+        });
+
+        tocViewport.addEventListener("pointermove", (event) => {
+            if (
+                pointerStartX === undefined ||
+                pointerStartY === undefined ||
+                event.pointerId !== activePointerId ||
+                tocViewport.hasPointerCapture(event.pointerId)
+            ) {
+                return;
+            }
+
+            const distanceX = Math.abs(event.clientX - pointerStartX);
+            const distanceY = Math.abs(event.clientY - pointerStartY);
+            if (
+                distanceX < POINTER_CAPTURE_DISTANCE ||
+                distanceX <= distanceY
+            ) {
+                return;
+            }
+
+            tocViewport.classList.add("is-dragging");
+            tocViewport.setPointerCapture(event.pointerId);
+        });
+
+        tocViewport.addEventListener("pointerup", (event) => {
+            if (
+                pointerStartX === undefined ||
+                event.pointerId !== activePointerId
+            ) {
+                return;
+            }
+
+            const distance = event.clientX - pointerStartX;
+            resetPointerState(event.pointerId);
+            if (Math.abs(distance) < POINTER_SWITCH_DISTANCE) return;
+
+            suppressLinkClickUntil =
+                performance.now() + LINK_CLICK_SUPPRESSION_TIME;
+            updateSlidePosition(
+                activeSlideIndex + (distance < 0 ? -1 : 1),
+            );
+        });
+
+        tocViewport.addEventListener("pointercancel", (event) => {
+            resetPointerState(event.pointerId);
+        });
+
+        tocViewport.addEventListener(
+            "wheel",
+            (event) => {
+                const levelDelta =
+                    Math.abs(event.deltaX) > Math.abs(event.deltaY)
+                        ? event.deltaX
+                        : event.deltaY;
+                if (Math.abs(levelDelta) < WHEEL_MIN_DELTA) return;
+
+                event.preventDefault();
+                const now = performance.now();
+                if (now - lastWheelSwitch < WHEEL_SWITCH_INTERVAL) return;
+
+                lastWheelSwitch = now;
+                updateSlidePosition(
+                    activeSlideIndex + (levelDelta < 0 ? -1 : 1),
+                );
+            },
+            { passive: false },
+        );
+
+        document.addEventListener("click", (event) => {
+            if (
+                articleToc.classList.contains("is-open") &&
+                event.target instanceof Node &&
+                !articleToc.contains(event.target)
+            ) {
+                setTocOpen(false);
+            }
+        });
+
+        window.addEventListener("blur", () => {
+            requestAnimationFrame(() => {
+                const focusedElement = document.activeElement;
+                if (
+                    articleToc.classList.contains("is-open") &&
+                    focusedElement instanceof HTMLIFrameElement &&
+                    !articleToc.contains(focusedElement)
+                ) {
+                    setTocOpen(false);
+                }
+            });
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (
+                event.key === "Escape" &&
+                articleToc.classList.contains("is-open")
+            ) {
+                setTocOpen(false);
+                tocToggleButton.focus({ preventScroll: true });
+            }
+        });
+
+        scrollContainer.addEventListener("scroll", requestTocSync, {
+            passive: true,
+        });
+        window.addEventListener("resize", requestTocSync);
+        window.addEventListener("resize", requestSummaryMarqueeSync);
+
+        activeNode = findActiveHeading();
+        updateSummary();
+        renderHierarchy(activeNode, true);
+        document.fonts?.ready.then(requestSummaryMarqueeSync);
+    };
+
+    initArticleToc();
+</script>
