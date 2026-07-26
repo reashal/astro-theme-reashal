@@ -202,6 +202,8 @@ const { headings } = Astro.props as Props;
         let pointerStartX: number | undefined;
         let pointerStartY: number | undefined;
         let activePointerId: number | undefined;
+        let touchStartX: number | undefined;
+        let touchStartY: number | undefined;
         let suppressLinkClickUntil = 0;
         let lastWheelSwitch = 0;
 
@@ -468,6 +470,30 @@ const { headings } = Astro.props as Props;
             }
         };
 
+        const resetTouchState = () => {
+            touchStartX = undefined;
+            touchStartY = undefined;
+            tocViewport.classList.remove("is-dragging");
+        };
+
+        const switchLevelFromSwipe = (
+            distanceX: number,
+            distanceY: number,
+        ) => {
+            if (
+                Math.abs(distanceX) < POINTER_SWITCH_DISTANCE ||
+                Math.abs(distanceX) <= Math.abs(distanceY)
+            ) {
+                return;
+            }
+
+            suppressLinkClickUntil =
+                performance.now() + LINK_CLICK_SUPPRESSION_TIME;
+            updateSlidePosition(
+                activeSlideIndex + (distanceX > 0 ? -1 : 1),
+            );
+        };
+
         tocToggleButton.addEventListener("click", () => {
             if (articleToc.classList.contains("is-open")) {
                 jumpToHeading(
@@ -520,7 +546,13 @@ const { headings } = Astro.props as Props;
         });
 
         tocViewport.addEventListener("pointerdown", (event) => {
-            if (!event.isPrimary || event.button !== 0) return;
+            if (
+                event.pointerType === "touch" ||
+                !event.isPrimary ||
+                event.button !== 0
+            ) {
+                return;
+            }
             pointerStartX = event.clientX;
             pointerStartY = event.clientY;
             activePointerId = event.pointerId;
@@ -557,20 +589,83 @@ const { headings } = Astro.props as Props;
                 return;
             }
 
-            const distance = event.clientX - pointerStartX;
+            const distanceX = event.clientX - pointerStartX;
+            const distanceY =
+                event.clientY - (pointerStartY ?? event.clientY);
             resetPointerState(event.pointerId);
-            if (Math.abs(distance) < POINTER_SWITCH_DISTANCE) return;
-
-            suppressLinkClickUntil =
-                performance.now() + LINK_CLICK_SUPPRESSION_TIME;
-            updateSlidePosition(
-                activeSlideIndex + (distance > 0 ? -1 : 1),
-            );
+            switchLevelFromSwipe(distanceX, distanceY);
         });
 
         tocViewport.addEventListener("pointercancel", (event) => {
+            if (event.pointerType === "touch") return;
             resetPointerState(event.pointerId);
         });
+
+        tocViewport.addEventListener(
+            "touchstart",
+            (event) => {
+                if (event.touches.length !== 1) return;
+                touchStartX = event.touches[0].clientX;
+                touchStartY = event.touches[0].clientY;
+            },
+            { passive: true },
+        );
+
+        tocViewport.addEventListener(
+            "touchmove",
+            (event) => {
+                if (
+                    touchStartX === undefined ||
+                    touchStartY === undefined ||
+                    event.touches.length !== 1
+                ) {
+                    return;
+                }
+
+                const distanceX =
+                    event.touches[0].clientX - touchStartX;
+                const distanceY =
+                    event.touches[0].clientY - touchStartY;
+                if (
+                    Math.abs(distanceX) < POINTER_CAPTURE_DISTANCE ||
+                    Math.abs(distanceX) <= Math.abs(distanceY)
+                ) {
+                    return;
+                }
+
+                event.preventDefault();
+                tocViewport.classList.add("is-dragging");
+            },
+            { passive: false },
+        );
+
+        tocViewport.addEventListener(
+            "touchend",
+            (event) => {
+                if (
+                    touchStartX === undefined ||
+                    touchStartY === undefined ||
+                    event.changedTouches.length !== 1
+                ) {
+                    resetTouchState();
+                    return;
+                }
+
+                const distanceX =
+                    event.changedTouches[0].clientX - touchStartX;
+                const distanceY =
+                    event.changedTouches[0].clientY - touchStartY;
+                resetTouchState();
+                switchLevelFromSwipe(distanceX, distanceY);
+            },
+            { passive: true },
+        );
+
+        tocViewport.addEventListener(
+            "touchcancel",
+            resetTouchState,
+            { passive: true },
+        );
 
         tocViewport.addEventListener(
             "wheel",
