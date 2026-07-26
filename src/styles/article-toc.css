@@ -50,7 +50,10 @@
     transition:
         border-color .2s ease,
         background-color .2s ease,
-        box-shadow .2s ease;
+        box-shadow .2s ease,
+        opacity .16s ease,
+        transform .2s cubic-bezier(.22, 1, .36, 1),
+        visibility 0s linear;
 }
 
 .article-toc-summary > span {
@@ -99,10 +102,16 @@
         inset 0 1px 0 rgb(var(--rgb-white) / 6%);
 }
 
-.article-toc.is-open .article-toc-summary {
+.article-toc.is-open .article-toc-summary,
+.article-toc.is-closing .article-toc-summary {
     border-color: transparent;
     background: transparent;
     box-shadow: none;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(.9);
+    visibility: hidden;
+    transition-delay: 0s, 0s, 0s, 0s, 0s, .16s;
 }
 
 .article-toc-summary:focus-visible {
@@ -124,10 +133,7 @@
     left: 50%;
     z-index: 0;
     width: 100%;
-    padding:
-        calc(var(--toc-summary-height) + .38rem)
-        .55rem
-        .55rem;
+    padding: .55rem;
     overflow: hidden;
     border: 1px solid var(--toc-island-border);
     border-radius: var(--toc-panel-radius);
@@ -149,16 +155,6 @@
 
 .article-toc nav[hidden] {
     display: none;
-}
-
-.article-toc nav::before {
-    position: absolute;
-    top: calc(var(--toc-summary-height) + .02rem);
-    right: .58rem;
-    left: .58rem;
-    height: 1px;
-    background: rgb(var(--rgb-white) / 6%);
-    content: "";
 }
 
 @keyframes article-toc-expand {
@@ -219,7 +215,7 @@
     flex: 0 0 100%;
 }
 
-.article-toc-heading-list {
+.doc .article-toc-heading-list {
     min-height: 8.6rem;
     max-height: min(15rem, 46vh);
     margin: 0;
@@ -234,12 +230,12 @@
     scrollbar-width: thin;
 }
 
-.article-toc-heading-list::-webkit-scrollbar {
+.doc .article-toc-heading-list::-webkit-scrollbar {
     display: block;
     width: 3px;
 }
 
-.article-toc-heading-list::-webkit-scrollbar-thumb {
+.doc .article-toc-heading-list::-webkit-scrollbar-thumb {
     border-radius: 2px;
     background: rgb(var(--rgb-accent-cyan) / 28%);
 }
@@ -381,13 +377,10 @@
     }
 
     .article-toc nav {
-        padding:
-            calc(var(--toc-summary-height) + .32rem)
-            .45rem
-            .45rem;
+        padding: .45rem;
     }
 
-    .article-toc-heading-list {
+    .doc .article-toc-heading-list {
         min-height: 8.2rem;
         padding: .38rem;
     }
