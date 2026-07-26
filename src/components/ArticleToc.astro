@@ -283,7 +283,7 @@ const { headings } = Astro.props as Props;
             nextLevelButton.disabled =
                 activeSlideIndex === tocSlides.length - 1;
             levelStatus.textContent =
-                `${tocSlides.length - activeSlideIndex} / ${tocSlides.length}`;
+                `${activeSlideIndex + 1} / ${tocSlides.length}`;
 
             if (focusViewport) {
                 tocViewport.focus({ preventScroll: true });
@@ -564,7 +564,7 @@ const { headings } = Astro.props as Props;
             suppressLinkClickUntil =
                 performance.now() + LINK_CLICK_SUPPRESSION_TIME;
             updateSlidePosition(
-                activeSlideIndex + (distance < 0 ? -1 : 1),
+                activeSlideIndex + (distance > 0 ? -1 : 1),
             );
         });
 
