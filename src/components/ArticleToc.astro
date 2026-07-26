@@ -688,7 +688,7 @@ const { headings } = Astro.props as Props;
             { passive: false },
         );
 
-        document.addEventListener("click", (event) => {
+        const closeTocFromOutside = (event: Event) => {
             if (
                 articleToc.classList.contains("is-open") &&
                 event.target instanceof Node &&
@@ -696,7 +696,33 @@ const { headings } = Astro.props as Props;
             ) {
                 setTocOpen(false);
             }
-        });
+        };
+
+        document.addEventListener(
+            "pointerdown",
+            closeTocFromOutside,
+            { passive: true },
+        );
+        document.addEventListener(
+            "touchstart",
+            closeTocFromOutside,
+            { passive: true },
+        );
+        document.addEventListener(
+            "wheel",
+            closeTocFromOutside,
+            { capture: true, passive: true },
+        );
+        document.addEventListener(
+            "pointerover",
+            (event) => {
+                if (event.target instanceof HTMLIFrameElement) {
+                    closeTocFromOutside(event);
+                }
+            },
+            { passive: true },
+        );
+        document.addEventListener("click", closeTocFromOutside);
 
         window.addEventListener("blur", () => {
             requestAnimationFrame(() => {
