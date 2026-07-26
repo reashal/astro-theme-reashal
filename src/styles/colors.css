@@ -70,13 +70,6 @@
     --border-dark-divider: #313131;
     --rule-dark: #7e8fa6;
 
-    /* Markdown 标题层级：这些差异用于增强内容结构，不合并 */
-    --heading-h1-border: #f00;
-    --heading-h1: #d33a4a;
-    --heading-h3-border: #114f9e;
-    --heading-h3: #44362f;
-    --heading-h5: #224e95;
-
     /* 代码块窗口指示灯：功能性辨识色，不合并 */
     --terminal-red: #ff5f57;
     --terminal-yellow: #ffbd2e;

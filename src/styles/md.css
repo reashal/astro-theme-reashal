@@ -6,6 +6,9 @@
     --article-tag-surface: rgb(var(--rgb-brand) / 7%);
     --article-nav-surface: rgb(var(--rgb-brand) / 3%);
     --article-nav-surface-hover: rgb(var(--rgb-brand) / 7%);
+    --article-heading-primary: var(--text-primary);
+    --article-heading-strong: var(--text-strong);
+    --article-heading-marker: var(--color-accent-pink);
 
     max-width: 100%;
     margin-top: 2vh;
@@ -13,7 +16,6 @@
     padding: 1rem;
     box-shadow: rgb(var(--rgb-shadow-neutral) / 20%) 0px 7px 29px 0px;
     overflow-wrap: break-word;
-    counter-reset: h1-counter h2-counter h3-counter h4-counter h5-counter h6-counter;
 }
 
 .dark .doc {
@@ -24,6 +26,9 @@
     --article-tag-surface: rgb(var(--rgb-accent-cyan) / 8%);
     --article-nav-surface: rgb(var(--rgb-accent-cyan) / 4%);
     --article-nav-surface-hover: rgb(var(--rgb-accent-cyan) / 9%);
+    --article-heading-primary: var(--text-on-dark-strong);
+    --article-heading-strong: var(--text-on-dark);
+    --article-heading-marker: var(--color-accent-cyan);
 }
 
 .doc .article-search-meta {
@@ -184,10 +189,6 @@
     outline-color: var(--color-accent-cyan);
 }
 
-.article-content {
-    counter-reset: h1-counter h2-counter h3-counter h4-counter h5-counter h6-counter;
-}
-
 .article-neighbors {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -310,115 +311,110 @@
     box-shadow: rgb(var(--rgb-accent-cyan) / 40%) 0px 0px 8px;
 }
 
-/* 标题通用样式 */
-.doc h1,
-.doc h2,
-.doc h3,
-.doc h4,
-.doc h5,
-.doc h6 {
-    margin: .8rem 0;
-    padding-left: 1rem;
+/* 文章标题层级 */
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-content h4,
+.article-content h5,
+.article-content h6 {
+    position: relative;
+    margin-right: 0;
+    margin-left: 0;
+    padding-left: .72rem;
     overflow-wrap: break-word;
-    line-height: 1.4;
+    line-height: 1.45;
+    letter-spacing: -.012em;
 }
 
-/* H1 标题 */
-.doc h1 {
-    border-left: 16px solid var(--heading-h1-border);
-    font-size: 1.8rem;
-    color: var(--heading-h1);
-    font-weight: bold;
-    counter-increment: h1-counter;
+.article-content h1::before,
+.article-content h2::before,
+.article-content h3::before,
+.article-content h4::before,
+.article-content h5::before,
+.article-content h6::before {
+    position: absolute;
+    top: .725em;
+    left: 0;
+    width: var(--article-heading-marker-width);
+    height: var(--article-heading-marker-height);
+    border-radius: 999px;
+    background: var(--article-heading-marker);
+    content: "";
+    opacity: var(--article-heading-marker-opacity);
+    transform: translateY(-50%);
 }
 
-.doc h1::before {
-    content: counter(h1-counter) ". ";
-    font-weight: bold;
-    margin-right: 0.3rem;
+.article-content h1 {
+    --article-heading-marker-width: .26rem;
+    --article-heading-marker-height: 1.08em;
+    --article-heading-marker-opacity: 1;
+
+    margin-top: 2rem;
+    margin-bottom: .8rem;
+    color: var(--article-heading-primary);
+    font-size: clamp(1.32rem, 2.1vw, 1.5rem);
+    font-weight: 700;
 }
 
-/* H2 标题 */
-.doc h2 {
-    border-left: 20px solid var(--color-orange);
-    font-size: 1.6rem;
-    color: var(--color-brand);
-    font-weight: bold;
-    counter-increment: h2-counter;
+.article-content h2 {
+    --article-heading-marker-width: .24rem;
+    --article-heading-marker-height: .94em;
+    --article-heading-marker-opacity: .9;
+
+    margin-top: 1.9rem;
+    margin-bottom: .72rem;
+    color: var(--article-heading-primary);
+    font-size: clamp(1.18rem, 1.8vw, 1.3rem);
+    font-weight: 700;
 }
 
-.doc h2::before {
-    content: counter(h1-counter) "." counter(h2-counter) " ";
-    font-weight: bold;
-    margin-right: 0.3rem;
+.article-content h3 {
+    --article-heading-marker-width: .22rem;
+    --article-heading-marker-height: .8em;
+    --article-heading-marker-opacity: .8;
+
+    margin-top: 1.5rem;
+    margin-bottom: .6rem;
+    color: var(--article-heading-strong);
+    font-size: clamp(1.06rem, 1.45vw, 1.12rem);
+    font-weight: 650;
 }
 
-.dark .article-container h2 {
-    color: var(--text-on-dark-strong);
-}
+.article-content h4 {
+    --article-heading-marker-width: .2rem;
+    --article-heading-marker-height: .66em;
+    --article-heading-marker-opacity: .7;
 
-/* H3 标题 */
-.doc h3 {
-    border-left: 24px solid var(--heading-h3-border);
-    font-size: 1.4rem;
-    color: var(--heading-h3);
-    font-weight: bold;
-    counter-increment: h3-counter;
-}
-
-.doc h3::before {
-    content: counter(h1-counter) "." counter(h2-counter) "." counter(h3-counter) " ";
-    font-weight: bold;
-    margin-right: 0.3rem;
-}
-
-.dark .article-container h3 {
-    color: var(--text-on-dark);
-}
-
-/* H4 标题 */
-.doc h4 {
-    border-left: 28px solid var(--color-brand);
-    font-size: 1.2rem;
-    color: var(--color-orange);
-    font-weight: normal;
-    counter-increment: h4-counter;
-}
-
-.doc h4::before {
-    content: counter(h1-counter) "." counter(h2-counter) "." counter(h3-counter) "." counter(h4-counter) " ";
-    font-weight: bold;
-    margin-right: 0.3rem;
-}
-
-/* H5 标题 */
-.doc h5 {
-    border-left: 32px solid var(--color-indigo);
+    margin-top: 1.28rem;
+    margin-bottom: .54rem;
+    color: var(--article-heading-strong);
     font-size: 1rem;
-    color: var(--heading-h5);
-    font-weight: normal;
-    counter-increment: h5-counter;
+    font-weight: 700;
 }
 
-.doc h5::before {
-    content: counter(h1-counter) "." counter(h2-counter) "." counter(h3-counter) "." counter(h4-counter) "." counter(h5-counter) " ";
-    font-weight: bold;
-    margin-right: 0.3rem;
-}
+.article-content h5 {
+    --article-heading-marker-width: .18rem;
+    --article-heading-marker-height: .5em;
+    --article-heading-marker-opacity: .6;
 
-/* H6 标题 */
-.doc h6 {
-    border-left: 36px solid var(--color-slate);
+    margin-top: 1.12rem;
+    margin-bottom: .48rem;
+    color: var(--article-heading-strong);
     font-size: 1rem;
-    font-weight: normal;
-    color: var(--color-slate);
-    counter-increment: h6-counter;
+    font-weight: 650;
 }
 
-.doc h6::before {
-    content: counter(h1-counter) "." counter(h2-counter) "." counter(h3-counter) "." counter(h4-counter) "." counter(h5-counter) "." counter(h6-counter) " ";
-    font-weight: bold;
-    margin-right: 0.3rem;
+.article-content h6 {
+    --article-heading-marker-width: .18rem;
+    --article-heading-marker-height: .3em;
+    --article-heading-marker-opacity: .5;
+
+    margin-top: 1.02rem;
+    margin-bottom: .44rem;
+    color: var(--article-heading-strong);
+    font-size: 1rem;
+    font-weight: 600;
 }
 
 /* 段落 */
