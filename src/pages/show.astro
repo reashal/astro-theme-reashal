@@ -108,9 +108,11 @@ const hasValidImage = (image: string | undefined): boolean => !!image && image.t
                                             )}
                                             <div class="showcase-description">
                                                 <p>{card.description}</p>
-                                                <span class="showcase-description-full" aria-hidden="true">
-                                                    {card.description}
-                                                </span>
+                                                {card.imageMode === "product-card" && (
+                                                    <span class="showcase-description-full" aria-hidden="true">
+                                                        {card.description}
+                                                    </span>
+                                                )}
                                             </div>
                                         </div>
                                     </CardWrapper>
