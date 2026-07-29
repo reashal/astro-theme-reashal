@@ -10,12 +10,26 @@ import { SITE_INFO } from "../consts";
 interface Props {
     pageTitle: string;
     pageDescription: string;
+    pageType?: "website" | "article";
+    publishedTime?: string;
+    pageTags?: string[];
 }
 
-const { pageTitle, pageDescription } = Astro.props as Props;
+const {
+    pageTitle,
+    pageDescription,
+    pageType = "website",
+    publishedTime,
+    pageTags = [],
+} = Astro.props as Props;
 
 // 获取当前路径，用于侧边栏高亮
 const currentPath = Astro.url.pathname;
+const siteOrigin = Astro.site ?? Astro.url.origin;
+const canonicalUrl = new URL(currentPath, siteOrigin);
+const socialImageUrl = new URL(SITE_INFO.wallpaper, siteOrigin);
+const fullTitle = `${pageTitle}｜${SITE_INFO.title}`;
+const fullDescription = `『${pageDescription}』『有限的文字无法写尽余生,希望我们能在前行的路上久别重逢』`;
 ---
 
 <!doctype html>
@@ -23,16 +37,85 @@ const currentPath = Astro.url.pathname;
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{`${pageTitle}｜${SITE_INFO.title}`}</title>
-        <meta
-            name="description"
-            content=`『${pageDescription}』『有限的文字无法写尽余生,希望我们能在前行的路上久别重逢』`
-        />
+        <meta name="color-scheme" content="light dark" />
+        <script is:inline>
+            (() => {
+                const root = document.documentElement;
+                const manualTtl = 6 * 60 * 60 * 1000;
+                let manualTheme = null;
+
+                try {
+                    const savedTheme = localStorage.getItem("theme");
+                    const savedAt = Number(localStorage.getItem("themeTs"));
+                    const isValidTheme =
+                        savedTheme === "dark" || savedTheme === "light";
+
+                    if (
+                        isValidTheme &&
+                        Number.isFinite(savedAt) &&
+                        Date.now() - savedAt < manualTtl
+                    ) {
+                        manualTheme = savedTheme;
+                    } else {
+                        localStorage.removeItem("theme");
+                        localStorage.removeItem("themeTs");
+                    }
+                } catch {
+                    // 无法访问存储时仍可按系统偏好和时间选择主题。
+                }
+
+                const hour = new Date().getHours();
+                const prefersDark = window.matchMedia(
+                    "(prefers-color-scheme: dark)",
+                ).matches;
+                const theme =
+                    manualTheme ??
+                    (hour > 20 || hour < 6 || prefersDark ? "dark" : "light");
+
+                root.classList.toggle("dark", theme === "dark");
+                root.style.colorScheme = theme;
+            })();
+        </script>
+        <title>{fullTitle}</title>
+        <meta name="description" content={fullDescription} />
         <meta name="author" content="睿屿青衫" />
         <meta
             name="keywords"
             content="睿屿青衫,reashal,blog,life,博客,随笔,记录,点滴,主页"
         />
+        <link rel="canonical" href={canonicalUrl} />
+        <link
+            rel="alternate"
+            type="application/rss+xml"
+            title={`${SITE_INFO.title}的更新`}
+            href="/rss.xml"
+        />
+        <link rel="sitemap" href="/sitemap-index.xml" />
+        <meta property="og:type" content={pageType} />
+        <meta property="og:locale" content="zh_CN" />
+        <meta property="og:site_name" content={SITE_INFO.title} />
+        <meta property="og:title" content={fullTitle} />
+        <meta property="og:description" content={fullDescription} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content={socialImageUrl} />
+        {
+            pageType === "article" && publishedTime && (
+                <meta
+                    property="article:published_time"
+                    content={publishedTime}
+                />
+            )
+        }
+        {
+            pageType === "article" &&
+                pageTags.map((tag) => (
+                    <meta property="article:tag" content={tag} />
+                ))
+        }
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={fullTitle} />
+        <meta name="twitter:description" content={fullDescription} />
+        <meta name="twitter:image" content={socialImageUrl} />
         <link rel="icon" href="/static/favicon.svg" />
     </head>
     <body>
@@ -45,7 +128,6 @@ const currentPath = Astro.url.pathname;
         </main>
         <Share />
         <ImageViewer />
-        <script is:inline src="/static/scripts/view.js"></script>
         <canvas
             class="fireworks"
             style="position:fixed;left:0;top:0;z-index:99999999;pointer-events:none;"

@@ -61,7 +61,13 @@ const formatDate = (date: string) => {
 };
 ---
 
-<BaseLayout pageTitle={frontmatter.title} pageDescription={frontmatter.desc}>
+<BaseLayout
+    pageTitle={frontmatter.title}
+    pageDescription={frontmatter.desc}
+    pageType={isDocsArticle ? "article" : "website"}
+    publishedTime={isDocsArticle ? publishedDate : undefined}
+    pageTags={isDocsArticle ? tags : []}
+>
     <ReadingProgress />
     <article
         class="article-container doc"

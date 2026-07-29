@@ -15,6 +15,9 @@ const showcases = Object.entries(showcaseConfig.showcases).map(([id, config]) =>
 
 const pageTitle = "展示";
 const pageDescription = "物品清单与友情链接";
+const siteOrigin = Astro.site ?? Astro.url.origin;
+const siteUrl = new URL("/", siteOrigin);
+const avatarUrl = new URL(AUTHOR_INFO.avatar, siteOrigin);
 
 const getInitial = (title: string) => title.charAt(0).toUpperCase();
 const hasValidImage = (image: string | undefined): boolean => !!image && image.trim() !== "";
@@ -125,8 +128,8 @@ const hasValidImage = (image: string | undefined): boolean => !!image && image.t
                 {config.showFooter === true && (
                     <section class="article-copy">
                         <div>名称：{AUTHOR_INFO.name}</div>
-                        <div>网址：https://www.reashal.com</div>
-                        <div>头像：{AUTHOR_INFO.avatar}</div>
+                        <div>网址：{siteUrl}</div>
+                        <div>头像：{avatarUrl}</div>
                         <div>描述：{AUTHOR_INFO.detailDescription || AUTHOR_INFO.description}</div>
                     </section>
                 )}

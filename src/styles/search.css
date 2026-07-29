@@ -1,0 +1,317 @@
+.docs-search {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 3;
+}
+
+.docs-search-toggle {
+    position: relative;
+    top: .6rem;
+    right: .6rem;
+    width: 34px;
+    height: 34px;
+    padding: 2px;
+    border: 0;
+    background: none;
+    color: var(--color-accent-cyan);
+    cursor: pointer;
+    user-select: none;
+    transition:
+        color .2s ease,
+        transform .2s ease;
+}
+
+.docs-search-toggle:hover {
+    color: var(--color-accent-cyan-hover);
+    transform: scale(1.06);
+}
+
+.docs-search-toggle:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    border-radius: 50%;
+}
+
+.docs-search-toggle svg {
+    width: 30px;
+    height: 30px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+}
+
+.docs-search-panel {
+    position: absolute;
+    top: 3.8rem;
+    right: .8rem;
+    width: min(23rem, calc(100vw - 2rem));
+    padding: .75rem;
+    border: 1px solid rgb(var(--rgb-white) / 18%);
+    border-radius: .75rem;
+    background: rgb(var(--rgb-dark-message) / 84%);
+    box-shadow: 0 .8rem 2.4rem rgb(var(--rgb-black) / 24%);
+    backdrop-filter: blur(16px) saturate(125%);
+    color: var(--text-on-dark);
+    transform-origin: top right;
+    animation: docs-search-in .18s ease-out;
+}
+
+.docs-search-panel[hidden] {
+    display: none;
+}
+
+.docs-search-field {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    min-height: 2.6rem;
+    padding: 0 .7rem;
+    border: 1px solid rgb(var(--rgb-white) / 16%);
+    border-radius: .55rem;
+    background: rgb(var(--rgb-white) / 9%);
+    transition:
+        border-color .2s ease,
+        background-color .2s ease;
+}
+
+.docs-search-field:focus-within {
+    border-color: rgb(var(--rgb-accent-cyan) / 72%);
+    background: rgb(var(--rgb-white) / 12%);
+}
+
+.docs-search-field svg {
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: var(--color-accent-cyan);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+}
+
+.docs-search-field input {
+    min-width: 0;
+    flex: 1;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--color-white);
+    font: inherit;
+    font-size: .9rem;
+}
+
+.docs-search-field input::placeholder {
+    color: var(--text-on-dark-secondary);
+}
+
+.docs-search-field input::-webkit-search-cancel-button {
+    filter: invert(1);
+    opacity: .65;
+}
+
+.docs-search-field kbd {
+    padding: .12rem .3rem;
+    border: 1px solid rgb(var(--rgb-white) / 18%);
+    border-radius: .25rem;
+    color: var(--text-on-dark-muted);
+    font-family: inherit;
+    font-size: .58rem;
+    font-weight: normal;
+}
+
+.docs-search-status {
+    min-height: 1.75rem;
+    padding: .55rem .2rem .3rem;
+    color: var(--text-on-dark-muted);
+    font-size: .68rem;
+}
+
+.docs-search-results {
+    display: grid;
+    max-height: 14.5rem;
+    overflow-y: auto;
+    gap: .15rem;
+}
+
+.docs-search-result {
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    padding: .55rem .6rem;
+    border-radius: .5rem;
+    color: var(--text-on-dark);
+    font-weight: normal;
+    transition:
+        background-color .16s ease,
+        transform .16s ease;
+}
+
+.docs-search-result[hidden] {
+    display: none;
+}
+
+.docs-search-result:hover,
+.docs-search-result:focus-visible {
+    outline: none;
+    background: rgb(var(--rgb-white) / 10%);
+    transform: translateX(2px);
+}
+
+.docs-search-result-copy {
+    min-width: 0;
+    flex: 1;
+}
+
+.docs-search-result strong,
+.docs-search-result small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.docs-search-result strong {
+    color: var(--text-on-dark-strong);
+    font-size: .88rem;
+}
+
+.docs-search-result small {
+    margin-top: .16rem;
+    color: var(--text-on-dark-secondary);
+    font-size: .7rem;
+}
+
+.docs-search-result small mark {
+    background: none;
+    color: var(--color-accent-cyan);
+    font-weight: bold;
+}
+
+.docs-search-result > svg {
+    width: .95rem;
+    height: .95rem;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: var(--color-accent-cyan);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0;
+    transform: translateX(-3px);
+    transition:
+        opacity .16s ease,
+        transform .16s ease;
+}
+
+.docs-search-result:hover > svg,
+.docs-search-result:focus-visible > svg {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.docs-search-empty {
+    padding: 1.7rem .5rem 1.4rem;
+    color: var(--text-on-dark-secondary);
+    font-size: .8rem;
+    text-align: center;
+}
+
+.docs-search-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .65rem;
+    padding: .65rem .2rem .05rem;
+    color: var(--text-on-dark-muted);
+    font-size: .65rem;
+}
+
+.docs-search-pagination[hidden] {
+    display: none;
+}
+
+.docs-search-pagination button {
+    display: grid;
+    width: 1.65rem;
+    height: 1.65rem;
+    padding: 0;
+    place-items: center;
+    border: 1px solid rgb(var(--rgb-white) / 14%);
+    border-radius: 50%;
+    background: rgb(var(--rgb-white) / 6%);
+    color: var(--text-on-dark-secondary);
+    cursor: pointer;
+    transition:
+        border-color .16s ease,
+        background-color .16s ease,
+        color .16s ease;
+}
+
+.docs-search-pagination button:hover:not(:disabled),
+.docs-search-pagination button:focus-visible {
+    border-color: rgb(var(--rgb-accent-cyan) / 55%);
+    outline: none;
+    background: rgb(var(--rgb-white) / 11%);
+    color: var(--color-accent-cyan);
+}
+
+.docs-search-pagination button:disabled {
+    cursor: default;
+    opacity: .3;
+}
+
+.docs-search-pagination svg {
+    width: .85rem;
+    height: .85rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.docs-search-pagination span {
+    min-width: 3rem;
+    text-align: center;
+}
+
+.dark .docs-search-toggle {
+    color: var(--text-on-dark);
+}
+
+.dark .docs-search-toggle:hover {
+    color: var(--color-white);
+}
+
+@keyframes docs-search-in {
+    from {
+        opacity: 0;
+        transform: translateY(-4px) scale(.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media screen and (max-width: 488px) {
+    .docs-search-panel {
+        right: .6rem;
+        width: calc(100vw - 1.2rem);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .docs-search-panel {
+        animation: none;
+    }
+
+    .docs-search-toggle,
+    .docs-search-result,
+    .docs-search-result > svg,
+    .docs-search-pagination button {
+        transition: none;
+    }
+}

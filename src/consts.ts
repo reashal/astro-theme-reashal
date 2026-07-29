@@ -2,6 +2,8 @@
 export const SITE_INFO = {
     // 网站标题
     title: "睿屿青衫",
+    // 网站简介
+    description: "以碎片化的记录汇聚时光的川流",
     // 备案信息（可选，不需要则留空字符串）
     icpNo: "",
     // 工信部链接（可选，默认为工信部备案查询网站）
@@ -17,7 +19,7 @@ export const AUTHOR_INFO = {
     // 昵称
     name: "睿屿青衫",
     // 头像路径
-    avatar: "https://www.reashal.com/static/images/reashal.svg",
+    avatar: "/static/images/reashal.svg",
     // 个性签名
     description: "希望我们能在前行的路上久别重逢",
     // 详细介绍（hover时展示，留空时采用description）

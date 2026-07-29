@@ -1,130 +1,376 @@
+<section
+    class="view-box view-box-hide"
+    id="view-box"
+    role="dialog"
+    aria-modal="true"
+    aria-label="图片查看器"
+    aria-hidden="true"
+    tabindex="-1"
+>
+    <div class="view-topbar">
+        <span class="view-counter" id="view-counter" aria-live="polite"></span>
+        <button class="view-control view-close" id="view-close" type="button" aria-label="关闭图片查看器">
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M6 6l12 12M18 6 6 18"></path>
+            </svg>
+        </button>
+    </div>
+
+    <button class="view-control view-nav view-prev" id="view-prev" type="button" aria-label="上一张图片">
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="m15 18-6-6 6-6"></path>
+        </svg>
+    </button>
+
+    <figure class="view-content" id="view-content">
+        <div class="view-stage" id="view-stage">
+            <img
+                src=""
+                alt=""
+                class="view-img"
+                id="view-img"
+                draggable="false"
+                decoding="async"
+            />
+            <span class="view-loading" id="view-loading" aria-live="polite">正在载入</span>
+            <span class="view-error" id="view-error" role="status">图片暂时无法载入</span>
+        </div>
+        <figcaption class="view-caption" id="view-caption"></figcaption>
+    </figure>
+
+    <button class="view-control view-nav view-next" id="view-next" type="button" aria-label="下一张图片">
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="m9 6 6 6-6 6"></path>
+        </svg>
+    </button>
+
+    <div class="view-tools" aria-label="图片缩放控制">
+        <button class="view-tool" id="view-zoom-out" type="button" aria-label="缩小图片">−</button>
+        <button class="view-scale" id="view-scale" type="button" aria-label="恢复原始缩放">100%</button>
+        <button class="view-tool" id="view-zoom-in" type="button" aria-label="放大图片">＋</button>
+    </div>
+</section>
+
+<script src="../scripts/image-viewer.ts"></script>
+
 <style is:inline>
-    .view-box-show {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    .view-box {
+        --viewer-surface: rgb(var(--rgb-dark-message) / 82%);
+        --viewer-control: rgb(var(--rgb-white) / 10%);
+        --viewer-control-hover: rgb(var(--rgb-accent-cyan) / 22%);
         position: fixed;
-        top: 0;
-        left: 0;
+        inset: 0;
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 100vw;
         height: 100vh;
-        background-color: rgb(var(--rgb-black) / 92%);
-        z-index: 999999;
+        height: 100dvh;
+        color: var(--color-white);
+        background: rgb(var(--rgb-black) / 90%);
+        backdrop-filter: blur(12px);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
         user-select: none;
+        transition:
+            opacity .24s ease,
+            visibility .24s ease;
     }
-    .view-box-hide {
+
+    .view-box-show {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .view-topbar {
+        position: absolute;
+        top: max(1rem, env(safe-area-inset-top));
+        left: 50%;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        gap: .55rem;
+        transform: translateX(-50%);
+    }
+
+    .view-counter,
+    .view-control,
+    .view-tools {
+        border: 1px solid rgb(var(--rgb-white) / 12%);
+        background: var(--viewer-surface);
+        box-shadow: 0 .5rem 1.6rem rgb(var(--rgb-black) / 24%);
+        backdrop-filter: blur(14px);
+    }
+
+    .view-counter {
+        min-width: 3.8rem;
+        padding: .42rem .72rem;
+        border-radius: 999px;
+        color: rgb(var(--rgb-white) / 78%);
+        font-size: .78rem;
+        line-height: 1;
+        text-align: center;
+    }
+
+    .view-control,
+    .view-tool,
+    .view-scale {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+    }
+
+    .view-control {
+        width: 2.55rem;
+        height: 2.55rem;
+        border-radius: 50%;
+        transition:
+            color .2s ease,
+            border-color .2s ease,
+            background-color .2s ease,
+            transform .2s ease;
+    }
+
+    .view-control svg {
+        width: 1.2rem;
+        height: 1.2rem;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.8;
+    }
+
+    .view-control:hover,
+    .view-control:focus-visible {
+        color: var(--color-accent-cyan);
+        border-color: rgb(var(--rgb-accent-cyan) / 42%);
+        background: var(--viewer-control-hover);
+        outline: none;
+    }
+
+    .view-close {
+        width: 2.2rem;
+        height: 2.2rem;
+    }
+
+    .view-nav {
+        position: absolute;
+        top: 50%;
+        z-index: 3;
+        transform: translateY(-50%);
+    }
+
+    .view-prev {
+        left: max(1rem, env(safe-area-inset-left));
+    }
+
+    .view-next {
+        right: max(1rem, env(safe-area-inset-right));
+    }
+
+    .view-nav:hover,
+    .view-nav:focus-visible {
+        transform: translateY(-50%) scale(1.06);
+    }
+
+    .view-nav[hidden],
+    .view-counter[hidden],
+    .view-caption:empty {
         display: none;
     }
+
     .view-content {
+        display: grid;
+        grid-template-rows: minmax(0, 1fr) auto;
+        gap: .75rem;
+        width: min(84vw, 80rem);
+        height: min(82vh, 52rem);
+        height: min(82dvh, 52rem);
+        margin: 0;
+    }
+
+    .view-stage {
         position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
+        touch-action: none;
     }
+
     .view-img {
         display: block;
-        max-width: 85vw;
-        max-height: 85vh;
-        border-radius: .3rem;
-        box-shadow: 0 4px 24px rgb(var(--rgb-black) / 40%);
-        user-select: none;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        pointer-events: none;
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: .45rem;
+        box-shadow: 0 .45rem 2rem rgb(var(--rgb-black) / 42%);
+        transform: translate3d(0, 0, 0) scale(1);
+        transform-origin: center;
+        transition:
+            opacity .18s ease,
+            transform .16s ease;
+        cursor: zoom-in;
+        -webkit-user-drag: none;
     }
-    .view-close {
+
+    .view-stage.is-zoomed .view-img {
+        cursor: grab;
+    }
+
+    .view-stage.is-dragging .view-img {
+        cursor: grabbing;
+        transition: opacity .18s ease;
+    }
+
+    .view-box.is-loading .view-img,
+    .view-box.has-error .view-img {
+        opacity: 0;
+    }
+
+    .view-loading,
+    .view-error {
         position: absolute;
-        top: 1rem;
-        right: 1rem;
-        width: 2.5rem;
-        height: 2.5rem;
-        background: rgb(var(--rgb-white) / 10%);
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background 0.2s ease, transform 0.2s ease;
-        color: var(--color-white);
-        font-size: 1.5rem;
-    }
-    .view-close:hover {
-        background: rgb(var(--rgb-white) / 20%);
-        transform: scale(1.1);
-    }
-    .view-nav {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 3rem;
-        height: 3rem;
-        background: rgb(var(--rgb-white) / 10%);
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background 0.2s ease, transform 0.2s ease;
-        color: var(--color-white);
-    }
-    .view-nav:hover {
-        background: rgb(var(--rgb-white) / 20%);
-    }
-    .view-prev {
-        left: 1rem;
-    }
-    .view-prev:hover {
-        transform: translateY(-50%) scale(1.1);
-    }
-    .view-next {
-        right: 1rem;
-    }
-    .view-next:hover {
-        transform: translateY(-50%) scale(1.1);
-    }
-    .view-counter {
-        position: absolute;
-        bottom: 1.5rem;
         left: 50%;
+        top: 50%;
+        display: none;
+        transform: translate(-50%, -50%);
+        color: rgb(var(--rgb-white) / 68%);
+        font-size: .86rem;
+        letter-spacing: .08em;
+    }
+
+    .view-loading::after {
+        content: "";
+        display: inline-block;
+        width: .35rem;
+        height: .35rem;
+        margin-left: .55rem;
+        border-radius: 50%;
+        background: var(--color-accent-cyan);
+        box-shadow:
+            .55rem 0 rgb(var(--rgb-accent-cyan) / 62%),
+            1.1rem 0 rgb(var(--rgb-accent-cyan) / 28%);
+        animation: viewer-loading 1s ease-in-out infinite alternate;
+    }
+
+    .view-box.is-loading .view-loading,
+    .view-box.has-error .view-error {
+        display: block;
+    }
+
+    .view-caption {
+        justify-self: center;
+        max-width: min(80vw, 42rem);
+        padding: .38rem .78rem;
+        border-radius: 999px;
+        color: rgb(var(--rgb-white) / 72%);
+        background: rgb(var(--rgb-black) / 28%);
+        font-size: .82rem;
+        line-height: 1.5;
+        text-align: center;
+    }
+
+    .view-tools {
+        position: absolute;
+        bottom: max(1rem, env(safe-area-inset-bottom));
+        left: 50%;
+        z-index: 3;
+        display: grid;
+        grid-template-columns: 2.35rem 3.8rem 2.35rem;
+        overflow: hidden;
+        border-radius: 999px;
         transform: translateX(-50%);
-        color: rgb(var(--rgb-white) / 70%);
-        font-size: 0.9rem;
-        user-select: none;
     }
-    .view-nav:disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
+
+    .view-tool,
+    .view-scale {
+        height: 2.15rem;
+        border: 0;
+        color: rgb(var(--rgb-white) / 76%);
+        background: transparent;
+        transition:
+            color .2s ease,
+            background-color .2s ease;
     }
-    .view-nav:disabled:hover {
-        background: rgb(var(--rgb-white) / 10%);
-        transform: translateY(-50%);
+
+    .view-tool {
+        font-size: 1.15rem;
     }
+
+    .view-scale {
+        border-right: 1px solid rgb(var(--rgb-white) / 10%);
+        border-left: 1px solid rgb(var(--rgb-white) / 10%);
+        font-size: .72rem;
+    }
+
+    .view-tool:hover,
+    .view-tool:focus-visible,
+    .view-scale:hover,
+    .view-scale:focus-visible {
+        color: var(--color-accent-cyan);
+        background: var(--viewer-control-hover);
+        outline: none;
+    }
+
     .doc img:not(.view-none) {
         cursor: zoom-in;
     }
+
+    @keyframes viewer-loading {
+        to {
+            opacity: .35;
+            transform: translateX(.15rem);
+        }
+    }
+
+    @media (max-width: 640px) {
+        .view-content {
+            width: 94vw;
+            height: 76dvh;
+        }
+
+        .view-tools {
+            bottom: max(3.25rem, calc(env(safe-area-inset-bottom) + 2.25rem));
+        }
+
+        .view-nav {
+            top: auto;
+            bottom: max(1rem, env(safe-area-inset-bottom));
+            transform: none;
+        }
+
+        .view-prev {
+            left: max(.75rem, env(safe-area-inset-left));
+        }
+
+        .view-next {
+            right: max(.75rem, env(safe-area-inset-right));
+        }
+
+        .view-nav:hover,
+        .view-nav:focus-visible {
+            transform: scale(1.05);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .view-box,
+        .view-control,
+        .view-img {
+            transition: none;
+        }
+
+        .view-loading::after {
+            animation: none;
+        }
+    }
 </style>
-<section class="view-box view-box-hide" id="view-box">
-    <button class="view-close" id="view-close" aria-label="关闭">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-    </button>
-    <button class="view-nav view-prev" id="view-prev" aria-label="上一张">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
-    </button>
-    <div class="view-content">
-        <img src="" class="view-img" id="view-img"/>
-    </div>
-    <button class="view-nav view-next" id="view-next" aria-label="下一张">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="9 18 15 12 9 6"></polyline>
-        </svg>
-    </button>
-    <div class="view-counter" id="view-counter"></div>
-</section>

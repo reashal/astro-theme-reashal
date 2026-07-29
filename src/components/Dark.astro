@@ -44,35 +44,6 @@
 </style>
 
 <script>
-  const MANUAL_TTL = 6 * 60 * 60 * 1000; // 手动覆盖有效期：6 小时
-
-  // 读取手动记录，超时则清除
-  const manualTheme = (() => {
-    const saved = localStorage.getItem("theme");
-    const ts = parseInt(localStorage.getItem("themeTs") || "0", 10);
-    if (saved && Date.now() - ts < MANUAL_TTL) {
-      return saved; // "dark" | "light"
-    }
-    // 过期或不存在，清除旧记录
-    localStorage.removeItem("theme");
-    localStorage.removeItem("themeTs");
-    return null;
-  })();
-
-  // 决定初始主题：手动记录优先，否则走时间规则
-  const theme = manualTheme ?? (() => {
-    const h = new Date().getHours();
-    if (h > 20 || h < 6) return "dark";
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) return "dark";
-    return "light";
-  })();
-
-  if (theme === "dark") {
-    document.documentElement.classList.add("dark");
-  } else {
-    document.documentElement.classList.remove("dark");
-  }
-
   const themeButton = document.getElementById("themeToggle");
   const syncThemeButtonLabel = () => {
     const isDark = document.documentElement.classList.contains("dark");
@@ -88,8 +59,14 @@
     const element = document.documentElement;
     element.classList.toggle("dark");
     const isDark = element.classList.contains("dark");
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-    localStorage.setItem("themeTs", String(Date.now()));
+    const theme = isDark ? "dark" : "light";
+    element.style.colorScheme = theme;
+    try {
+      localStorage.setItem("theme", theme);
+      localStorage.setItem("themeTs", String(Date.now()));
+    } catch {
+      // 存储不可用时仍允许在当前页面切换主题。
+    }
     syncThemeButtonLabel();
   };
 
