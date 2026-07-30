@@ -6,14 +6,32 @@ const siteName = SITE_INFO.title;
 ---
 
 <div class="share-container" data-site-name={siteName}>
-    <button class="share-btn" id="share-btn" aria-label="分享文章">
+    <button class="share-btn" id="share-btn" type="button" aria-label="分享文章">
         <i class="iconfont icon-share"></i>
         <span>分享</span>
     </button>
 </div>
 
-<div class="share-overlay" id="share-overlay">
+<section
+    class="share-overlay"
+    id="share-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="share-card-title"
+    aria-hidden="true"
+    hidden
+>
     <div class="share-card" id="share-card">
+        <button
+            id="share-close"
+            class="share-close"
+            type="button"
+            aria-label="关闭分享卡片"
+        >
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M6 6l12 12M18 6 6 18"></path>
+            </svg>
+        </button>
         <div class="share-card-header">
             <div class="share-card-banner" style={`background-image: url('${SITE_INFO.wallpaper}')`}></div>
         </div>
@@ -21,18 +39,33 @@ const siteName = SITE_INFO.title;
             <h3 class="share-card-title" id="share-card-title"></h3>
             <p class="share-card-desc" id="share-card-desc"></p>
             <div class="share-card-link">
-                <input type="text" id="share-link-input" readonly />
-                <button id="copy-btn" class="copy-btn">
+                <input
+                    type="text"
+                    id="share-link-input"
+                    aria-label="当前页面链接"
+                    readonly
+                />
+                <button id="copy-btn" class="copy-btn" type="button">
                     <i class="iconfont icon-link"></i>
                     <span>复制链接</span>
                 </button>
             </div>
             <div class="share-card-qrcode">
-                <canvas id="qrcode-canvas"></canvas>
+                <canvas
+                    id="qrcode-canvas"
+                    role="img"
+                    aria-label="当前页面二维码"
+                ></canvas>
                 <p class="qrcode-tip">扫码访问</p>
             </div>
+            <p
+                class="share-feedback"
+                id="share-feedback"
+                role="status"
+                aria-live="polite"
+            ></p>
         </div>
     </div>
-</div>
+</section>
 
 <script src="../scripts/share.ts"></script>

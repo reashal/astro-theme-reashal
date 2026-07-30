@@ -22,6 +22,13 @@
     transform: translateY(-2px);
 }
 
+html[data-input-mode="keyboard"] .share-btn:focus-visible,
+html[data-input-mode="keyboard"] .copy-btn:focus-visible,
+html[data-input-mode="keyboard"] .share-close:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+}
+
 .share-overlay {
     position: fixed;
     top: 0;
@@ -29,7 +36,7 @@
     width: 100vw;
     height: 100vh;
     background-color: rgb(var(--rgb-black) / 70%);
-    display: none;
+    display: flex;
     justify-content: center;
     align-items: center;
     z-index: 999999;
@@ -37,8 +44,11 @@
     transition: opacity 0.3s ease;
 }
 
+.share-overlay[hidden] {
+    display: none;
+}
+
 .share-overlay.show {
-    display: flex;
     opacity: 1;
 }
 
@@ -52,6 +62,43 @@
     transform: scale(0.9);
     transition: transform 0.3s ease;
     position: relative;
+}
+
+.share-close {
+    position: absolute;
+    top: .75rem;
+    right: .75rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid rgb(var(--rgb-white) / 24%);
+    border-radius: 50%;
+    color: var(--color-white);
+    background: rgb(var(--rgb-black) / 28%);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    transition:
+        color .2s ease,
+        border-color .2s ease,
+        background-color .2s ease;
+}
+
+.share-close:hover {
+    color: var(--color-accent-cyan);
+    border-color: rgb(var(--rgb-accent-cyan) / 46%);
+    background: rgb(var(--rgb-black) / 42%);
+}
+
+.share-close svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-width: 1.8;
 }
 
 .share-overlay.show .share-card {
@@ -148,6 +195,15 @@
     line-height: 1;
 }
 
+.share-feedback {
+    min-height: 1.2em;
+    margin: .45rem 0 0;
+    color: var(--color-brand);
+    font-size: .78rem;
+    line-height: 1.2;
+    text-align: center;
+}
+
 /* 暗黑模式 */
 html.dark .share-btn {
     background-color: var(--color-accent-cyan);
@@ -189,4 +245,24 @@ html.dark .share-card-qrcode canvas {
 
 html.dark .qrcode-tip {
     color: var(--text-on-dark-muted);
+}
+
+html.dark .share-feedback {
+    color: var(--color-accent-cyan);
+}
+
+html.dark[data-input-mode="keyboard"] .share-btn:focus-visible,
+html.dark[data-input-mode="keyboard"] .copy-btn:focus-visible,
+html.dark[data-input-mode="keyboard"] .share-close:focus-visible {
+    outline-color: var(--color-accent-cyan);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .share-overlay,
+    .share-card,
+    .share-btn,
+    .copy-btn,
+    .share-close {
+        transition: none;
+    }
 }

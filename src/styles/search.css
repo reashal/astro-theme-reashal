@@ -27,7 +27,7 @@
     transform: scale(1.06);
 }
 
-.docs-search-toggle:focus-visible {
+html[data-input-mode="keyboard"] .docs-search-toggle:focus-visible {
     outline: 2px solid currentColor;
     outline-offset: 2px;
     border-radius: 50%;
@@ -153,7 +153,7 @@
 }
 
 .docs-search-result:hover,
-.docs-search-result:focus-visible {
+html[data-input-mode="keyboard"] .docs-search-result:focus-visible {
     outline: none;
     background: rgb(var(--rgb-white) / 10%);
     transform: translateX(2px);
@@ -206,7 +206,7 @@
 }
 
 .docs-search-result:hover > svg,
-.docs-search-result:focus-visible > svg {
+html[data-input-mode="keyboard"] .docs-search-result:focus-visible > svg {
     opacity: 1;
     transform: translateX(0);
 }
@@ -250,7 +250,9 @@
 }
 
 .docs-search-pagination button:hover:not(:disabled),
-.docs-search-pagination button:focus-visible {
+html[data-input-mode="keyboard"]
+    .docs-search-pagination
+    button:focus-visible {
     border-color: rgb(var(--rgb-accent-cyan) / 55%);
     outline: none;
     background: rgb(var(--rgb-white) / 11%);

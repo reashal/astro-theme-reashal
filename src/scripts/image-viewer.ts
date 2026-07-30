@@ -15,6 +15,8 @@ const zoomOutButton = document.getElementById("view-zoom-out");
 const zoomInButton = document.getElementById("view-zoom-in");
 const scaleButton = document.getElementById("view-scale");
 const pageLayout = document.querySelector<HTMLElement>("body > main");
+const shareContainer =
+    document.querySelector<HTMLElement>(".share-container");
 
 if (
     viewer &&
@@ -116,7 +118,11 @@ if (
         }
     };
 
-    const openViewer = (groupId: string, index: number) => {
+    const openViewer = (
+        groupId: string,
+        index: number,
+        trigger?: HTMLElement,
+    ) => {
         if (pageLayout?.classList.contains("aside-show")) return;
 
         const images = groups.get(groupId);
@@ -124,17 +130,22 @@ if (
 
         currentGroup = groupId;
         currentIndex = index;
-        lastFocused =
-            document.activeElement instanceof HTMLElement
+        lastFocused = trigger ??
+            (document.activeElement instanceof HTMLElement
                 ? document.activeElement
-                : null;
+                : null);
         renderImage();
 
         viewer.classList.remove("view-box-hide");
         viewer.classList.add("view-box-show");
         viewer.setAttribute("aria-hidden", "false");
         if (pageLayout) pageLayout.inert = true;
-        closeButton.focus({ preventScroll: true });
+        if (shareContainer) shareContainer.inert = true;
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                closeButton.focus({ preventScroll: true });
+            });
+        });
     };
 
     const closeViewer = () => {
@@ -144,8 +155,12 @@ if (
         viewer.classList.add("view-box-hide");
         viewer.setAttribute("aria-hidden", "true");
         if (pageLayout) pageLayout.inert = false;
+        if (shareContainer) shareContainer.inert = false;
         resetTransform();
-        lastFocused?.focus({ preventScroll: true });
+        if (lastFocused?.isConnected && !lastFocused.inert) {
+            lastFocused.focus({ preventScroll: true });
+        }
+        lastFocused = null;
     };
 
     const moveImage = (direction: -1 | 1) => {
@@ -154,6 +169,22 @@ if (
         currentIndex =
             (currentIndex + direction + images.length) % images.length;
         renderImage();
+    };
+
+    const addKeyboardActivation = (
+        trigger: HTMLElement,
+        activate: () => void,
+    ) => {
+        trigger.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+            }
+        });
+        trigger.addEventListener("keyup", (event) => {
+            if (event.key !== "Enter" && event.key !== " ") return;
+            event.preventDefault();
+            activate();
+        });
     };
 
     const collectArticleImages = () => {
@@ -173,9 +204,21 @@ if (
             })),
         );
         articleImages.forEach((image, index) => {
+            image.tabIndex = 0;
+            image.setAttribute("role", "button");
+            image.setAttribute("aria-haspopup", "dialog");
+            image.setAttribute(
+                "aria-label",
+                image.alt
+                    ? `查看大图：${image.alt}`
+                    : `查看文章图片 ${index + 1}`,
+            );
             image.addEventListener("click", (event) => {
                 event.preventDefault();
-                openViewer(groupId, index);
+                openViewer(groupId, index, image);
+            });
+            addKeyboardActivation(image, () => {
+                openViewer(groupId, index, image);
             });
         });
     };
@@ -206,15 +249,44 @@ if (
                 momentSection
                     .querySelectorAll<HTMLImageElement>("img")
                     .forEach((image, index) => {
+                        image.tabIndex = 0;
+                        image.setAttribute("role", "button");
+                        image.setAttribute("aria-haspopup", "dialog");
+                        image.setAttribute(
+                            "aria-label",
+                            image.alt
+                                ? `查看大图：${image.alt}`
+                                : `查看动态图片 ${index + 1}`,
+                        );
                         image.addEventListener("click", () => {
-                            openViewer(momentId, index);
+                            openViewer(momentId, index, image);
+                        });
+                        addKeyboardActivation(image, () => {
+                            openViewer(momentId, index, image);
                         });
                     });
-                momentSection
-                    .querySelector<HTMLElement>(".img-mask-overlay")
-                    ?.addEventListener("click", () => {
-                        openViewer(momentId, 8);
+                const overflowTrigger =
+                    momentSection.querySelector<HTMLElement>(
+                        ".img-mask-overlay",
+                    );
+                if (overflowTrigger) {
+                    overflowTrigger.tabIndex = 0;
+                    overflowTrigger.setAttribute("role", "button");
+                    overflowTrigger.setAttribute("aria-haspopup", "dialog");
+                    overflowTrigger.setAttribute(
+                        "aria-label",
+                        `查看动态图片 9，共 ${images.length} 张`,
+                    );
+                    overflowTrigger.addEventListener("click", () => {
+                        openViewer(momentId, 8, overflowTrigger);
                     });
+                    addKeyboardActivation(
+                        overflowTrigger,
+                        () => {
+                            openViewer(momentId, 8, overflowTrigger);
+                        },
+                    );
+                }
             });
     };
 
@@ -289,9 +361,18 @@ if (
     document.addEventListener("keydown", (event) => {
         if (!isOpen()) return;
 
-        if (event.key === "Escape") closeViewer();
-        if (event.key === "ArrowLeft") moveImage(-1);
-        if (event.key === "ArrowRight") moveImage(1);
+        if (event.key === "Escape") {
+            event.preventDefault();
+            closeViewer();
+        }
+        if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            moveImage(-1);
+        }
+        if (event.key === "ArrowRight") {
+            event.preventDefault();
+            moveImage(1);
+        }
         if (event.key === "+" || event.key === "=") {
             setScale(scale + 0.25);
         }

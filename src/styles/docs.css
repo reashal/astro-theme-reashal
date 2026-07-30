@@ -44,6 +44,7 @@
 /* === 文章条目基础样式 === */
 
 .docs-body {
+    display: block;
     padding: .4rem .6rem;
     border-radius: 6px;
     cursor: pointer;
@@ -51,6 +52,19 @@
         opacity .25s ease,
         transform .25s ease,
         box-shadow .25s ease;
+}
+
+.docs-a {
+    font-weight: inherit;
+}
+
+.docs-empty {
+    cursor: default;
+}
+
+html[data-input-mode="keyboard"] .docs-body:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
 }
 
 /* 容器内有条目被 hover 时，其余条目淡出 */
@@ -169,6 +183,11 @@
     color: var(--color-white);
 }
 
+html[data-input-mode="keyboard"] .page-btn:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+}
+
 .page-btn:disabled {
     opacity: .35;
     cursor: default;
@@ -208,6 +227,11 @@
 .dark .page-btn.page-active {
     background-color: var(--color-brand);
     color: var(--color-white);
+}
+
+html.dark[data-input-mode="keyboard"] .docs-body:focus-visible,
+html.dark[data-input-mode="keyboard"] .page-btn:focus-visible {
+    outline-color: var(--color-accent-cyan);
 }
 
 .dark .page-sep {

@@ -84,7 +84,8 @@
         transform: translate(-.12rem, -50%);
     }
 
-    .reading-flight:focus-visible {
+    :global(html[data-input-mode="keyboard"])
+        .reading-flight:focus-visible {
         outline: 1px solid currentColor;
         outline-offset: 1px;
         border-radius: 1.1rem;

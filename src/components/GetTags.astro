@@ -30,7 +30,12 @@ const cardList = sortedTags.map((tag) => ({ tag, count: tagCountsObj[tag] }));
 ---
 
 <section class="aside-tags-card">
-  <div class="card-stack" id="card-stack">
+  <div
+    class="card-stack"
+    id="card-stack"
+    role="region"
+    aria-label="文章标签，使用方向键切换"
+  >
     {cardList.map((item) => (
       <a href={`/tags/${item.tag}`} class="message-card">
         <span class="msg-hashtag">#</span>
@@ -39,16 +44,23 @@ const cardList = sortedTags.map((tag) => ({ tag, count: tagCountsObj[tag] }));
       </a>
     ))}
   </div>
-  <div class="stack-footer" id="stack-footer"></div>
+  <div
+    class="stack-footer"
+    id="stack-footer"
+    role="status"
+    aria-live="polite"
+  ></div>
 </section>
 
 <script>
 (function() {
   const stack = document.getElementById('card-stack');
   const footer = document.getElementById('stack-footer');
-  if (!stack) return;
+  if (!stack || !footer) return;
 
-  let cards = Array.from(stack.querySelectorAll('.message-card'));
+  let cards = Array.from(
+    stack.querySelectorAll<HTMLAnchorElement>('.message-card'),
+  );
   const total = cards.length;
   if (total === 0) return;
 
@@ -59,12 +71,15 @@ const cardList = sortedTags.map((tag) => ({ tag, count: tagCountsObj[tag] }));
   let touchStartY = 0;
   let currentIndex = 0;
 
-  function layoutCards(animate) {
+  function layoutCards(animate: boolean) {
     cards.forEach((card, i) => {
       const y = i * PEEK;
+      const isCurrent = i === 0;
       card.style.transition = animate ? 'transform 0.3s ease, opacity 0.3s ease' : 'none';
       card.style.display = '';
       card.style.pointerEvents = 'none';
+      card.tabIndex = isCurrent ? 0 : -1;
+      card.setAttribute('aria-hidden', String(!isCurrent));
 
       if (i < VISIBLE) {
         card.style.transform = `translateY(${y}px)`;
@@ -80,7 +95,7 @@ const cardList = sortedTags.map((tag) => ({ tag, count: tagCountsObj[tag] }));
     footer.textContent = `${(currentIndex % total) + 1} / ${total}`;
   }
 
-  function dismissTop() {
+  function dismissTop(focusNext = false) {
     if (isAnimating || total <= 1) return;
     isAnimating = true;
 
@@ -104,7 +119,9 @@ const cardList = sortedTags.map((tag) => ({ tag, count: tagCountsObj[tag] }));
 
     setTimeout(() => {
       stack.appendChild(top);
-      cards = Array.from(stack.querySelectorAll('.message-card'));
+      cards = Array.from(
+        stack.querySelectorAll<HTMLAnchorElement>('.message-card'),
+      );
       currentIndex = (currentIndex + 1) % total;
 
       top.style.transition = 'none';
@@ -120,11 +137,12 @@ const cardList = sortedTags.map((tag) => ({ tag, count: tagCountsObj[tag] }));
       setTimeout(() => {
         cards.forEach(c => c.style.transition = '');
         isAnimating = false;
+        if (focusNext) cards[0]?.focus({ preventScroll: true });
       }, DURATION);
     }, DURATION);
   }
 
-  function restoreTop() {
+  function restoreTop(focusNext = false) {
     if (isAnimating || total <= 1) return;
     isAnimating = true;
 
@@ -157,7 +175,9 @@ const cardList = sortedTags.map((tag) => ({ tag, count: tagCountsObj[tag] }));
 
     setTimeout(() => {
       stack.insertBefore(last, stack.firstChild);
-      cards = Array.from(stack.querySelectorAll('.message-card'));
+      cards = Array.from(
+        stack.querySelectorAll<HTMLAnchorElement>('.message-card'),
+      );
       currentIndex = (currentIndex - 1 + total) % total;
 
       last.style.transition = 'none';
@@ -172,6 +192,7 @@ const cardList = sortedTags.map((tag) => ({ tag, count: tagCountsObj[tag] }));
       setTimeout(() => {
         cards.forEach(c => c.style.transition = '');
         isAnimating = false;
+        if (focusNext) cards[0]?.focus({ preventScroll: true });
       }, DURATION);
     }, DURATION);
   }
@@ -195,6 +216,18 @@ const cardList = sortedTags.map((tag) => ({ tag, count: tagCountsObj[tag] }));
     if (dy < -20) dismissTop();
     else if (dy > 20) restoreTop();
   }, { passive: true });
+
+  stack.addEventListener('keydown', (e) => {
+    if (!(e.target instanceof HTMLAnchorElement)) return;
+
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+      e.preventDefault();
+      dismissTop(true);
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      restoreTop(true);
+    }
+  });
 
   layoutCards(false);
   setTimeout(() => cards.forEach(c => c.style.transition = ''), 50);

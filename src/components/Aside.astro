@@ -32,8 +32,8 @@ const navLinks = pagesConfig.pages
 const currentPath = Astro.url.pathname;
 ---
 
-<aside>
-    <section class="aside-body">
+<aside aria-label="站点侧边栏">
+    <section class="aside-body" aria-hidden="true" inert>
         <!-- 站长信息卡片：hover 时显示详细简介 -->
         <section class="aside-author-card">
             <img
@@ -107,14 +107,23 @@ const currentPath = Astro.url.pathname;
 <script>
     const layout = document.querySelector("main");
     const mainContent = layout?.querySelector(".main");
-    const asideToggle = document.querySelector(".aside-toggle-btn");
+    const asideBody = document.querySelector<HTMLElement>(".aside-body");
+    const asideToggle =
+        document.querySelector<HTMLButtonElement>(".aside-toggle-btn");
     const asideShareBtn = document.getElementById("aside-share-btn");
+
+    function syncAsideAccessibility(isOpen: boolean) {
+        if (!asideBody) return;
+        asideBody.inert = !isOpen;
+        asideBody.setAttribute("aria-hidden", String(!isOpen));
+    }
 
     function setAsideOpen(isOpen: boolean) {
         if (!layout) return;
 
         layout.classList.remove("aside-init", "aside-show", "aside-hide");
         layout.classList.add(isOpen ? "aside-show" : "aside-hide");
+        syncAsideAccessibility(isOpen);
 
         if (asideToggle) {
             asideToggle.setAttribute("aria-expanded", String(isOpen));
@@ -132,6 +141,37 @@ const currentPath = Astro.url.pathname;
     mainContent?.addEventListener("click", () => {
         if (layout?.classList.contains("aside-show")) {
             setAsideOpen(false);
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (
+            event.key === "Escape" &&
+            layout?.classList.contains("aside-show")
+        ) {
+            setAsideOpen(false);
+            if (asideToggle) {
+                asideToggle.classList.add("is-escape-focus");
+                asideToggle.focus({ preventScroll: true });
+                const clearEscapeFocus = () => {
+                    asideToggle.classList.remove("is-escape-focus");
+                };
+                asideToggle.addEventListener(
+                    "blur",
+                    clearEscapeFocus,
+                    { once: true },
+                );
+                asideToggle.addEventListener(
+                    "keydown",
+                    clearEscapeFocus,
+                    { once: true },
+                );
+                asideToggle.addEventListener(
+                    "pointerdown",
+                    clearEscapeFocus,
+                    { once: true },
+                );
+            }
         }
     });
 

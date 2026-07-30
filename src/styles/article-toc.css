@@ -114,12 +114,14 @@
     transition-delay: 0s, 0s, 0s, 0s, 0s, .16s;
 }
 
-.article-toc-summary:focus-visible {
+html[data-input-mode="keyboard"] .article-toc-summary:focus-visible {
     outline: 2px solid var(--toc-island-active);
     outline-offset: 2px;
 }
 
-.article-toc.is-open .article-toc-summary:focus-visible {
+html[data-input-mode="keyboard"]
+    .article-toc.is-open
+    .article-toc-summary:focus-visible {
     outline: none;
     color: var(--toc-island-active);
     text-decoration: underline;
@@ -198,7 +200,7 @@
     cursor: grabbing;
 }
 
-.article-toc-viewport:focus-visible {
+html[data-input-mode="keyboard"] .article-toc-viewport:focus-visible {
     outline: 1px solid rgb(var(--rgb-accent-cyan) / 42%);
     outline-offset: 2px;
 }
@@ -304,7 +306,7 @@
     box-shadow: 0 0 .3rem rgb(var(--rgb-accent-cyan) / 52%);
 }
 
-.doc .article-toc a:focus-visible {
+html[data-input-mode="keyboard"] .doc .article-toc a:focus-visible {
     outline: 2px solid var(--toc-island-active);
     outline-offset: -1px;
 }

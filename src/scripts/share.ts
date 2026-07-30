@@ -4,6 +4,7 @@ const shareContainer =
     document.querySelector<HTMLElement>(".share-container[data-site-name]");
 const shareButton = document.getElementById("share-btn");
 const overlay = document.getElementById("share-overlay");
+const closeButton = document.getElementById("share-close");
 const copyButton = document.getElementById("copy-btn");
 const titleElement = document.getElementById("share-card-title");
 const descriptionElement = document.getElementById("share-card-desc");
@@ -13,21 +14,35 @@ const linkInput = document.getElementById(
 const qrCanvas = document.getElementById(
     "qrcode-canvas",
 ) as HTMLCanvasElement | null;
+const feedback = document.getElementById("share-feedback");
+const pageLayout = document.querySelector<HTMLElement>("body > main");
 
 if (
     shareContainer &&
     shareButton &&
     overlay &&
+    closeButton &&
     copyButton &&
     titleElement &&
     descriptionElement &&
     linkInput &&
-    qrCanvas
+    qrCanvas &&
+    feedback
 ) {
     const siteName = shareContainer.dataset.siteName ?? "";
     let currentTitle = "";
     let currentUrl = "";
     let currentDescription = "";
+    let lastFocused: HTMLElement | null = null;
+    let closeTimer = 0;
+
+    const isOpen = () => !overlay.hidden;
+    const focusableSelector =
+        "button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex='-1'])";
+
+    const setFeedback = (message: string) => {
+        feedback.textContent = message;
+    };
 
     const getPaletteColor = (name: string) =>
         getComputedStyle(document.documentElement)
@@ -76,7 +91,8 @@ if (
         }
     };
 
-    shareButton.addEventListener("click", () => {
+    const openShare = () => {
+        window.clearTimeout(closeTimer);
         currentUrl = window.location.href;
         currentTitle = document.title.split("｜")[0].trim();
         currentDescription =
@@ -88,13 +104,57 @@ if (
         descriptionElement.textContent = currentDescription;
         descriptionElement.hidden = !currentDescription;
         linkInput.value = currentUrl;
+        setFeedback("");
 
-        overlay.classList.add("show");
+        const focused = document.activeElement;
+        lastFocused =
+            focused instanceof HTMLElement &&
+            !focused.closest("aside")
+                ? focused
+                : shareButton;
+        overlay.hidden = false;
+        overlay.setAttribute("aria-hidden", "false");
+        if (pageLayout) pageLayout.inert = true;
+        shareContainer.inert = true;
         drawQrCode();
-    });
+        requestAnimationFrame(() => {
+            overlay.classList.add("show");
+            closeButton.focus({ preventScroll: true });
+        });
+    };
+
+    const closeShare = () => {
+        if (!isOpen()) return;
+
+        overlay.classList.remove("show");
+        overlay.setAttribute("aria-hidden", "true");
+        if (pageLayout) pageLayout.inert = false;
+        shareContainer.inert = false;
+
+        if (lastFocused?.isConnected && !lastFocused.inert) {
+            lastFocused.focus({ preventScroll: true });
+        } else {
+            shareButton.focus({ preventScroll: true });
+        }
+        lastFocused = null;
+
+        const finishClose = () => {
+            overlay.hidden = true;
+        };
+        if (
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ) {
+            finishClose();
+        } else {
+            closeTimer = window.setTimeout(finishClose, 300);
+        }
+    };
+
+    shareButton.addEventListener("click", openShare);
+    closeButton.addEventListener("click", closeShare);
 
     overlay.addEventListener("click", (event) => {
-        if (event.target === overlay) overlay.classList.remove("show");
+        if (event.target === overlay) closeShare();
     });
 
     copyButton.addEventListener("click", async () => {
@@ -107,10 +167,37 @@ if (
 
         try {
             await navigator.clipboard.writeText(text);
-            alert("已复制到剪贴板");
+            setFeedback("分享内容已复制");
         } catch {
             linkInput.select();
-            alert("复制失败，请手动复制链接");
+            linkInput.focus();
+            setFeedback("自动复制失败，请手动复制链接");
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (!isOpen()) return;
+
+        if (event.key === "Escape") {
+            event.preventDefault();
+            closeShare();
+            return;
+        }
+        if (event.key !== "Tab") return;
+
+        const focusable = Array.from(
+            overlay.querySelectorAll<HTMLElement>(focusableSelector),
+        ).filter((element) => !element.hidden);
+        const first = focusable[0];
+        const last = focusable.at(-1);
+        if (!first || !last) return;
+
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
         }
     });
 }

@@ -55,6 +55,12 @@ img {
     cursor: pointer;
 }
 
+/* 指针点击保留语义焦点，但不显示键盘导航使用的焦点环。 */
+html[data-input-mode="pointer"] :focus,
+html[data-input-mode="pointer"] :focus-visible {
+    outline: none !important;
+}
+
 /* 滚动条：全局隐藏 */
 ::-webkit-scrollbar {
     display: none;

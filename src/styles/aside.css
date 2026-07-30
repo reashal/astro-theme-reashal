@@ -45,6 +45,12 @@ aside {
     cursor: pointer;
 }
 
+.aside-toggle-btn.is-escape-focus:focus,
+.aside-toggle-btn.is-escape-focus:focus-visible {
+    outline: none;
+    box-shadow: none;
+}
+
 .aside-toggle-btn::before {
     content: "|";
     position: absolute;
@@ -402,6 +408,14 @@ aside {
         0 3px 10px rgb(var(--rgb-black) / 10%);
 }
 
+html[data-input-mode="keyboard"] .aside-body .message-card:focus-visible,
+html[data-input-mode="keyboard"] .aside-body .aside-links-card a:focus-visible,
+html[data-input-mode="keyboard"] .aside-body .share-link:focus-visible,
+html[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+}
+
 /* 标签名称前的 # 符号 */
 .aside-body .msg-hashtag {
     font-size: 0.75rem;
@@ -462,6 +476,13 @@ aside {
     border-color: rgb(var(--rgb-accent-cyan) / 30%);
     box-shadow:
         0 4px 12px rgb(var(--rgb-black) / 45%);
+}
+
+html.dark[data-input-mode="keyboard"] .aside-body .message-card:focus-visible,
+html.dark[data-input-mode="keyboard"] .aside-body .aside-links-card a:focus-visible,
+html.dark[data-input-mode="keyboard"] .aside-body .share-link:focus-visible,
+html.dark[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-visible {
+    outline-color: var(--color-accent-cyan);
 }
 
 .dark .aside-body .msg-hashtag {

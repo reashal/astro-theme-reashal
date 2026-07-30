@@ -2,6 +2,7 @@
     class="giscus"
     data-giscus-container
     data-pagefind-ignore="all"
+    aria-label="评论区"
 ></section>
 
 <script>
@@ -10,6 +11,8 @@
     );
 
     if (giscusContainer) {
+        let hasLoaded = false;
+
         const getGiscusTheme = () =>
             document.documentElement.classList.contains("dark")
                 ? "dark"
@@ -32,41 +35,71 @@
             );
         };
 
-        // 先读取页面已经恢复的主题，再加载 Giscus，避免刷新时以浅色初始化。
-        const giscusScript = document.createElement("script");
-        giscusScript.src = "https://giscus.app/client.js";
-        giscusScript.dataset.repo = "reashal/comments";
-        giscusScript.dataset.repoId = "R_kgDOJ3Grhw";
-        giscusScript.dataset.category = "Announcements";
-        giscusScript.dataset.categoryId = "DIC_kwDOJ3Grh84CXprQ";
-        giscusScript.dataset.mapping = "pathname";
-        giscusScript.dataset.strict = "0";
-        giscusScript.dataset.reactionsEnabled = "1";
-        giscusScript.dataset.emitMetadata = "0";
-        giscusScript.dataset.inputPosition = "bottom";
-        giscusScript.dataset.theme = getGiscusTheme();
-        giscusScript.dataset.lang = "zh-CN";
-        giscusScript.crossOrigin = "anonymous";
-        giscusScript.async = true;
-        giscusContainer.append(giscusScript);
+        const loadGiscus = () => {
+            if (hasLoaded) return;
+            hasLoaded = true;
 
-        // Giscus iframe 就绪后再次同步，覆盖加载期间发生的主题变化。
-        const frameObserver = new MutationObserver(() => {
-            const giscusFrame =
-                giscusContainer.querySelector<HTMLIFrameElement>(
-                    "iframe.giscus-frame",
-                );
-            if (!giscusFrame || giscusFrame.dataset.themeListener === "true") {
-                return;
-            }
-            giscusFrame.dataset.themeListener = "true";
-            giscusFrame.addEventListener("load", syncGiscusTheme);
-            syncGiscusTheme();
-        });
-        frameObserver.observe(giscusContainer, {
-            childList: true,
-            subtree: true,
-        });
+            // 先读取页面已经恢复的主题，再加载 Giscus，避免刷新时以浅色初始化。
+            const giscusScript = document.createElement("script");
+            giscusScript.src = "https://giscus.app/client.js";
+            giscusScript.dataset.repo = "reashal/comments";
+            giscusScript.dataset.repoId = "R_kgDOJ3Grhw";
+            giscusScript.dataset.category = "Announcements";
+            giscusScript.dataset.categoryId = "DIC_kwDOJ3Grh84CXprQ";
+            giscusScript.dataset.mapping = "pathname";
+            giscusScript.dataset.strict = "0";
+            giscusScript.dataset.reactionsEnabled = "1";
+            giscusScript.dataset.emitMetadata = "0";
+            giscusScript.dataset.inputPosition = "bottom";
+            giscusScript.dataset.theme = getGiscusTheme();
+            giscusScript.dataset.lang = "zh-CN";
+            giscusScript.crossOrigin = "anonymous";
+            giscusScript.async = true;
+
+            // Giscus iframe 就绪后再次同步，覆盖加载期间发生的主题变化。
+            const frameObserver = new MutationObserver(() => {
+                const giscusFrame =
+                    giscusContainer.querySelector<HTMLIFrameElement>(
+                        "iframe.giscus-frame",
+                    );
+                if (
+                    !giscusFrame ||
+                    giscusFrame.dataset.themeListener === "true"
+                ) {
+                    return;
+                }
+                giscusFrame.dataset.themeListener = "true";
+                giscusFrame.addEventListener("load", syncGiscusTheme);
+                syncGiscusTheme();
+                frameObserver.disconnect();
+            });
+            frameObserver.observe(giscusContainer, {
+                childList: true,
+                subtree: true,
+            });
+            giscusContainer.append(giscusScript);
+        };
+
+        if ("IntersectionObserver" in window) {
+            const scrollContainer =
+                document.querySelector<HTMLElement>(".main");
+            const visibilityObserver = new IntersectionObserver(
+                (entries) => {
+                    if (!entries.some((entry) => entry.isIntersecting)) {
+                        return;
+                    }
+                    visibilityObserver.disconnect();
+                    loadGiscus();
+                },
+                {
+                    root: scrollContainer,
+                    rootMargin: "800px 0px",
+                },
+            );
+            visibilityObserver.observe(giscusContainer);
+        } else {
+            loadGiscus();
+        }
 
         // 页面主题切换时同步评论区，不依赖按钮或 Giscus 的消息时序。
         const themeObserver = new MutationObserver(syncGiscusTheme);

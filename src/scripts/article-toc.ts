@@ -1,16 +1,13 @@
-interface TocNode {
-    id: string;
-    text: string;
-    depth: number;
-    heading: HTMLElement;
-    parent?: TocNode;
-    children: TocNode[];
-}
-
-interface TocSlide {
-    parent: TocNode;
-    activeChild: TocNode;
-}
+import {
+    buildTocHierarchy,
+    buildTocSlides,
+    clampTocSlideIndex,
+    getSwipeSlideOffset,
+    getWheelSlideOffset,
+    preserveTocSlideIndex,
+    type TocNode,
+    type TocSlide,
+} from "./article-toc-model";
 
 const TITLE_OVERFLOW_TOLERANCE = 5;
 const TITLE_SCROLL_SPEED = 46;
@@ -78,42 +75,28 @@ const initArticleToc = () => {
     const headingData = Array.from(
         articleToc.querySelectorAll<HTMLElement>("[data-toc-heading]"),
     );
-    const rootNode: TocNode = {
-        id: "article-start",
-        text: articleTitle.textContent?.trim() || "本文",
-        depth: 1,
-        heading: articleLead,
-        children: [],
-    };
-    const headingNodes: TocNode[] = [];
-    const headingStack: TocNode[] = [rootNode];
-
-    for (const item of headingData) {
+    const headingSources = headingData.flatMap((item) => {
         const depth = Number(item.dataset.depth);
         const id = item.dataset.slug || "";
         const heading = document.getElementById(id);
-        if (!heading || !Number.isFinite(depth)) continue;
+        if (!heading || !Number.isFinite(depth)) return [];
 
-        while (
-            headingStack.length > 1 &&
-            headingStack.at(-1)!.depth >= depth
-        ) {
-            headingStack.pop();
-        }
-
-        const parent = headingStack.at(-1) || rootNode;
-        const node: TocNode = {
+        return [{
             id,
             text: item.textContent?.trim() || id,
             depth,
             heading,
-            parent,
-            children: [],
-        };
-        parent.children.push(node);
-        headingNodes.push(node);
-        headingStack.push(node);
-    }
+        }];
+    });
+    const { nodes: headingNodes } = buildTocHierarchy(
+        {
+            id: "article-start",
+            text: articleTitle.textContent?.trim() || "本文",
+            depth: 1,
+            heading: articleLead,
+        },
+        headingSources,
+    );
 
     const firstHeading = headingNodes[0];
     if (!firstHeading) return;
@@ -121,7 +104,7 @@ const initArticleToc = () => {
     let tocFrame = 0;
     let summaryMarqueeFrame = 0;
     let activeNode = firstHeading;
-    let tocSlides: TocSlide[] = [];
+    let tocSlides: TocSlide<HTMLElement>[] = [];
     let activeSlideIndex = 0;
     let pointerStartX: number | undefined;
     let pointerStartY: number | undefined;
@@ -182,7 +165,7 @@ const initArticleToc = () => {
     };
 
     const createHeadingLink = (
-        node: TocNode,
+        node: TocNode<HTMLElement>,
         className?: string,
     ) => {
         const link = document.createElement("a");
@@ -199,9 +182,9 @@ const initArticleToc = () => {
         focusViewport = false,
     ) => {
         if (tocSlides.length === 0) return;
-        activeSlideIndex = Math.max(
-            0,
-            Math.min(nextIndex, tocSlides.length - 1),
+        activeSlideIndex = clampTocSlideIndex(
+            nextIndex,
+            tocSlides.length,
         );
         tocTrack.style.transform =
             `translateX(-${activeSlideIndex * 100}%)`;
@@ -217,22 +200,12 @@ const initArticleToc = () => {
     };
 
     const renderHierarchy = (
-        node: TocNode,
+        node: TocNode<HTMLElement>,
         showDefault = false,
     ) => {
-        const previousDistanceFromDefault =
-            tocSlides.length - 1 - activeSlideIndex;
-        const nextSlides: TocSlide[] = [];
-        let pathNode: TocNode | undefined = node;
-
-        while (pathNode?.parent) {
-            nextSlides.unshift({
-                parent: pathNode.parent,
-                activeChild: pathNode,
-            });
-            pathNode = pathNode.parent;
-        }
-
+        const previousSlideCount = tocSlides.length;
+        const previousIndex = activeSlideIndex;
+        const nextSlides = buildTocSlides(node);
         tocSlides = nextSlides;
         tocTrack.replaceChildren();
 
@@ -271,11 +244,12 @@ const initArticleToc = () => {
             tocTrack.append(slide);
         }
 
-        const nextIndex = showDefault
-            ? tocSlides.length - 1
-            : tocSlides.length -
-              1 -
-              previousDistanceFromDefault;
+        const nextIndex = preserveTocSlideIndex(
+            previousSlideCount,
+            previousIndex,
+            tocSlides.length,
+            showDefault,
+        );
         updateSlidePosition(nextIndex);
     };
 
@@ -404,18 +378,16 @@ const initArticleToc = () => {
         distanceX: number,
         distanceY: number,
     ) => {
-        if (
-            Math.abs(distanceX) < POINTER_SWITCH_DISTANCE ||
-            Math.abs(distanceX) <= Math.abs(distanceY)
-        ) {
-            return;
-        }
+        const offset = getSwipeSlideOffset(
+            distanceX,
+            distanceY,
+            POINTER_SWITCH_DISTANCE,
+        );
+        if (offset === 0) return;
 
         suppressLinkClickUntil =
             performance.now() + LINK_CLICK_SUPPRESSION_TIME;
-        updateSlidePosition(
-            activeSlideIndex + (distanceX > 0 ? -1 : 1),
-        );
+        updateSlidePosition(activeSlideIndex + offset);
     };
 
     tocToggleButton.addEventListener("click", () => {
@@ -594,20 +566,19 @@ const initArticleToc = () => {
     tocViewport.addEventListener(
         "wheel",
         (event) => {
-            const levelDelta =
-                Math.abs(event.deltaX) > Math.abs(event.deltaY)
-                    ? event.deltaX
-                    : event.deltaY;
-            if (Math.abs(levelDelta) < WHEEL_MIN_DELTA) return;
+            const offset = getWheelSlideOffset(
+                event.deltaX,
+                event.deltaY,
+                WHEEL_MIN_DELTA,
+            );
+            if (offset === 0) return;
 
             event.preventDefault();
             const now = performance.now();
             if (now - lastWheelSwitch < WHEEL_SWITCH_INTERVAL) return;
 
             lastWheelSwitch = now;
-            updateSlidePosition(
-                activeSlideIndex + (levelDelta < 0 ? -1 : 1),
-            );
+            updateSlidePosition(activeSlideIndex + offset);
         },
         { passive: false },
     );

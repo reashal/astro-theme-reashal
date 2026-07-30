@@ -165,8 +165,8 @@
     color: var(--color-white);
 }
 
-.doc .article-lead-tags a:focus-visible,
-.doc .article-neighbor:focus-visible {
+html[data-input-mode="keyboard"] .doc .article-lead-tags a:focus-visible,
+html[data-input-mode="keyboard"] .doc .article-neighbor:focus-visible {
     outline: 2px solid var(--color-brand);
     outline-offset: 2px;
 }
@@ -184,8 +184,8 @@
     color: var(--surface-page-dark);
 }
 
-.dark .doc .article-lead-tags a:focus-visible,
-.dark .doc .article-neighbor:focus-visible {
+html.dark[data-input-mode="keyboard"] .doc .article-lead-tags a:focus-visible,
+html.dark[data-input-mode="keyboard"] .doc .article-neighbor:focus-visible {
     outline-color: var(--color-accent-cyan);
 }
 

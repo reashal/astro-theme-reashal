@@ -148,7 +148,7 @@
     }
 
     .view-control:hover,
-    .view-control:focus-visible {
+    html[data-input-mode="keyboard"] .view-control:focus-visible {
         color: var(--color-accent-cyan);
         border-color: rgb(var(--rgb-accent-cyan) / 42%);
         background: var(--viewer-control-hover);
@@ -176,7 +176,7 @@
     }
 
     .view-nav:hover,
-    .view-nav:focus-visible {
+    html[data-input-mode="keyboard"] .view-nav:focus-visible {
         transform: translateY(-50%) scale(1.06);
     }
 
@@ -313,9 +313,9 @@
     }
 
     .view-tool:hover,
-    .view-tool:focus-visible,
+    html[data-input-mode="keyboard"] .view-tool:focus-visible,
     .view-scale:hover,
-    .view-scale:focus-visible {
+    html[data-input-mode="keyboard"] .view-scale:focus-visible {
         color: var(--color-accent-cyan);
         background: var(--viewer-control-hover);
         outline: none;
@@ -323,6 +323,27 @@
 
     .doc img:not(.view-none) {
         cursor: zoom-in;
+    }
+
+    html[data-input-mode="keyboard"] .doc img[role="button"]:focus-visible,
+    html[data-input-mode="keyboard"]
+        .moment-images
+        img[role="button"]:focus-visible,
+    html[data-input-mode="keyboard"]
+        .img-mask-overlay[role="button"]:focus-visible {
+        outline: 2px solid var(--color-brand);
+        outline-offset: 3px;
+    }
+
+    html.dark[data-input-mode="keyboard"]
+        .doc
+        img[role="button"]:focus-visible,
+    html.dark[data-input-mode="keyboard"]
+        .moment-images
+        img[role="button"]:focus-visible,
+    html.dark[data-input-mode="keyboard"]
+        .img-mask-overlay[role="button"]:focus-visible {
+        outline-color: var(--color-accent-cyan);
     }
 
     @keyframes viewer-loading {
@@ -357,7 +378,7 @@
         }
 
         .view-nav:hover,
-        .view-nav:focus-visible {
+        html[data-input-mode="keyboard"] .view-nav:focus-visible {
             transform: scale(1.05);
         }
     }

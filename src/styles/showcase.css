@@ -411,7 +411,10 @@
 }
 
 .showcase-product-card:hover .showcase-description.is-truncated p,
-.showcase-product-card:focus-visible .showcase-description.is-truncated p {
+html[data-input-mode="keyboard"]
+    .showcase-product-card:focus-visible
+    .showcase-description.is-truncated
+    p {
     opacity: 0;
     transition-delay: 0s;
 }
@@ -419,7 +422,8 @@
 .showcase-product-card:hover
     .showcase-description.is-truncated
     .showcase-description-full,
-.showcase-product-card:focus-visible
+html[data-input-mode="keyboard"]
+    .showcase-product-card:focus-visible
     .showcase-description.is-truncated
     .showcase-description-full {
     opacity: 1;
