@@ -20,6 +20,11 @@
     color: var(--toc-island-text);
     pointer-events: none;
     transform: translateX(-50%);
+    transition: left .3s ease;
+}
+
+.aside-show .article-toc {
+    left: calc(50% + 240px);
 }
 
 .article-toc-summary {
@@ -394,6 +399,7 @@ html[data-input-mode="keyboard"] .doc .article-toc a:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
+    .article-toc,
     .article-toc-summary,
     .article-toc-track,
     .doc .article-toc a {

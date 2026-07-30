@@ -40,8 +40,17 @@ const publishedDate =
     rawPublishedDate instanceof Date
         ? rawPublishedDate.toISOString().slice(0, 10)
         : String(rawPublishedDate).slice(0, 10);
+const rawUpdatedDate = frontmatter.updatedDate as string | Date | undefined;
+const updatedDate =
+    rawUpdatedDate instanceof Date
+        ? rawUpdatedDate.toISOString().slice(0, 10)
+        : rawUpdatedDate
+          ? String(rawUpdatedDate).slice(0, 10)
+          : undefined;
+const showUpdatedDate = updatedDate && updatedDate !== publishedDate;
 
-const articlesByDate = sortArticlesByDate(getDocsArticles(), "asc");
+const allArticles = getDocsArticles();
+const articlesByDate = sortArticlesByDate(allArticles, "asc");
 const currentArticleIndex = articlesByDate.findIndex(
     (article) => normalizePath(article.url) === currentPath,
 );
@@ -54,6 +63,27 @@ const nextArticle =
     currentArticleIndex < articlesByDate.length - 1
         ? articlesByDate[currentArticleIndex + 1]
         : undefined;
+const relatedArticles = isDocsArticle
+    ? allArticles
+          .filter((article) => normalizePath(article.url) !== currentPath)
+          .map((article) => ({
+              article,
+              sharedTags: (article.frontmatter.tags ?? []).filter((tag) =>
+                  tags.includes(tag),
+              ),
+          }))
+          .filter(({ sharedTags }) => sharedTags.length > 0)
+          .sort((a, b) => {
+              if (b.sharedTags.length !== a.sharedTags.length) {
+                  return b.sharedTags.length - a.sharedTags.length;
+              }
+              return (
+                  new Date(b.article.frontmatter.pubDate).getTime() -
+                  new Date(a.article.frontmatter.pubDate).getTime()
+              );
+          })
+          .slice(0, 2)
+    : [];
 
 const formatDate = (date: string) => {
     const [year, month, day] = date.split("-").map(Number);
@@ -66,6 +96,7 @@ const formatDate = (date: string) => {
     pageDescription={frontmatter.desc}
     pageType={isDocsArticle ? "article" : "website"}
     publishedTime={isDocsArticle ? publishedDate : undefined}
+    modifiedTime={isDocsArticle ? updatedDate : undefined}
     pageTags={isDocsArticle ? tags : []}
 >
     <ReadingProgress />
@@ -90,6 +121,20 @@ const formatDate = (date: string) => {
                                 />
                                 {formatDate(publishedDate)}
                             </time>
+                            {
+                                showUpdatedDate && (
+                                    <time datetime={updatedDate}>
+                                        <svg
+                                            aria-hidden="true"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path d="m5.2 18.8.8-3.5L15.7 5.6a2.1 2.1 0 0 1 3 3L9 18.3l-3.8.5Z" />
+                                            <path d="m14.3 7 2.7 2.7" />
+                                        </svg>
+                                        更新于 {formatDate(updatedDate)}
+                                    </time>
+                                )
+                            }
                             <span>
                                 <svg aria-hidden="true" viewBox="0 0 24 24">
                                     <circle cx="12" cy="12" r="8.5" />
@@ -142,6 +187,31 @@ const formatDate = (date: string) => {
         <div class="article-content">
             <slot />
         </div>
+        <section class="article-copy" data-pagefind-ignore="all">
+            <div>
+                本文作者：<a href={frontmatter.source} target="_blank" rel="noopener noreferrer"
+                    >{frontmatter.author}</a
+                >
+            </div>
+            <div>
+                本文来源：<a href={frontmatter.source} target="_blank" rel="noopener noreferrer"
+                    >{frontmatter.source}</a
+                >
+            </div>
+            <div class="article-copy-info">
+                许可协议：<a
+                    href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans"
+                    target="_blank"
+                    rel="noopener noreferrer">CC BY-NC-SA 4.0</a
+                >
+            </div>
+            <div class="article-copy-info">
+                本站随笔均为原创，涉及隐私且时效性较强，不允许任何人以任何形式转载。
+            </div>
+            <div class="article-copy-info">
+                本站笔记多对原始作品作出修改，允许非商业用途转载，转载时请注明出处。
+            </div>
+        </section>
         {
             (previousArticle || nextArticle) && (
                 <nav
@@ -184,31 +254,42 @@ const formatDate = (date: string) => {
                 </nav>
             )
         }
-        <section class="article-copy" data-pagefind-ignore="all">
-            <div>
-                本文作者：<a href={frontmatter.source} target="_blank" rel="noopener noreferrer"
-                    >{frontmatter.author}</a
+        {
+            relatedArticles.length > 0 && (
+                <section
+                    class="article-related"
+                    aria-labelledby="article-related-title"
+                    data-pagefind-ignore="all"
                 >
-            </div>
-            <div>
-                本文来源：<a href={frontmatter.source} target="_blank" rel="noopener noreferrer"
-                    >{frontmatter.source}</a
-                >
-            </div>
-            <div class="article-copy-info">
-                许可协议：<a
-                    href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans"
-                    target="_blank"
-                    rel="noopener noreferrer">CC BY-NC-SA 4.0</a
-                >
-            </div>
-            <div class="article-copy-info">
-                本站随笔均为原创，涉及隐私且时效性较强，不允许任何人以任何形式转载。
-            </div>
-            <div class="article-copy-info">
-                本站笔记多对原始作品作出修改，允许非商业用途转载，转载时请注明出处。
-            </div>
-        </section>
+                    <h2 id="article-related-title">延伸阅读</h2>
+                    <div class="article-related-list">
+                        {relatedArticles.map(({ article, sharedTags }) => (
+                            <a
+                                class="article-related-item"
+                                href={article.url}
+                            >
+                                <span class="article-related-copy">
+                                    <strong>
+                                        {article.frontmatter.title}
+                                    </strong>
+                                    <small>
+                                        共同标签 · {sharedTags.join(" · ")}
+                                    </small>
+                                </span>
+                                <svg
+                                    aria-hidden="true"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path d="M5 12h13" />
+                                    <path d="m14 7 5 5-5 5" />
+                                </svg>
+                            </a>
+                        ))}
+                    </div>
+                </section>
+            )
+        }
         <Giscus />
     </article>
+    <script src="../scripts/code-copy.ts"></script>
 </BaseLayout>

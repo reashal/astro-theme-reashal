@@ -5,13 +5,14 @@ import Head from "../components/Head.astro";
 import Aside from "../components/Aside.astro";
 import Share from "../components/Share.astro";
 import ImageViewer from "../components/ImageViewer.astro";
-import { SITE_INFO } from "../consts";
+import { AUTHOR_INFO, SITE_INFO } from "../consts";
 
 interface Props {
     pageTitle: string;
     pageDescription: string;
     pageType?: "website" | "article";
     publishedTime?: string;
+    modifiedTime?: string;
     pageTags?: string[];
 }
 
@@ -20,6 +21,7 @@ const {
     pageDescription,
     pageType = "website",
     publishedTime,
+    modifiedTime,
     pageTags = [],
 } = Astro.props as Props;
 
@@ -30,6 +32,59 @@ const canonicalUrl = new URL(currentPath, siteOrigin);
 const socialImageUrl = new URL(SITE_INFO.wallpaper, siteOrigin);
 const fullTitle = `${pageTitle}｜${SITE_INFO.title}`;
 const fullDescription = `『${pageDescription}』『有限的文字无法写尽余生,希望我们能在前行的路上久别重逢』`;
+const structuredData =
+    pageType === "article" && publishedTime
+        ? {
+              "@context": "https://schema.org",
+              "@graph": [
+                  {
+                      "@type": "BlogPosting",
+                      "@id": `${canonicalUrl.href}#article`,
+                      headline: pageTitle,
+                      description: pageDescription,
+                      datePublished: publishedTime,
+                      dateModified: modifiedTime ?? publishedTime,
+                      mainEntityOfPage: canonicalUrl.href,
+                      author: {
+                          "@type": "Person",
+                          name: AUTHOR_INFO.name,
+                      },
+                      publisher: {
+                          "@type": "Person",
+                          name: AUTHOR_INFO.name,
+                      },
+                      keywords: pageTags,
+                      inLanguage: "zh-CN",
+                  },
+                  {
+                      "@type": "BreadcrumbList",
+                      itemListElement: [
+                          {
+                              "@type": "ListItem",
+                              position: 1,
+                              name: "首页",
+                              item: new URL("/", siteOrigin).href,
+                          },
+                          {
+                              "@type": "ListItem",
+                              position: 2,
+                              name: "随笔",
+                              item: new URL("/docs", siteOrigin).href,
+                          },
+                          {
+                              "@type": "ListItem",
+                              position: 3,
+                              name: pageTitle,
+                              item: canonicalUrl.href,
+                          },
+                      ],
+                  },
+              ],
+          }
+        : undefined;
+const structuredDataJson = structuredData
+    ? JSON.stringify(structuredData).replaceAll("<", "\\u003c")
+    : "";
 ---
 
 <!doctype html>
@@ -107,6 +162,14 @@ const fullDescription = `『${pageDescription}』『有限的文字无法写尽�
             )
         }
         {
+            pageType === "article" && modifiedTime && (
+                <meta
+                    property="article:modified_time"
+                    content={modifiedTime}
+                />
+            )
+        }
+        {
             pageType === "article" &&
                 pageTags.map((tag) => (
                     <meta property="article:tag" content={tag} />
@@ -116,6 +179,14 @@ const fullDescription = `『${pageDescription}』『有限的文字无法写尽�
         <meta name="twitter:title" content={fullTitle} />
         <meta name="twitter:description" content={fullDescription} />
         <meta name="twitter:image" content={socialImageUrl} />
+        {
+            structuredData && (
+                <script
+                    type="application/ld+json"
+                    set:html={structuredDataJson}
+                />
+            )
+        }
         <link rel="icon" href="/static/favicon.svg" />
     </head>
     <body>

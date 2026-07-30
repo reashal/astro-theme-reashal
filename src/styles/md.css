@@ -75,6 +75,7 @@
     font-size: clamp(1.55rem, 2.6vw, 2rem);
     line-height: 1.3;
     letter-spacing: -.018em;
+    text-wrap: balance;
     counter-increment: none;
 }
 
@@ -97,6 +98,7 @@
     font-size: .9rem;
     line-height: 1.55;
     text-indent: 0;
+    text-wrap: pretty;
 }
 
 .article-lead-details {
@@ -166,7 +168,9 @@
 }
 
 html[data-input-mode="keyboard"] .doc .article-lead-tags a:focus-visible,
-html[data-input-mode="keyboard"] .doc .article-neighbor:focus-visible {
+html[data-input-mode="keyboard"] .doc .article-neighbor:focus-visible,
+html[data-input-mode="keyboard"] .doc .article-related-item:focus-visible,
+html[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
     outline: 2px solid var(--color-brand);
     outline-offset: 2px;
 }
@@ -185,16 +189,18 @@ html[data-input-mode="keyboard"] .doc .article-neighbor:focus-visible {
 }
 
 html.dark[data-input-mode="keyboard"] .doc .article-lead-tags a:focus-visible,
-html.dark[data-input-mode="keyboard"] .doc .article-neighbor:focus-visible {
+html.dark[data-input-mode="keyboard"] .doc .article-neighbor:focus-visible,
+html.dark[data-input-mode="keyboard"] .doc .article-related-item:focus-visible,
+html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
     outline-color: var(--color-accent-cyan);
 }
 
 .article-neighbors {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: .65rem;
-    margin: 2rem 0 1rem;
-    padding-top: 1rem;
+    gap: .55rem;
+    margin: 1.35rem 0 .85rem;
+    padding-top: .8rem;
     border-top: 1px solid var(--article-rule);
 }
 
@@ -202,11 +208,11 @@ html.dark[data-input-mode="keyboard"] .doc .article-neighbor:focus-visible {
     position: relative;
     display: flex;
     min-width: 0;
-    min-height: 4.65rem;
+    min-height: 3.7rem;
     flex-direction: column;
     justify-content: center;
-    gap: .35rem;
-    padding: .72rem .8rem;
+    gap: .2rem;
+    padding: .5rem .68rem;
     overflow: hidden;
     border: 1px solid var(--article-rule);
     border-radius: .45rem;
@@ -288,7 +294,7 @@ html.dark[data-input-mode="keyboard"] .doc .article-neighbor:focus-visible {
 
 .article-neighbor strong {
     overflow: hidden;
-    font-size: .92rem;
+    font-size: .86rem;
     line-height: 1.45;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -305,6 +311,130 @@ html.dark[data-input-mode="keyboard"] .doc .article-neighbor:focus-visible {
 .dark .doc .article-neighbor:hover {
     border-color: rgb(var(--rgb-accent-cyan) / 32%);
     color: var(--color-accent-cyan);
+}
+
+.article-related {
+    margin: 1.45rem 0 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--article-rule);
+}
+
+.doc .article-related > h2 {
+    display: flex;
+    margin: 0 0 .58rem;
+    align-items: center;
+    gap: .42rem;
+    padding: 0;
+    color: var(--article-meta-color);
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+}
+
+.doc .article-related > h2::before {
+    position: static;
+    display: block;
+    flex: 0 0 auto;
+    width: .18rem;
+    height: .82rem;
+    border-radius: 999px;
+    background: var(--color-brand);
+    content: "";
+    opacity: .8;
+    transform: none;
+}
+
+.dark .doc .article-related > h2::before {
+    background: var(--color-accent-cyan);
+}
+
+.article-related-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: .5rem;
+}
+
+.doc .article-related-item {
+    display: grid;
+    min-width: 0;
+    min-height: 4rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: .65rem;
+    padding: .58rem .68rem;
+    border: 1px solid var(--article-rule);
+    border-radius: .4rem;
+    background: var(--article-nav-surface);
+    color: var(--text-primary);
+    transition:
+        border-color .2s ease,
+        background-color .2s ease,
+        color .2s ease;
+}
+
+.article-related-copy {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: .16rem;
+}
+
+.doc .article-related-copy > strong {
+    overflow: hidden;
+    font-size: .84rem;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.doc .article-related-copy > small {
+    overflow: hidden;
+    color: var(--article-meta-color);
+    font-size: .62rem;
+    font-weight: normal;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.doc .article-related-item > svg {
+    width: .9rem;
+    height: .9rem;
+    fill: none;
+    stroke: var(--article-meta-color);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.5;
+    transition:
+        stroke .2s ease,
+        transform .2s ease;
+}
+
+.doc .article-related-item:hover {
+    border-color: rgb(var(--rgb-brand) / 28%);
+    background: var(--article-nav-surface-hover);
+    color: var(--color-brand);
+}
+
+.doc .article-related-item:hover > svg {
+    stroke: var(--color-brand);
+    transform: translateX(2px);
+}
+
+.dark .doc .article-related-item {
+    color: var(--text-on-dark);
+}
+
+.dark .doc .article-related-item:hover {
+    color: var(--color-accent-cyan);
+}
+
+.dark .doc .article-related-item:hover {
+    border-color: rgb(var(--rgb-accent-cyan) / 32%);
+}
+
+.dark .doc .article-related-item:hover > svg {
+    stroke: var(--color-accent-cyan);
 }
 
 .dark .article-container {
@@ -470,10 +600,63 @@ html.dark[data-input-mode="keyboard"] .doc .article-neighbor:focus-visible {
     z-index: 1;
 }
 
+.doc .code-copy-button {
+    position: absolute;
+    top: .34rem;
+    right: .45rem;
+    z-index: 2;
+    display: inline-flex;
+    height: 1.75rem;
+    align-items: center;
+    gap: .25rem;
+    padding: 0 .42rem;
+    border: 1px solid rgb(var(--rgb-brand) / 15%);
+    border-radius: .32rem;
+    background: rgb(var(--rgb-white) / 35%);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: .66rem;
+    transition:
+        border-color .18s ease,
+        background-color .18s ease,
+        color .18s ease;
+}
+
+.doc .code-copy-button svg {
+    width: .78rem;
+    height: .78rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+}
+
+.doc .code-copy-button:hover,
+.doc .code-copy-button.is-copied {
+    border-color: rgb(var(--rgb-brand) / 30%);
+    background: rgb(var(--rgb-brand) / 8%);
+    color: var(--color-brand);
+}
+
 .dark .doc pre {
     background-color: var(--surface-dark-code) !important;
     border-color: var(--text-strong);
     box-shadow: 0 2px 8px rgb(var(--rgb-black) / 30%);
+}
+
+.dark .doc .code-copy-button {
+    border-color: rgb(var(--rgb-accent-cyan) / 16%);
+    background: rgb(var(--rgb-white) / 4%);
+    color: var(--text-on-dark-soft);
+}
+
+.dark .doc .code-copy-button:hover,
+.dark .doc .code-copy-button.is-copied {
+    border-color: rgb(var(--rgb-accent-cyan) / 34%);
+    background: rgb(var(--rgb-accent-cyan) / 9%);
+    color: var(--color-accent-cyan);
 }
 
 .doc pre code {
@@ -487,6 +670,16 @@ html.dark[data-input-mode="keyboard"] .doc .article-neighbor:focus-visible {
 
 .dark .doc pre code {
     color: var(--text-on-dark) !important;
+}
+
+.doc .astro-code span,
+.doc .shiki span {
+    color: var(--shiki-light, var(--text-strong)) !important;
+}
+
+.dark .doc .astro-code span,
+.dark .doc .shiki span {
+    color: var(--shiki-dark, var(--text-on-dark)) !important;
 }
 
 /* 行内代码 */
@@ -663,6 +856,10 @@ html.dark[data-input-mode="keyboard"] .doc .article-neighbor:focus-visible {
         gap: .55rem;
     }
 
+    .article-related-list {
+        grid-template-columns: 1fr;
+    }
+
     .doc .article-neighbor-next {
         grid-column: 1;
     }
@@ -670,6 +867,8 @@ html.dark[data-input-mode="keyboard"] .doc .article-neighbor:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
     .doc .article-neighbor,
+    .doc .article-related-item,
+    .doc .code-copy-button,
     .article-neighbor-direction .iconfont,
     .doc .article-lead-tags a {
         transition: none;

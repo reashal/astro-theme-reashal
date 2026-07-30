@@ -19,16 +19,19 @@ export const pagesConfigSchema = z.object({
 
 export type PageConfig = z.infer<typeof pagesConfigSchema>["pages"][number];
 
+const articleDateSchema = z.preprocess((value) => {
+    if (value instanceof Date) return value.toISOString().slice(0, 10);
+    if (typeof value === "string") return value.slice(0, 10);
+    return value;
+}, z.string().regex(/^\d{4}-\d{1,2}-\d{1,2}$/));
+
 export const articleFrontmatterSchema = z.object({
     title: z.string(),
     desc: z.string(),
     author: z.string(),
     source: z.string().url(),
-    pubDate: z.preprocess((value) => {
-        if (value instanceof Date) return value.toISOString().slice(0, 10);
-        if (typeof value === "string") return value.slice(0, 10);
-        return value;
-    }, z.string().regex(/^\d{4}-\d{1,2}-\d{1,2}$/)),
+    pubDate: articleDateSchema,
+    updatedDate: articleDateSchema.optional(),
     tags: z.array(z.string()).optional(),
     pinned: z.boolean().optional(),
 });

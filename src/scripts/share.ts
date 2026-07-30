@@ -1,5 +1,3 @@
-import qrcode from "qrcode-generator";
-
 const shareContainer =
     document.querySelector<HTMLElement>(".share-container[data-site-name]");
 const shareButton = document.getElementById("share-btn");
@@ -35,6 +33,9 @@ if (
     let currentDescription = "";
     let lastFocused: HTMLElement | null = null;
     let closeTimer = 0;
+    let qrCodeFactoryPromise: Promise<
+        typeof import("qrcode-generator").default
+    > | null = null;
 
     const isOpen = () => !overlay.hidden;
     const focusableSelector =
@@ -49,21 +50,30 @@ if (
             .getPropertyValue(name)
             .trim();
 
-    const drawQrCode = () => {
+    const loadQrCodeFactory = () => {
+        qrCodeFactoryPromise ??= import("qrcode-generator").then(
+            ({ default: factory }) => factory,
+        );
+        return qrCodeFactoryPromise;
+    };
+
+    const drawQrCode = async (url: string) => {
         const context = qrCanvas.getContext("2d");
         if (!context) return;
 
         const size = 150;
         qrCanvas.width = size;
         qrCanvas.height = size;
+        context.fillStyle = getPaletteColor("--color-white");
+        context.fillRect(0, 0, size, size);
 
         try {
-            const qr = qrcode(0, "M");
-            qr.addData(currentUrl);
-            qr.make();
+            const qrcode = await loadQrCodeFactory();
+            if (url !== currentUrl) return;
 
-            context.fillStyle = getPaletteColor("--color-white");
-            context.fillRect(0, 0, size, size);
+            const qr = qrcode(0, "M");
+            qr.addData(url);
+            qr.make();
 
             const moduleCount = qr.getModuleCount();
             const moduleSize = size / moduleCount;
@@ -116,7 +126,7 @@ if (
         overlay.setAttribute("aria-hidden", "false");
         if (pageLayout) pageLayout.inert = true;
         shareContainer.inert = true;
-        drawQrCode();
+        void drawQrCode(currentUrl);
         requestAnimationFrame(() => {
             overlay.classList.add("show");
             closeButton.focus({ preventScroll: true });

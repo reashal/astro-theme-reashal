@@ -29,9 +29,9 @@ export const GET: APIRoute = async (context) => {
         title: frontmatter.title,
         description: frontmatter.desc,
         link: url,
-        pubDate: new Date(frontmatter.pubDate),
+        pubDate: new Date(frontmatter.updatedDate ?? frontmatter.pubDate),
         author: frontmatter.author || AUTHOR_INFO.name,
-        categories: ["随笔", ...frontmatter.tags],
+        categories: ["随笔", ...(frontmatter.tags ?? [])],
     }));
 
     const momentItems = moments.map(({ data }) => {

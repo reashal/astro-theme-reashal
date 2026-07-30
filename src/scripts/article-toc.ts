@@ -9,7 +9,7 @@ import {
     type TocSlide,
 } from "./article-toc-model";
 
-const TITLE_OVERFLOW_TOLERANCE = 5;
+const TITLE_OVERFLOW_TOLERANCE = 1;
 const TITLE_SCROLL_SPEED = 46;
 const TITLE_SCROLL_TRAVEL_RATIO = .8;
 const TITLE_SCROLL_MIN_DURATION = .8;
@@ -124,24 +124,29 @@ const initArticleToc = () => {
             tocToggleButton.clientWidth -
             Number.parseFloat(buttonStyle.paddingLeft) -
             Number.parseFloat(buttonStyle.paddingRight);
-        const overflowDistance = Math.max(
+        const visibleWidth = tocToggleButton.clientWidth;
+        const visualOverflowDistance = Math.max(
+            0,
+            summaryCurrent.scrollWidth - visibleWidth,
+        );
+        const scrollDistance = Math.max(
             0,
             summaryCurrent.scrollWidth - contentWidth,
         );
         const isOverflowing =
-            overflowDistance > TITLE_OVERFLOW_TOLERANCE;
+            visualOverflowDistance > TITLE_OVERFLOW_TOLERANCE;
         const scrollDuration = Math.min(
             TITLE_SCROLL_MAX_DURATION,
             Math.max(
                 TITLE_SCROLL_MIN_DURATION,
-                overflowDistance /
+                scrollDistance /
                     (TITLE_SCROLL_SPEED * TITLE_SCROLL_TRAVEL_RATIO),
             ),
         );
 
         summaryCurrent.style.setProperty(
             "--toc-title-scroll-distance",
-            `${overflowDistance}px`,
+            `${scrollDistance}px`,
         );
         summaryCurrent.style.setProperty(
             "--toc-title-duration",

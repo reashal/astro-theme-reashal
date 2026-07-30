@@ -7,6 +7,15 @@ const site = process.env.SITE_URL?.trim() || 'https://www.reashal.com';
 
 export default defineConfig({
     site,
+    markdown: {
+        shikiConfig: {
+            themes: {
+                light: 'github-light-high-contrast',
+                dark: 'github-dark-high-contrast',
+            },
+            defaultColor: false,
+        },
+    },
     integrations: [
         sitemap({
             filter: (page) => !page.endsWith('/404/'),
