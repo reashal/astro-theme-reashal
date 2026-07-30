@@ -1,127 +1,45 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { SITE_INFO, AUTHOR_INFO } from "../consts";
+import Moment from "../components/Moment.astro";
+import { SITE_INFO } from "../consts";
+import { paginateMoments } from "../utils/moments";
 import "../styles/moments.css";
 
 const allMoments = await getCollection("moments");
-const sortedMoments = allMoments.sort((a, b) =>
-    b.data.date.localeCompare(a.data.date),
-);
+const momentPages = paginateMoments(allMoments);
+const initialMoments = momentPages[0]?.moments ?? [];
+const pageCount = momentPages.length;
 
 const pageMeta = {
     title: "动态",
     desc: "以碎片化的记录汇聚时光的川流",
 };
-
-type ImgItem = { url: string; alt: string };
-
-function getImgLayout(imgs: ImgItem[]): "single" | "grid2" | "grid3" | "overflow" {
-    const n = imgs.length;
-    if (n === 1) return "single";
-    if (n <= 4) return "grid2";
-    if (n <= 9) return "grid3";
-    return "overflow";
-}
 ---
 
 <BaseLayout pageTitle={pageMeta.title} pageDescription={pageMeta.desc}>
     <article class="article-container">
-        <section class="moments">
+        <section
+            class="moments"
+            id="moments-feed"
+            data-page-count={pageCount}
+            data-next-page="2"
+        >
             <h1>动态</h1>
-            
-            {sortedMoments.map((moment) => {
-                const { date, para, imgs, loc, stars, comments } = moment.data;
-                const machineDate = date.replaceAll(".", "-");
-                const momentId = date.replaceAll(".", "");
-
-                return (
-                    <article class="moment" id={momentId}>
-                        <header class="moment-author">
-                            <figure class="author-avatar">
-                                <img src={AUTHOR_INFO.avatar} alt={AUTHOR_INFO.name} loading="lazy" decoding="async" class="view-none" />
-                            </figure>
-                            <div class="author-info">
-                                <span class="author-name">{AUTHOR_INFO.name}</span>
-                                <time class="author-date" datetime={machineDate}>{date}</time>
-                            </div>
-                        </header>
-
-                        {para && para.length > 0 && (
-                            <section class="moment-content">
-                                {para.map((text) => (
-                                    <p>{text}</p>
-                                ))}
-                            </section>
-                        )}
-
-                        {imgs && imgs.length > 0 && (
-                            <section class="moment-images" data-moment-id={momentId} data-imgs={JSON.stringify(imgs)}>
-                                {getImgLayout(imgs) === "single" && (
-                                    <figure class="img-single">
-                                        <img src={imgs[0].url} alt={imgs[0].alt} loading="lazy" decoding="async" />
-                                    </figure>
-                                )}
-                                {getImgLayout(imgs) === "grid2" && (
-                                    <figure class="img-grid img-grid-2x2">
-                                        {imgs.map((img) => (
-                                            <img src={img.url} alt={img.alt} loading="lazy" decoding="async" />
-                                        ))}
-                                    </figure>
-                                )}
-                                {getImgLayout(imgs) === "grid3" && (
-                                    <figure class="img-grid img-grid-3x3">
-                                        {imgs.map((img) => (
-                                            <img src={img.url} alt={img.alt} loading="lazy" decoding="async" />
-                                        ))}
-                                    </figure>
-                                )}
-                                {getImgLayout(imgs) === "overflow" && (
-                                    <figure class="img-grid img-grid-3x3">
-                                        {imgs.slice(0, 8).map((img) => (
-                                            <img src={img.url} alt={img.alt} loading="lazy" decoding="async" />
-                                        ))}
-                                        <div class="img-mask-overlay" style={`background-image: url('${imgs[8].url}')`}>
-                                            <span class="img-mask-count">+{imgs.length - 8}</span>
-                                        </div>
-                                    </figure>
-                                )}
-                            </section>
-                        )}
-
-                        {loc && (
-                            <div class="moment-location">
-                                <p><code>{loc}</code></p>
-                            </div>
-                        )}
-
-                        {(stars.length > 0 || comments.length > 0) && (
-                            <section class="moment-interaction">
-                                {stars.length > 0 && (
-                                    <div class="interaction-stars">
-                                        {stars.map((star) => (
-                                            <span class="star-item">{star}</span>
-                                        ))}
-                                    </div>
-                                )}
-                                
-                                {comments.length > 0 && (
-                                    <div class="interaction-comments">
-                                        {comments.map((comment) => (
-                                            <p class="comment-item">
-                                                <span class="comment-author">{AUTHOR_INFO.name}:</span>
-                                                <span class="comment-text">{comment}</span>
-                                            </p>
-                                        ))}
-                                    </div>
-                                )}
-                            </section>
-                        )}
-                    </article>
-                );
-            })}
-            
-            <footer class="moments-footer">
+            <div id="moments-list">
+                {initialMoments.map((moment) => <Moment moment={moment} />)}
+            </div>
+            <button
+                class="moments-loader"
+                id="moments-loader"
+                type="button"
+                aria-live="polite"
+                hidden={pageCount <= 1}
+            >
+                <span class="moments-loader-mark" aria-hidden="true"></span>
+                <span class="moments-loader-text">继续向下，翻开更早的时光</span>
+            </button>
+            <footer class="moments-footer" hidden={pageCount > 1}>
                 <p class="end-tip">{SITE_INFO.endTip}</p>
                 {SITE_INFO.icpNo && (
                     <p class="icp-info">
@@ -134,3 +52,7 @@ function getImgLayout(imgs: ImgItem[]): "single" | "grid2" | "grid3" | "overflow
         </section>
     </article>
 </BaseLayout>
+
+<script src="../scripts/moments-feed.ts"></script>
+<script src="../scripts/music-player.ts"></script>
+<script src="../scripts/media-loader.ts"></script>

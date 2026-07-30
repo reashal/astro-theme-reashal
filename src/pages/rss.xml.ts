@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
 import { AUTHOR_INFO, SITE_INFO } from "../consts";
 import { getDocsArticles, sortArticlesByDate } from "../utils/articles";
+import { getMomentDomId } from "../utils/moments";
 
 const escapeHtml = (value: string) =>
     value
@@ -34,8 +35,8 @@ export const GET: APIRoute = async (context) => {
         categories: ["随笔", ...(frontmatter.tags ?? [])],
     }));
 
-    const momentItems = moments.map(({ data }) => {
-        const momentId = data.date.replaceAll(".", "");
+    const momentItems = moments.map(({ id, data }) => {
+        const momentId = getMomentDomId({ id });
         const description = [
             ...data.para,
             data.loc ? `地点：${data.loc}` : "",
@@ -46,10 +47,19 @@ export const GET: APIRoute = async (context) => {
             ...data.para.map(
                 (paragraph) => `<p>${escapeHtml(paragraph)}</p>`,
             ),
-            ...data.imgs.map((image) => {
-                const imageUrl = new URL(image.url, site).href;
-                return `<p><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(image.alt)}" loading="lazy"></p>`;
+            ...data.media.map((media) => {
+                const mediaUrl = new URL(media.url, site).href;
+                if (media.type === "video") {
+                    const poster = media.poster
+                        ? ` poster="${escapeHtml(new URL(media.poster, site).href)}"`
+                        : "";
+                    return `<p><video src="${escapeHtml(mediaUrl)}"${poster} controls playsinline>${escapeHtml(media.alt)}</video></p>`;
+                }
+                return `<p><img src="${escapeHtml(mediaUrl)}" alt="${escapeHtml(media.alt)}" loading="lazy"></p>`;
             }),
+            data.music
+                ? `<p>正在听：${escapeHtml(data.music.title)} · ${escapeHtml(data.music.artist)}</p><p><audio src="${escapeHtml(new URL(data.music.url, site).href)}" controls></audio></p>`
+                : "",
             data.loc
                 ? `<p>地点：${escapeHtml(data.loc)}</p>`
                 : "",

@@ -7,8 +7,8 @@
       "type": "moments",
       "icon": "iconfont icon-Home",
       "dataSource": {
-        "type": "file",
-        "path": "src/moments.json"
+        "type": "folder",
+        "path": "src/data/moments"
       }
     },
     {

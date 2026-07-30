@@ -1,0 +1,14 @@
+[
+  {
+    "date": "2025.10.24",
+    "para": ["节日快乐！"],
+    "media": [
+      {
+        "type": "image",
+        "alt": "程序员节",
+        "url": "/images/comments/CodersDay.jpg"
+      }
+    ],
+    "stars": ["reashal"]
+  }
+]

@@ -1,31 +1,40 @@
-import { defineCollection } from 'astro:content';
-import { file } from 'astro/loaders';
-import { z } from 'astro/zod';
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
+import { momentsLoader } from "./loaders/moments";
+
+const requiredString = z.string().min(1);
+
+const mediaSchema = z.discriminatedUnion("type", [
+    z.object({
+        type: z.literal("image"),
+        url: requiredString,
+        alt: requiredString,
+    }),
+    z.object({
+        type: z.literal("video"),
+        url: requiredString,
+        alt: requiredString,
+        poster: requiredString.optional(),
+    }),
+]);
 
 const momentSchema = z.object({
     date: z.string().regex(/^\d{4}\.\d{2}\.\d{2}$/),
-    para: z.array(z.string()).default([]),
-    imgs: z.array(
-        z.object({
-            url: z.string(),
-            alt: z.string(),
-        }),
-    ).default([]),
+    para: z.array(requiredString).default([]),
+    media: z.array(mediaSchema).default([]),
+    music: z.object({
+        url: requiredString,
+        cover: requiredString,
+        title: requiredString,
+        artist: requiredString,
+    }).optional(),
     loc: z.string().optional(),
-    stars: z.array(z.string()).default([]),
-    comments: z.array(z.string()).default([]),
+    stars: z.array(requiredString).default([]),
+    comments: z.array(requiredString).default([]),
 });
 
 const moments = defineCollection({
-    loader: file("src/moments.json", {
-        parser: (text) => {
-            const items = z.array(momentSchema).parse(JSON.parse(text));
-            return items.map((item) => ({
-                id: item.date.replaceAll(".", "-"),
-                ...item,
-            }));
-        }
-    }),
+    loader: momentsLoader("src/data/moments"),
     schema: momentSchema,
 });
 

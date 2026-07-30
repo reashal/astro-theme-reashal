@@ -1,0 +1,28 @@
+---
+import { getCollection } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import Moment from "../../../components/Moment.astro";
+import {
+    paginateMoments,
+    type MomentData,
+} from "../../../utils/moments";
+
+interface Props {
+    moments: MomentData[];
+}
+
+export const partial = true;
+
+export const getStaticPaths: GetStaticPaths = async () => {
+    const pages = paginateMoments(await getCollection("moments"));
+
+    return pages.slice(1).map((page) => ({
+        params: { page: String(page.page) },
+        props: { moments: page.moments },
+    }));
+};
+
+const { moments } = Astro.props;
+---
+
+{moments.map((moment) => <Moment moment={moment} />)}

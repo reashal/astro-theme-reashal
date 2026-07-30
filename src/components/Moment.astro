@@ -1,0 +1,207 @@
+---
+import { AUTHOR_INFO } from "../consts";
+import type { MomentData } from "../utils/moments";
+import { getMomentDomId } from "../utils/moments";
+
+interface Props {
+    moment: MomentData;
+}
+
+const { moment } = Astro.props;
+const { date, para, media, music, loc, stars, comments } = moment;
+const momentId = getMomentDomId(moment);
+const machineDate = date.replaceAll(".", "-");
+const mediaCount = media.length;
+const mediaLayout =
+    mediaCount === 1
+        ? "single"
+        : mediaCount <= 4
+          ? "grid2"
+          : mediaCount <= 9
+            ? "grid3"
+            : "overflow";
+const visibleMedia = mediaLayout === "overflow" ? media.slice(0, 9) : media;
+---
+
+<article class="moment" id={momentId}>
+    <header class="moment-author">
+        <figure class="author-avatar">
+            <img
+                src={AUTHOR_INFO.avatar}
+                alt={AUTHOR_INFO.name}
+                loading="lazy"
+                decoding="async"
+                class="view-none"
+            />
+        </figure>
+        <div class="author-info">
+            <span class="author-name">{AUTHOR_INFO.name}</span>
+            <time class="author-date" datetime={machineDate}>{date}</time>
+        </div>
+    </header>
+
+    {
+        para.length > 0 && (
+            <section class="moment-content">
+                {para.map((text) => <p>{text}</p>)}
+            </section>
+        )
+    }
+
+    {
+        mediaCount > 0 && (
+            <section
+                class:list={[
+                    "moment-media",
+                    mediaLayout === "single"
+                        ? "moment-media-single"
+                        : "moment-media-grid",
+                    mediaLayout === "grid2" && "moment-media-grid-2",
+                    (mediaLayout === "grid3" ||
+                        mediaLayout === "overflow") &&
+                        "moment-media-grid-3",
+                ]}
+                data-media-group={momentId}
+                data-media={JSON.stringify(media)}
+            >
+                {visibleMedia.map((item, index) => {
+                    const isOverflow = mediaLayout === "overflow" && index === 8;
+                    const preview =
+                        item.type === "image" ? item.url : item.poster;
+
+                    return (
+                        <button
+                            class:list={[
+                                "moment-media-item",
+                                item.type === "video" && "is-video",
+                                isOverflow && "has-overflow",
+                            ]}
+                            type="button"
+                            data-media-index={index}
+                            aria-label={`${item.type === "video" ? "播放视频" : "查看图片"}：${item.alt}`}
+                        >
+                            {preview ? (
+                                <img
+                                    src={preview}
+                                    alt=""
+                                    loading="lazy"
+                                    decoding="async"
+                                    aria-hidden="true"
+                                />
+                            ) : item.type === "video" ? (
+                                <video
+                                    class="moment-video-preview"
+                                    data-media-src={`${item.url}#t=0.001`}
+                                    preload="none"
+                                    muted
+                                    playsinline
+                                    aria-hidden="true"
+                                    tabindex="-1"
+                                ></video>
+                            ) : (
+                                <span class="moment-video-placeholder" aria-hidden="true" />
+                            )}
+                            {item.type === "video" && (
+                                <span class="moment-video-play" aria-hidden="true">
+                                    <i class="iconfont icon-play"></i>
+                                </span>
+                            )}
+                            {isOverflow && (
+                                <span class="moment-media-overflow">
+                                    +{media.length - 8}
+                                </span>
+                            )}
+                        </button>
+                    );
+                })}
+            </section>
+        )
+    }
+
+    {
+        music && (
+            <section class="moment-music" data-music-player>
+                <img
+                    class="music-cover view-none"
+                    src={music.cover}
+                    alt={`${music.title}封面`}
+                    loading="lazy"
+                    decoding="async"
+                />
+                <div class="music-body">
+                    <div class="music-heading">
+                        <div class="music-meta">
+                            <strong class="music-title">{music.title}</strong>
+                            <span class="music-artist">{music.artist}</span>
+                            <span class="music-error" role="status" hidden>
+                                音频暂时无法播放
+                            </span>
+                        </div>
+                        <button
+                            class="music-toggle"
+                            type="button"
+                            aria-label={`播放 ${music.title}`}
+                        >
+                            <i
+                                class="iconfont icon-play music-icon-play"
+                                aria-hidden="true"
+                            ></i>
+                            <i
+                                class="iconfont icon-pause music-icon-pause"
+                                aria-hidden="true"
+                            ></i>
+                        </button>
+                    </div>
+                    <div class="music-timeline">
+                        <span class="music-time music-current">0:00</span>
+                        <input
+                            class="music-progress"
+                            type="range"
+                            min="0"
+                            max="100"
+                            value="0"
+                            step="0.1"
+                            aria-label={`${music.title} 播放进度`}
+                        />
+                        <span class="music-time music-duration">--:--</span>
+                    </div>
+                </div>
+                <audio data-audio-src={music.url} preload="none" />
+            </section>
+        )
+    }
+
+    {
+        loc && (
+            <div class="moment-location">
+                <p><code>{loc}</code></p>
+            </div>
+        )
+    }
+
+    {
+        (stars.length > 0 || comments.length > 0) && (
+            <section class="moment-interaction">
+                {stars.length > 0 && (
+                    <div class="interaction-stars">
+                        {stars.map((star) => (
+                            <span class="star-item">{star}</span>
+                        ))}
+                    </div>
+                )}
+                {comments.length > 0 && (
+                    <div class="interaction-comments">
+                        {comments.map((comment) => (
+                            <p class="comment-item">
+                                <span class="comment-author">
+                                    {AUTHOR_INFO.name}:
+                                </span>
+                                <span class="comment-text">{comment}</span>
+                            </p>
+                        ))}
+                    </div>
+                )}
+            </section>
+        )
+    }
+</article>
