@@ -14,6 +14,7 @@ interface Props {
     publishedTime?: string;
     modifiedTime?: string;
     pageTags?: string[];
+    enableMediaViewer?: boolean;
 }
 
 const {
@@ -23,6 +24,7 @@ const {
     publishedTime,
     modifiedTime,
     pageTags = [],
+    enableMediaViewer = false,
 } = Astro.props as Props;
 
 // 获取当前路径，用于侧边栏高亮
@@ -182,6 +184,7 @@ const structuredDataJson = structuredData
         {
             structuredData && (
                 <script
+                    is:inline
                     type="application/ld+json"
                     set:html={structuredDataJson}
                 />
@@ -198,7 +201,7 @@ const structuredDataJson = structuredData
             </section>
         </main>
         <Share />
-        <ImageViewer />
+        {enableMediaViewer && <ImageViewer />}
         <canvas
             class="fireworks"
             style="position:fixed;left:0;top:0;z-index:99999999;pointer-events:none;"

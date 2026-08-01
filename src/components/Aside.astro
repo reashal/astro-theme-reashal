@@ -15,12 +15,10 @@
  */
 import "../styles/aside.css";
 import { AUTHOR_INFO } from "../consts";
-import pagesConfigJson from "../pages-config.json";
-import { pagesConfigSchema } from "../types";
+import { pagesConfig } from "../utils/pages";
 import GetTags from "./GetTags.astro";
 
-const pagesConfig = pagesConfigSchema.parse(pagesConfigJson);
-const navLinks = pagesConfig.pages
+const navLinks = pagesConfig
     .filter(page => !page.hiddenInAside)
     .map(page => ({
         label: page.title,

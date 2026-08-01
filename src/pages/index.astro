@@ -4,6 +4,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Moment from "../components/Moment.astro";
 import { SITE_INFO } from "../consts";
 import { paginateMoments } from "../utils/moments";
+import { getPageConfig } from "../utils/pages";
 import "../styles/moments.css";
 
 const allMoments = await getCollection("moments");
@@ -12,13 +13,14 @@ const initialMoments = momentPages[0]?.moments ?? [];
 const pageCount = momentPages.length;
 const nextPage = pageCount > 1 ? 2 : 1;
 
-const pageMeta = {
-    title: "动态",
-    desc: "以碎片化的记录汇聚时光的川流",
-};
+const pageMeta = getPageConfig("/");
 ---
 
-<BaseLayout pageTitle={pageMeta.title} pageDescription={pageMeta.desc}>
+<BaseLayout
+    pageTitle={pageMeta.title}
+    pageDescription={pageMeta.description}
+    enableMediaViewer
+>
     <article class="article-container">
         <section
             class="moments"

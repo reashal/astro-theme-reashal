@@ -1,4 +1,5 @@
 const initializedPlayers = new WeakSet<HTMLElement>();
+const playersRoot = document.getElementById("moments-list");
 let activeAudio: HTMLAudioElement | null = null;
 
 const formatTime = (seconds: number) => {
@@ -52,7 +53,13 @@ const initializePlayer = (player: HTMLElement) => {
 
     const ensureSource = () => {
         const source = audio.dataset.audioSrc;
-        if (!source || audio.getAttribute("src")) return;
+        if (!source) return;
+        if (audio.error) {
+            audio.pause();
+            audio.removeAttribute("src");
+            audio.load();
+        }
+        if (audio.getAttribute("src")) return;
         audio.src = source;
         audio.preload = "metadata";
         audio.load();
@@ -87,7 +94,10 @@ const initializePlayer = (player: HTMLElement) => {
         updateTime();
     });
 
-    audio.addEventListener("loadedmetadata", updateTime);
+    audio.addEventListener("loadedmetadata", () => {
+        setErrorState(false);
+        updateTime();
+    });
     audio.addEventListener("durationchange", updateTime);
     audio.addEventListener("timeupdate", updateTime);
     audio.addEventListener("play", updatePlaybackState);
@@ -103,13 +113,17 @@ const initializePlayer = (player: HTMLElement) => {
 };
 
 const initializePlayers = () => {
-    document
-        .querySelectorAll<HTMLElement>("[data-music-player]")
+    playersRoot
+        ?.querySelectorAll<HTMLElement>("[data-music-player]")
         .forEach(initializePlayer);
 };
 
-initializePlayers();
-document.addEventListener("moments:updated", initializePlayers);
-document.addEventListener("media-viewer:video", () => {
-    activeAudio?.pause();
-});
+if (playersRoot) {
+    initializePlayers();
+    document.addEventListener("moments:updated", initializePlayers);
+    document.addEventListener("media-viewer:video", () => {
+        activeAudio?.pause();
+    });
+}
+
+export {};

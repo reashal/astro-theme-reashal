@@ -9,6 +9,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
+    "check": "astro check",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -19,7 +20,9 @@
     "qrcode-generator": "^2.0.4"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
     "@types/node": "^25.5.0",
-    "pagefind": "^1.5.2"
+    "pagefind": "^1.5.2",
+    "typescript": "^6.0.3"
   }
 }

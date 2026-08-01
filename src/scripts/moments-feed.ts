@@ -51,7 +51,13 @@ if (feed && list && loader && footer && loaderText) {
         }
     };
 
-    const hashTargetId = decodeURIComponent(location.hash.slice(1));
+    const hashTargetId = (() => {
+        try {
+            return decodeURIComponent(location.hash.slice(1));
+        } catch {
+            return "";
+        }
+    })();
 
     const scrollToHashTarget = () => {
         if (!hashTargetId) return false;
@@ -92,3 +98,5 @@ if (feed && list && loader && footer && loaderText) {
     }
     void loadUntilHashTarget();
 }
+
+export {};

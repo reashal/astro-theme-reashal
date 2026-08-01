@@ -26,7 +26,12 @@ body {
 
 body {
     background-color: var(--surface-page);
-    font-family: "HM";
+    font-family:
+        "HM",
+        "HarmonyOS Sans SC",
+        "PingFang SC",
+        "Microsoft YaHei",
+        sans-serif;
 }
 
 .dark body {
@@ -38,6 +43,8 @@ body {
 @font-face {
     font-family: "HM";
     src: url('/static/fonts/HarmonyOS_Sans_Medium.ttf');
+    font-display: swap;
+    font-style: normal;
 }
 
 /* === 通用元素样式 === */
@@ -50,19 +57,19 @@ a {
     color: var(--color-indigo);
 }
 
-/* 图片 */
-img {
-    cursor: pointer;
-}
-
 /* 指针点击保留语义焦点，但不显示键盘导航使用的焦点环。 */
 html[data-input-mode="pointer"] :focus,
 html[data-input-mode="pointer"] :focus-visible {
     outline: none !important;
 }
 
-/* 滚动条：全局隐藏 */
-::-webkit-scrollbar {
+/* 仅隐藏设计中明确使用无滚动条样式的滚动区域。 */
+.main::-webkit-scrollbar,
+.aside-body::-webkit-scrollbar,
+.docs-search-results::-webkit-scrollbar,
+.article-toc-heading-list::-webkit-scrollbar,
+.doc pre code::-webkit-scrollbar,
+.doc table::-webkit-scrollbar {
     display: none;
 }
 

@@ -15,6 +15,15 @@ const qrCanvas = document.getElementById(
 const feedback = document.getElementById("share-feedback");
 const pageLayout = document.querySelector<HTMLElement>("body > main");
 
+interface QrCode {
+    addData: (data: string) => void;
+    make: () => void;
+    getModuleCount: () => number;
+    isDark: (row: number, column: number) => boolean;
+}
+
+type QrCodeFactory = (typeNumber: 0, errorLevel: "M") => QrCode;
+
 if (
     shareContainer &&
     shareButton &&
@@ -33,9 +42,7 @@ if (
     let currentDescription = "";
     let lastFocused: HTMLElement | null = null;
     let closeTimer = 0;
-    let qrCodeFactoryPromise: Promise<
-        typeof import("qrcode-generator").default
-    > | null = null;
+    let qrCodeFactoryPromise: Promise<QrCodeFactory> | null = null;
 
     const isOpen = () => !overlay.hidden;
     const focusableSelector =
@@ -52,7 +59,15 @@ if (
 
     const loadQrCodeFactory = () => {
         qrCodeFactoryPromise ??= import("qrcode-generator").then(
-            ({ default: factory }) => factory,
+            (module): QrCodeFactory => {
+                const imported = module as unknown as {
+                    default?: QrCodeFactory;
+                };
+                return (
+                    imported.default ??
+                    (module as unknown as QrCodeFactory)
+                );
+            },
         );
         return qrCodeFactoryPromise;
     };
@@ -211,3 +226,5 @@ if (
         }
     });
 }
+
+export {};

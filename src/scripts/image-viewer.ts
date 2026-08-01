@@ -348,9 +348,6 @@ if (
                         trigger.addEventListener("click", () => {
                             openViewer(groupId, index, trigger);
                         });
-                        addKeyboardActivation(trigger, () => {
-                            openViewer(groupId, index, trigger);
-                        });
                     });
             });
     };
@@ -467,3 +464,5 @@ if (
         }
     });
 }
+
+export {};

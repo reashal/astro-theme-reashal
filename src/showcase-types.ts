@@ -19,18 +19,13 @@ const sectionSchema = z.object({
     cards: z.array(cardSchema),
 });
 
-export const showcaseConfigSchema = z.object({
+const showcaseConfigSchema = z.object({
     title: z.string(),
-    description: z.string(),
     showFooter: z.boolean().optional(),
     intro: z.array(z.string()).optional(),
     sections: z.array(sectionSchema),
 });
 
 export const showcasesSchema = z.object({
-    showcases: z.record(showcaseConfigSchema),
+    showcases: z.record(z.string(), showcaseConfigSchema),
 });
-
-export type Card = z.infer<typeof cardSchema>;
-export type Section = z.infer<typeof sectionSchema>;
-export type ShowcaseConfig = z.infer<typeof showcaseConfigSchema>;

@@ -3,7 +3,7 @@ import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
 import { AUTHOR_INFO, SITE_INFO } from "../consts";
 import { getDocsArticles, sortArticlesByDate } from "../utils/articles";
-import { getMomentDomId } from "../utils/moments";
+import { getMomentDomId, sortMoments } from "../utils/moments";
 
 const escapeHtml = (value: string) =>
     value
@@ -24,7 +24,7 @@ const getMomentTitle = (date: string, paragraphs: string[]) => {
 export const GET: APIRoute = async (context) => {
     const site = context.site ?? new URL("https://www.reashal.com");
     const articles = sortArticlesByDate(getDocsArticles());
-    const moments = await getCollection("moments");
+    const moments = sortMoments(await getCollection("moments"));
 
     const articleItems = articles.map(({ frontmatter, url }) => ({
         title: frontmatter.title,

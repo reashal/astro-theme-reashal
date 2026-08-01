@@ -336,8 +336,8 @@
         "[data-reading-flight-plane]",
     );
     const scrollContainer = document.querySelector<HTMLElement>(".main");
-    const article = document.querySelector<HTMLElement>(
-        ".article-container.doc",
+    const articleContent = document.querySelector<HTMLElement>(
+        ".article-container.doc .article-content",
     );
 
     if (
@@ -345,26 +345,34 @@
         flightRoute &&
         flightTrail &&
         flightPlane &&
-        scrollContainer
+        scrollContainer &&
+        articleContent
     ) {
         let animationFrame = 0;
 
         const updateReadingFlight = () => {
             animationFrame = 0;
-            const scrollableDistance =
-                scrollContainer.scrollHeight - scrollContainer.clientHeight;
+            const containerRect = scrollContainer.getBoundingClientRect();
+            const contentRect = articleContent.getBoundingClientRect();
+            const contentStart =
+                scrollContainer.scrollTop +
+                contentRect.top -
+                containerRect.top;
+            const contentEnd = contentStart + articleContent.offsetHeight;
+            const readingDistance = Math.max(
+                1,
+                contentEnd - scrollContainer.clientHeight - contentStart,
+            );
             const progress =
-                scrollableDistance > 0
-                    ? Math.min(
-                          100,
-                          Math.max(
-                              0,
-                              (scrollContainer.scrollTop /
-                                  scrollableDistance) *
-                                  100,
-                          ),
-                      )
-                    : 0;
+                Math.min(
+                    100,
+                    Math.max(
+                        0,
+                        ((scrollContainer.scrollTop - contentStart) /
+                            readingDistance) *
+                            100,
+                    ),
+                );
             const roundedProgress = Math.round(progress);
 
             readingFlight.style.setProperty(
@@ -377,7 +385,8 @@
             }px`;
             readingFlight.classList.toggle(
                 "is-visible",
-                scrollableDistance > 0 && scrollContainer.scrollTop > 48,
+                scrollContainer.scrollHeight > scrollContainer.clientHeight &&
+                    scrollContainer.scrollTop > 48,
             );
             if (scrollContainer.scrollTop <= 1) {
                 readingFlight.classList.remove("is-returning");
@@ -413,7 +422,7 @@
 
         const resizeObserver = new ResizeObserver(requestFlightUpdate);
         resizeObserver.observe(scrollContainer);
-        if (article) resizeObserver.observe(article);
+        resizeObserver.observe(articleContent);
 
         updateReadingFlight();
     }

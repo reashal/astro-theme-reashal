@@ -5,53 +5,35 @@
       "description": "以碎片化的记录汇聚时光的川流",
       "path": "/",
       "type": "moments",
-      "icon": "iconfont icon-Home",
-      "dataSource": {
-        "type": "folder",
-        "path": "src/data/moments"
-      }
+      "icon": "iconfont icon-Home"
     },
     {
       "title": "随笔",
       "description": "希望我的文字不止可以与自己共鸣",
       "path": "/docs",
       "type": "category",
-      "icon": "iconfont icon-pencil",
-      "dataSource": {
-        "type": "folder",
-        "path": "src/pages/docs"
-      }
+      "icon": "iconfont icon-pencil"
     },
     {
       "title": "展示",
       "description": "物品清单与友情链接",
       "path": "/show",
       "type": "showcase",
-      "icon": "iconfont icon-pc",
-      "dataSource": {
-        "type": "config",
-        "path": "src/showcase.json"
-      }
+      "icon": "iconfont icon-pc"
     },
     {
       "title": "仓库",
       "description": "GitHub 代码仓库",
       "path": "https://github.com/reashal",
       "type": "external",
-      "icon": "iconfont icon-github",
-      "dataSource": {
-        "type": "none"
-      }
+      "icon": "iconfont icon-github"
     },
     {
       "title": "游弋",
       "description": "探索更多内容",
       "path": "https://uuuu.ee",
       "type": "external",
-      "icon": "iconfont icon-planet",
-      "dataSource": {
-        "type": "none"
-      }
+      "icon": "iconfont icon-planet"
     }
   ]
 }

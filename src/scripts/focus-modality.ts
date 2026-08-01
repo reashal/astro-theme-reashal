@@ -23,3 +23,5 @@ document.addEventListener(
     },
     { capture: true },
 );
+
+export {};

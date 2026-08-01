@@ -259,7 +259,7 @@ const { articles } = Astro.props as Props;
             let resizeTimer: number;
             window.addEventListener("resize", () => {
                 clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(() => {
+                resizeTimer = window.setTimeout(() => {
                     const firstVisibleIndex = currentPage * perPage;
                     perPage = calcPerPage();
                     showPage(

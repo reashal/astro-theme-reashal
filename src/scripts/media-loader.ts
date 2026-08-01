@@ -1,5 +1,6 @@
 const initializedMedia = new WeakSet<HTMLMediaElement>();
 const scrollRoot = document.querySelector<HTMLElement>(".main");
+const mediaRoot = document.getElementById("moments-list");
 
 const loadMediaSource = (media: HTMLMediaElement) => {
     const source = media.dataset.mediaSrc ?? media.dataset.audioSrc;
@@ -35,8 +36,8 @@ const observer =
         : null;
 
 const initializeMedia = () => {
-    document
-        .querySelectorAll<HTMLMediaElement>(
+    mediaRoot
+        ?.querySelectorAll<HTMLMediaElement>(
             "video[data-media-src], audio[data-audio-src]",
         )
         .forEach((media) => {
@@ -51,5 +52,9 @@ const initializeMedia = () => {
         });
 };
 
-initializeMedia();
-document.addEventListener("moments:updated", initializeMedia);
+if (mediaRoot) {
+    initializeMedia();
+    document.addEventListener("moments:updated", initializeMedia);
+}
+
+export {};

@@ -334,7 +334,7 @@ const setOpen = (open: boolean) => {
 };
 
 toggle?.addEventListener("click", () => {
-    setOpen(panel?.hidden ?? true);
+    setOpen(panel ? panel.hidden !== false : true);
 });
 
 input?.addEventListener("input", renderResults);
@@ -352,7 +352,8 @@ nextPage?.addEventListener("click", () => changePage(1));
 
 document.addEventListener("click", (event) => {
     if (
-        !panel?.hidden &&
+        panel &&
+        !panel.hidden &&
         event.target instanceof Node &&
         !panel.contains(event.target) &&
         !toggle?.contains(event.target)
@@ -367,3 +368,5 @@ document.addEventListener("keydown", (event) => {
         toggle?.focus();
     }
 });
+
+export {};

@@ -28,7 +28,10 @@ const copyWithFallback = async (text: string) => {
     textarea.style.opacity = "0";
     document.body.append(textarea);
     textarea.select();
-    const copied = document.execCommand("copy");
+    const legacyDocument = document as unknown as {
+        execCommand: (commandId: string) => boolean;
+    };
+    const copied = legacyDocument.execCommand("copy");
     textarea.remove();
     if (!copied) throw new Error("Copy command failed");
 };
@@ -59,6 +62,13 @@ codeBlocks.forEach((codeBlock) => {
     button.append(icon, label);
 
     let resetTimer = 0;
+    const resetButton = () => {
+        button.classList.remove("is-copied");
+        button.setAttribute("aria-label", "复制代码");
+        iconPath.setAttribute("d", "M8 8h10v10H8zM6 16H4V4h12v2");
+        label.textContent = "复制";
+    };
+
     button.addEventListener("click", async () => {
         window.clearTimeout(resetTimer);
         try {
@@ -67,17 +77,15 @@ codeBlocks.forEach((codeBlock) => {
             button.setAttribute("aria-label", "代码已复制");
             iconPath.setAttribute("d", "m6.5 12.5 3.5 3.5 7.5-8");
             label.textContent = "已复制";
-            resetTimer = window.setTimeout(() => {
-                button.classList.remove("is-copied");
-                button.setAttribute("aria-label", "复制代码");
-                iconPath.setAttribute("d", "M8 8h10v10H8zM6 16H4V4h12v2");
-                label.textContent = "复制";
-            }, 1800);
+            resetTimer = window.setTimeout(resetButton, 1800);
         } catch {
             button.setAttribute("aria-label", "复制失败");
             label.textContent = "复制失败";
+            resetTimer = window.setTimeout(resetButton, 1800);
         }
     });
 
     codeBlock.append(button);
 });
+
+export {};

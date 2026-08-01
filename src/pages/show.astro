@@ -5,6 +5,7 @@ import Giscus from "../components/Giscus.astro";
 import showcaseConfigJson from "../showcase.json";
 import { showcasesSchema } from "../showcase-types";
 import { AUTHOR_INFO } from "../consts";
+import { getPageConfig } from "../utils/pages";
 
 const showcaseConfig = showcasesSchema.parse(showcaseConfigJson);
 const showcases = Object.entries(showcaseConfig.showcases).map(([id, config]) => ({
@@ -13,8 +14,7 @@ const showcases = Object.entries(showcaseConfig.showcases).map(([id, config]) =>
     icon: id === "links" ? "iconfont icon-plane" : "iconfont icon-pc",
 }));
 
-const pageTitle = "展示";
-const pageDescription = "物品清单与友情链接";
+const pageMeta = getPageConfig("/show");
 const siteOrigin = Astro.site ?? Astro.url.origin;
 const siteUrl = new URL("/", siteOrigin);
 const avatarUrl = new URL(AUTHOR_INFO.avatar, siteOrigin);
@@ -23,7 +23,10 @@ const getInitial = (title: string) => title.charAt(0).toUpperCase();
 const hasValidImage = (image: string | undefined): boolean => !!image && image.trim() !== "";
 ---
 
-<BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
+<BaseLayout
+    pageTitle={pageMeta.title}
+    pageDescription={pageMeta.description}
+>
     <article class="article-container showcase">
         <nav class="showcase-nav" aria-label="展示分类">
             {showcases.map(({ id, config, icon }, index) => (
