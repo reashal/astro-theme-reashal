@@ -245,6 +245,13 @@ const { articles } = Astro.props as Props;
             function init(): void {
                 perPage = calcPerPage();
                 showPage(pageFromUrl(), "replace");
+                if (document.fonts?.ready) {
+                    void document.fonts.ready.then(() => {
+                        if (totalPages() !== 1) return;
+                        checkEnoughSpace();
+                        endTip.style.display = hasEnoughSpace ? "" : "none";
+                    });
+                }
             }
 
             init();

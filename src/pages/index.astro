@@ -10,6 +10,7 @@ const allMoments = await getCollection("moments");
 const momentPages = paginateMoments(allMoments);
 const initialMoments = momentPages[0]?.moments ?? [];
 const pageCount = momentPages.length;
+const nextPage = pageCount > 1 ? 2 : 1;
 
 const pageMeta = {
     title: "动态",
@@ -23,7 +24,7 @@ const pageMeta = {
             class="moments"
             id="moments-feed"
             data-page-count={pageCount}
-            data-next-page="2"
+            data-next-page={nextPage}
         >
             <h1>动态</h1>
             <div id="moments-list">
@@ -37,7 +38,7 @@ const pageMeta = {
                 hidden={pageCount <= 1}
             >
                 <span class="moments-loader-mark" aria-hidden="true"></span>
-                <span class="moments-loader-text">继续向下，翻开更早的时光</span>
+                <span class="moments-loader-text">过往还在岁月笺底</span>
             </button>
             <footer class="moments-footer" hidden={pageCount > 1}>
                 <p class="end-tip">{SITE_INFO.endTip}</p>

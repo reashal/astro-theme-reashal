@@ -392,7 +392,7 @@ aside {
     gap: 0.2rem;
     padding: 0.65rem 0.7rem;
     border-radius: 0.5rem;
-    background: rgb(var(--rgb-white) / 78%);
+    background: rgb(var(--rgb-white) / 97%);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgb(var(--rgb-brand) / 8%);
@@ -464,7 +464,7 @@ html[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-visib
  * ============================================ */
 
 .dark .aside-body .message-card {
-    background: rgb(var(--rgb-dark-message) / 75%);
+    background: rgb(var(--rgb-dark-message) / 96%);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgb(var(--rgb-accent-cyan) / 10%);

@@ -192,7 +192,20 @@ if (
         index: number,
         trigger?: HTMLElement,
     ) => {
-        if (pageLayout?.classList.contains("aside-show")) return;
+        if (pageLayout?.classList.contains("aside-show")) {
+            const retry = (event: AnimationEvent) => {
+                if (
+                    event.target !== pageLayout ||
+                    event.animationName !== "hide-aside"
+                ) {
+                    return;
+                }
+                pageLayout.removeEventListener("animationend", retry);
+                openViewer(groupId, index, trigger);
+            };
+            pageLayout.addEventListener("animationend", retry);
+            return;
+        }
         const media = groups.get(groupId);
         if (!media?.[index]) return;
 

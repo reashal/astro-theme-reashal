@@ -156,11 +156,11 @@ main {
 
 .article-copy .article-copy-info {
     margin-top: .2rem;
-    color: var(--text-faint);
+    color: rgb(var(--rgb-white) / 85%);
 }
 
 .article-copy-info a {
-    color: var(--text-faint);
+    color: rgb(var(--rgb-white) / 85%);
     font-weight: normal;
 }
 

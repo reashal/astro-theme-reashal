@@ -38,7 +38,7 @@ if (feed && list && loader && footer && loaderText) {
             if (nextPage > pageCount) {
                 finish();
             } else {
-                loaderText.textContent = "继续向下，翻开更早的时光";
+                loaderText.textContent = "过往还在岁月笺底";
             }
             return true;
         } catch {
@@ -51,18 +51,22 @@ if (feed && list && loader && footer && loaderText) {
         }
     };
 
-    const scrollToHashTarget = async () => {
-        const targetId = decodeURIComponent(location.hash.slice(1));
-        if (!targetId || document.getElementById(targetId)) return;
+    const hashTargetId = decodeURIComponent(location.hash.slice(1));
 
+    const scrollToHashTarget = () => {
+        if (!hashTargetId) return false;
+        const target = document.getElementById(hashTargetId);
+        if (!target) return false;
+        target.scrollIntoView({ block: "start" });
+        return true;
+    };
+
+    const loadUntilHashTarget = async () => {
+        if (!hashTargetId || scrollToHashTarget()) return;
         while (nextPage <= pageCount) {
             const loaded = await loadNextPage();
-            if (!loaded) break;
-            const target = document.getElementById(targetId);
-            if (target) {
-                target.scrollIntoView({ block: "start" });
-                break;
-            }
+            if (!loaded) return;
+            if (scrollToHashTarget()) return;
         }
     };
 
@@ -78,7 +82,7 @@ if (feed && list && loader && footer && loaderText) {
 
     loader.addEventListener("click", () => {
         loader.classList.remove("has-error");
-        void loadNextPage();
+        void loadUntilHashTarget();
     });
 
     if (nextPage <= pageCount) {
@@ -86,5 +90,5 @@ if (feed && list && loader && footer && loaderText) {
     } else {
         finish();
     }
-    void scrollToHashTarget();
+    void loadUntilHashTarget();
 }
