@@ -392,12 +392,11 @@ aside {
     gap: 0.2rem;
     padding: 0.65rem 0.7rem;
     border-radius: 0.5rem;
-    background: rgb(var(--rgb-white) / 97%);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgb(var(--rgb-brand) / 8%);
+    background: var(--color-white);
+    border: 1px solid rgb(var(--rgb-brand) / 16%);
     box-shadow:
-        0 1px 3px rgb(var(--rgb-black) / 6%);
+        0 1px 4px rgb(var(--rgb-black) / 10%),
+        0 3px 8px rgb(var(--rgb-black) / 7%);
     text-decoration: none;
     pointer-events: none;
 }
@@ -464,12 +463,10 @@ html[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-visib
  * ============================================ */
 
 .dark .aside-body .message-card {
-    background: rgb(var(--rgb-dark-message) / 96%);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgb(var(--rgb-accent-cyan) / 10%);
+    background: rgb(var(--rgb-dark-message));
+    border: 1px solid rgb(var(--rgb-accent-cyan) / 22%);
     box-shadow:
-        0 2px 6px rgb(var(--rgb-black) / 35%);
+        0 2px 6px rgb(var(--rgb-black) / 40%);
 }
 
 .dark .aside-body .message-card:hover {
