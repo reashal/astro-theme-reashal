@@ -7,16 +7,13 @@ source: https://www.reashal.com/about
 pubDate: 2023-05-02
 pinned: true
 ---
-## 文之引言
-
-本篇为[睿屿青衫](//www.reashal.com)迁移[Astro](//astro.build/)框架后测试主题渲染效果的第一篇置顶文章，同样也是本仓库的README。
-
 ## 走过的路
 
 + 一六年暑，于学校机房，第一次以随笔的形式在[博客园](//www.cnblogs.com)留下足迹。
 + 一八年冬，备案号获批，旅居之人开始踏上归途。之前的日子里，由海外至境内、从虚拟主机到服务器，[景安](//www.zzidc.com)、[阿里](//www.aliyun.com)等先后见证了我用[WordPress](https://cn.wordpress.org/)建站的磕磕绊绊。钟情于[Hestia](https://cn.wordpress.org/themes/hestia/)主题，往后的几年中，曾耗费大量时间反复调整外观，也为改善其响应速度做出过诸多尝试。然而，WP的局限性远不止于此。
 + 二一年秋，忍痛做割舍，将旧站打包封存。相比于WordPress，[Typecho](https://typecho.org/)肉眼可见的简洁、轻量，不必为等待抓狂；[handsome](https://www.ihewro.com/archives/489/)主题给我的感觉则是精致、强大，但使用者过多，难免会有视觉疲劳。
 + 二三年春，再逢岔路口，服务器的剩余时间已不足三月。删删改改后，看着剩下的寥寥几篇文章，萌生了静态托管的想法。最终在[银河渡舟](//suborbit.net)的推荐下，拥抱新兴的[Astro](https://docs.astro.build/zh-cn/concepts/why-astro/)。
++ 二六年夏，借着VibeCoding的东风，将主题移植至[Baklib](https://www.baklib.com/)作为镜像站。希望下一个十年，依旧平稳走过。
 
 ## 新的里程
 
@@ -48,13 +45,13 @@ pinned: true
 
 ![主题展示](/static/images/Theme.png)
 
-## 篇之尾声
+## 章之尾声
 
 行文至此也该迎来终章，短短千余字同样无法写尽余生。
 
-走过的路，当然不应止于【走过的路】。
+走过的路，不该仅止于【走过的路】。
 
-新的里程，自然应无愧于【新的里程】。
+新的里程，更应无愧于【新的里程】。
 
 希望能在这个自留地，优雅地写好原创。
 
