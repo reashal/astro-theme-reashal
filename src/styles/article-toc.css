@@ -107,6 +107,10 @@
         inset 0 1px 0 rgb(var(--rgb-white) / 6%);
 }
 
+.article-toc-summary:active {
+    transform: translateY(1px) scale(.97);
+}
+
 .article-toc.is-open .article-toc-summary,
 .article-toc.is-closing .article-toc-summary {
     border-color: transparent;
@@ -336,7 +340,11 @@ html[data-input-mode="keyboard"] .doc .article-toc a:focus-visible {
     color: var(--toc-island-muted);
     cursor: pointer;
     font-size: .58rem;
-    transition: color .18s ease;
+    transition: color .18s ease, transform .18s ease;
+}
+
+.article-toc-level-switcher button:active:not(:disabled) {
+    transform: translateY(1px) scale(.97);
 }
 
 .article-toc-level-switcher button:last-child {
@@ -378,7 +386,7 @@ html[data-input-mode="keyboard"] .doc .article-toc a:focus-visible {
     scroll-margin-top: 4rem;
 }
 
-@media screen and (max-width: 488px) {
+@media screen and (max-width: 487px) {
     .article-toc {
         width: calc(100vw - .75rem);
     }

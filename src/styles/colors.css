@@ -87,6 +87,9 @@
     --shadow-card-hover:
         0 .8rem 1.8rem rgb(var(--rgb-brand) / 10%),
         0 .15rem .45rem rgb(var(--rgb-shadow-neutral) / 7%);
+    --shadow-aside:
+        1px 0 0 rgb(var(--rgb-brand) / 8%),
+        .32rem 0 .9rem -.68rem rgb(var(--rgb-brand) / 22%);
 
     /* 代码块窗口指示灯：功能性辨识色，不合并 */
     --terminal-red: #ff5f57;
@@ -121,4 +124,7 @@
     --shadow-card-hover:
         0 .85rem 2rem rgb(var(--rgb-black) / 24%),
         0 0 0 1px rgb(var(--rgb-accent-cyan) / 8%);
+    --shadow-aside:
+        1px 0 0 rgb(var(--rgb-accent-cyan) / 7%),
+        .3rem 0 .85rem -.66rem rgb(var(--rgb-accent-cyan) / 13%);
 }

@@ -12,17 +12,34 @@ allArticles.forEach(post => {
 
 const cardList = Array.from(tagCounts, ([tag, count]) => ({ tag, count }))
     .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag, "zh-CN"));
+
+const currentPath = Astro.url.pathname.replace(/\/+$/, "");
+const currentTag = currentPath.startsWith("/tags/")
+    ? decodeURIComponent(currentPath.slice("/tags/".length))
+    : undefined;
+const currentTagIndex = currentTag
+    ? cardList.findIndex(({ tag }) => tag === currentTag)
+    : -1;
+const initialIndex = Math.max(currentTagIndex, 0);
+const orderedCardList = currentTagIndex > 0
+    ? [...cardList.slice(currentTagIndex), ...cardList.slice(0, currentTagIndex)]
+    : cardList;
 ---
 
 <section class="aside-tags-card">
   <div
     class="card-stack"
     id="card-stack"
+    data-initial-index={initialIndex}
     role="region"
     aria-label="文章标签，使用方向键切换"
   >
-    {cardList.map((item) => (
-      <a href={`/tags/${encodeURIComponent(item.tag)}`} class="message-card">
+    {orderedCardList.map((item) => (
+      <a
+        href={`/tags/${encodeURIComponent(item.tag)}`}
+        class="message-card"
+        aria-current={item.tag === currentTag ? "page" : undefined}
+      >
         <span class="msg-hashtag">#</span>
         <span class="msg-name">{item.tag}</span>
         <span class="msg-count">{item.count}</span>
@@ -42,6 +59,9 @@ const cardList = Array.from(tagCounts, ([tag, count]) => ({ tag, count }))
   const stack = document.getElementById('card-stack') as HTMLElement;
   const footer = document.getElementById('stack-footer') as HTMLElement;
   if (!stack || !footer) return;
+  const matchedParticleHost = stack.closest<HTMLElement>('.aside-tags-card');
+  if (!matchedParticleHost) return;
+  const particleHost: HTMLElement = matchedParticleHost;
 
   let cards = Array.from(
     stack.querySelectorAll<HTMLAnchorElement>('.message-card'),
@@ -52,9 +72,14 @@ const cardList = Array.from(tagCounts, ([tag, count]) => ({ tag, count }))
   const VISIBLE = 3;
   const PEEK = 10;
   const DURATION = 350;
+  const PARTICLE_COUNT = 24;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let isAnimating = false;
   let touchStartY = 0;
-  let currentIndex = 0;
+  const initialIndex = Number.parseInt(stack.dataset.initialIndex ?? '0', 10);
+  let currentIndex = Number.isInteger(initialIndex) && initialIndex < total
+    ? initialIndex
+    : 0;
 
   function layoutCards(animate: boolean) {
     cards.forEach((card, i) => {
@@ -80,11 +105,46 @@ const cardList = Array.from(tagCounts, ([tag, count]) => ({ tag, count }))
     footer.textContent = `${(currentIndex % total) + 1} / ${total}`;
   }
 
+  function emitDissolveParticles(card: HTMLAnchorElement) {
+    if (reduceMotion.matches) return;
+
+    const layer = document.createElement('span');
+    layer.className = 'tag-dissolve-layer';
+    layer.setAttribute('aria-hidden', 'true');
+
+    const cardRect = card.getBoundingClientRect();
+    const hostRect = particleHost.getBoundingClientRect();
+    const width = cardRect.width;
+    const height = cardRect.height;
+    for (let i = 0; i < PARTICLE_COUNT; i += 1) {
+      const particle = document.createElement('i');
+      const progress = i / (PARTICLE_COUNT - 1);
+      const size = 4 + (i % 3);
+      const driftX = ((i % 7) - 3) * 6 + (i % 2 ? 3 : -3);
+      const driftY = -14 - (i % 5) * 7;
+
+      particle.className = 'tag-dissolve-particle';
+      particle.style.left = `${cardRect.left - hostRect.left + 5 + progress * (width - 10)}px`;
+      particle.style.top = `${cardRect.top - hostRect.top + 5 + ((i * 11) % Math.max(height - 8, 1))}px`;
+      particle.style.setProperty('--particle-size', `${size}px`);
+      particle.style.setProperty('--particle-x', `${driftX}px`);
+      particle.style.setProperty('--particle-y', `${driftY}px`);
+      particle.style.setProperty('--particle-delay', `${(i % 5) * 12}ms`);
+      particle.style.setProperty('--particle-duration', `${720 + (i % 5) * 55}ms`);
+      particle.style.setProperty('--particle-rotate', `${(i % 2 ? 1 : -1) * (35 + i * 9)}deg`);
+      layer.appendChild(particle);
+    }
+
+    particleHost.appendChild(layer);
+    window.setTimeout(() => layer.remove(), 1050);
+  }
+
   function dismissTop(focusNext = false) {
     if (isAnimating || total <= 1) return;
     isAnimating = true;
 
     const top = cards[0];
+    emitDissolveParticles(top);
 
     top.style.transition = `transform ${DURATION}ms cubic-bezier(.4,0,.2,1), opacity ${DURATION * 0.85}ms ease`;
     top.style.transform = 'translateY(-80px)';

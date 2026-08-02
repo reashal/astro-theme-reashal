@@ -133,7 +133,7 @@ main {
 }
 
 .aside-show aside {
-    box-shadow: .65rem 0 2rem rgb(var(--rgb-brand) / 10%);
+    box-shadow: var(--shadow-aside);
 }
 
 /* 侧边栏隐藏状态 */
@@ -200,8 +200,8 @@ main {
 /* === 响应式设计 === */
 /* ============================================ */
 
-/* === 小屏设备（≤ 488px）：移动端 === */
-@media screen and (max-width: 488px) {
+/* === 小屏设备（< 488px）：移动端 === */
+@media screen and (max-width: 487px) {
     .main > header {
         margin: 0;
         width: 100%;

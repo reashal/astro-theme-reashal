@@ -55,10 +55,15 @@
     transition:
         color .2s ease,
         border-color .2s ease,
-        background-color .2s ease;
+        background-color .2s ease,
+        transform .2s ease;
     position: relative;
     border-bottom: 2px solid transparent;
     margin-bottom: -1px;
+}
+
+.showcase-nav a:active {
+    transform: translateY(1px) scale(.98);
 }
 
 .showcase-nav a:hover {
@@ -513,7 +518,7 @@ a.showcase-text-only:active {
 /* ============================================ */
 /* === 响应式 === */
 /* ============================================ */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     .showcase-nav {
         padding: 12px;
         gap: 8px;

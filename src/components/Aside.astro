@@ -22,18 +22,42 @@ const navLinks = pagesConfig
     .filter(page => !page.hiddenInAside)
     .map(page => ({
         label: page.title,
+        description: page.description,
         href: page.path,
         icon: page.icon,
         external: page.type === 'external'
     }));
+
+const navGroups = [
+    {
+        label: "站内导航",
+        className: "aside-links-primary",
+        links: navLinks.filter((link) => !link.external),
+    },
+    {
+        label: "站外链接",
+        className: "aside-links-external",
+        links: navLinks.filter((link) => link.external),
+    },
+];
 
 const currentPath = Astro.url.pathname;
 ---
 
 <aside aria-label="站点侧边栏">
     <section class="aside-body" aria-hidden="true" inert>
-        <!-- 站长信息卡片：hover 时显示详细简介 -->
-        <section class="aside-author-card">
+        <!-- 站长信息卡片：整卡链接到关于页面 -->
+        <a
+            class="aside-author-card"
+            href="/about"
+            aria-labelledby="aside-author-name"
+            aria-describedby="aside-author-desc"
+            aria-current={
+                currentPath === "/about" || currentPath.startsWith("/about/")
+                    ? "page"
+                    : undefined
+            }
+        >
             <img
                 class="author-avatar"
                 src={AUTHOR_INFO.avatar}
@@ -43,29 +67,48 @@ const currentPath = Astro.url.pathname;
                 decoding="async"
             />
             <div class="author-info">
-                <h3 class="author-name">{AUTHOR_INFO.name}</h3>
-                <p class="author-desc">{AUTHOR_INFO.description}</p>
+                <h3 class="author-name" id="aside-author-name">
+                    {AUTHOR_INFO.name}
+                </h3>
+                <p class="author-desc" id="aside-author-desc">
+                    {AUTHOR_INFO.description}
+                </p>
             </div>
-        </section>
+        </a>
 
-        <!-- 导航链接卡片：2x2 网格布局 -->
-        <section class="aside-links-card">
+        <!-- 导航链接卡片：站内三列、站外两列的紧凑矩阵 -->
+        <nav class="aside-links-card" aria-label="站点导航">
             {
-                navLinks.map((link) => {
-                    const isActive = currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href));
-                    return (
-                        <a
-                            href={link.href}
-                            target={link.external ? "_blank" : "_self"}
-                            rel={link.external ? "noopener noreferrer" : undefined}
-                            class={`${link.icon} ${isActive ? 'active' : ''}`}
+                navGroups.map((group) =>
+                    group.links.length > 0 && (
+                        <div
+                            class={group.className}
+                            role="group"
+                            aria-label={group.label}
                         >
-                            {link.label}
-                        </a>
-                    );
-                })
+                            {group.links.map((link) => {
+                                const isActive =
+                                    currentPath === link.href ||
+                                    (link.href !== "/" &&
+                                        currentPath.startsWith(link.href));
+                                return (
+                                    <a
+                                        href={link.href}
+                                        target={link.external ? "_blank" : "_self"}
+                                        rel={link.external ? "noopener noreferrer" : undefined}
+                                        class={`${link.icon} ${isActive ? "active" : ""}`}
+                                        aria-current={isActive ? "page" : undefined}
+                                        title={link.description}
+                                    >
+                                        <span>{link.label}</span>
+                                    </a>
+                                );
+                            })}
+                        </div>
+                    ),
+                )
             }
-        </section>
+        </nav>
 
         <!-- 分享按钮卡片 -->
         <section class="aside-share-card">

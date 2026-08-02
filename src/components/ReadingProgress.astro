@@ -84,6 +84,10 @@
         transform: translate(-.12rem, -50%);
     }
 
+    .reading-flight:active {
+        transform: translate(0, -50%) scale(.97);
+    }
+
     :global(html[data-input-mode="keyboard"])
         .reading-flight:focus-visible {
         outline: 1px solid currentColor;
@@ -297,7 +301,7 @@
         filter: drop-shadow(0 2px 4px rgb(var(--rgb-black) / 58%));
     }
 
-    @media screen and (max-width: 488px) {
+    @media screen and (max-width: 487px) {
         .reading-flight {
             right: 0;
             width: 2.3rem;

@@ -451,6 +451,11 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
     letter-spacing: -.012em;
 }
 
+/* 正文以标题起笔时，不保留章节之间才需要的顶部间距。 */
+.article-content > :is(h1, h2, h3, h4, h5, h6):first-child {
+    margin-top: 0;
+}
+
 .article-content h1::before,
 .article-content h2::before,
 .article-content h3::before,
@@ -622,7 +627,12 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
     transition:
         border-color .18s ease,
         background-color .18s ease,
-        color .18s ease;
+        color .18s ease,
+        transform .18s ease;
+}
+
+.doc .code-copy-button:active {
+    transform: translateY(1px) scale(.97);
 }
 
 .doc .code-copy-button svg {
@@ -828,7 +838,7 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
     background-color: var(--surface-dark-control);
 }
 
-@media screen and (max-width: 488px) {
+@media screen and (max-width: 487px) {
     .article-lead {
         margin-top: 0;
         margin-bottom: 1.15rem;

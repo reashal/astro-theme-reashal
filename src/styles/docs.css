@@ -208,8 +208,15 @@ html[data-input-mode="keyboard"] .docs-body:focus-visible::before {
     font-size: .85rem;
     font-family: inherit;
     cursor: pointer;
-    transition: background-color .15s ease, color .15s ease;
+    transition:
+        background-color .15s ease,
+        color .15s ease,
+        transform .15s ease;
     user-select: none;
+}
+
+.page-btn:active:not(:disabled) {
+    transform: translateY(1px) scale(.97);
 }
 
 .page-btn:hover:not(:disabled) {

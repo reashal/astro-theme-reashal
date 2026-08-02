@@ -163,6 +163,10 @@
         outline: none;
     }
 
+    .view-control:active {
+        transform: scale(.94);
+    }
+
     .view-close {
         width: 2.2rem;
         height: 2.2rem;
@@ -186,6 +190,10 @@
     .view-nav:hover,
     html[data-input-mode="keyboard"] .view-nav:focus-visible {
         transform: translateY(-50%) scale(1.06);
+    }
+
+    .view-nav:active {
+        transform: translateY(-50%) scale(.94);
     }
 
     .view-nav[hidden],
@@ -329,7 +337,13 @@
         background: transparent;
         transition:
             color .2s ease,
-            background-color .2s ease;
+            background-color .2s ease,
+            transform .2s ease;
+    }
+
+    .view-tool:active,
+    .view-scale:active {
+        transform: translateY(1px) scale(.96);
     }
 
     .view-tool {
@@ -402,6 +416,10 @@
         .view-nav:hover,
         html[data-input-mode="keyboard"] .view-nav:focus-visible {
             transform: scale(1.05);
+        }
+
+        .view-nav:active {
+            transform: scale(.94);
         }
     }
 

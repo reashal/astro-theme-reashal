@@ -144,6 +144,11 @@
     color: var(--color-white);
     cursor: zoom-in;
     isolation: isolate;
+    transition: transform .16s ease;
+}
+
+.moment-media-item:active {
+    transform: scale(.99);
 }
 
 .moment-media-item.is-video {
@@ -285,6 +290,10 @@
     background: var(--media-control-surface-hover);
     color: var(--color-white);
     transform: translate(-50%, -50%) scale(1.045);
+}
+
+.moment-media-item:active .moment-video-play {
+    transform: translate(-50%, -50%) scale(.96);
 }
 
 .moment-media-overflow {
@@ -484,6 +493,18 @@
     background: var(--media-control-surface-hover);
     color: var(--color-white);
     transform: translate(-50%, -50%) scale(1.045);
+}
+
+.music-toggle:active {
+    transform: translate(-50%, -50%) scale(.94);
+}
+
+.music-toggle:active .iconfont {
+    transform: scale(.98);
+}
+
+.music-toggle:active .music-icon-play {
+    transform: translateX(.035rem) scale(.98);
 }
 
 html[data-input-mode="keyboard"] .music-toggle:focus-visible {

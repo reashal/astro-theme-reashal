@@ -27,6 +27,10 @@
     transform: scale(1.06);
 }
 
+.docs-search-toggle:active {
+    transform: scale(.94);
+}
+
 html[data-input-mode="keyboard"] .docs-search-toggle:focus-visible {
     outline: 2px solid currentColor;
     outline-offset: 2px;
@@ -246,7 +250,12 @@ html[data-input-mode="keyboard"] .docs-search-result:focus-visible > svg {
     transition:
         border-color .16s ease,
         background-color .16s ease,
-        color .16s ease;
+        color .16s ease,
+        transform .16s ease;
+}
+
+.docs-search-pagination button:active:not(:disabled) {
+    transform: translateY(1px) scale(.94);
 }
 
 .docs-search-pagination button:hover:not(:disabled),
@@ -298,7 +307,7 @@ html[data-input-mode="keyboard"]
     }
 }
 
-@media screen and (max-width: 488px) {
+@media screen and (max-width: 487px) {
     .docs-search-panel {
         right: .6rem;
         width: calc(100vw - 1.2rem);
