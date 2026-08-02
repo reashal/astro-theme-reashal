@@ -20,24 +20,32 @@
         </span>
         <svg
             class="reading-flight-plane"
-            viewBox="0 0 28 32"
+            viewBox="0 0 36 40"
             focusable="false"
         >
             <path
                 class="reading-flight-plane-wing"
-                d="M13.86 29.53c-.18.32-.64.29-.78-.05L3.35 6.07c-.34-.82.1-1.18.91-.86l9.16 2.18c.35.08.58.4.58.76v20.69c0 .25-.05.49-.14.69Z"
+                d="M17.58 36.84c-.25.48-.94.43-1.12-.08L2.74 6.22c-.4-.9.14-1.48 1.08-1.18l13.3 3.38c.52.13.88.6.88 1.14v25.88c0 .49-.14.97-.42 1.4Z"
             ></path>
             <path
                 class="reading-flight-plane-wing reading-flight-plane-wing-far"
-                d="M14.14 29.53c.18.32.64.29.78-.05l9.73-23.41c.34-.82-.1-1.18-.91-.86l-9.16 2.18a.79.79 0 0 0-.58.76v20.69c0 .25.05.49.14.69Z"
+                d="M18.42 36.84c.25.48.94.43 1.12-.08L33.26 6.22c.4-.9-.14-1.48-1.08-1.18l-13.3 3.38c-.52.13-.88.6-.88 1.14v25.88c0 .49.14.97.42 1.4Z"
             ></path>
             <path
                 class="reading-flight-plane-flap"
-                d="M14 7.98 10.36 18.8 14 17.24Z"
+                d="M18 9.18 11.92 23.56 18 20.88Z"
+            ></path>
+            <path
+                class="reading-flight-plane-flap reading-flight-plane-flap-far"
+                d="M18 9.18 24.08 23.56 18 20.88Z"
             ></path>
             <path
                 class="reading-flight-plane-fold"
-                d="M14 8.08v20.64"
+                d="M18 9.28v25.86"
+            ></path>
+            <path
+                class="reading-flight-plane-edge"
+                d="m3.82 5.58 13.3 3.46M32.18 5.58l-13.3 3.46"
             ></path>
         </svg>
         <span class="reading-flight-headlights">
@@ -50,17 +58,18 @@
 <style>
     .reading-flight {
         --reading-progress: 0%;
+        --flight-rgb: var(--rgb-brand);
 
         position: fixed;
         top: 50%;
-        right: .1rem;
+        right: .18rem;
         z-index: 998;
-        width: 2.5rem;
-        height: 4.75rem;
+        width: 2.9rem;
+        height: 5.35rem;
         padding: 0;
         border: 0;
         background: transparent;
-        color: var(--color-brand);
+        color: var(--color-flight-wing);
         cursor: pointer;
         opacity: 0;
         pointer-events: none;
@@ -79,7 +88,7 @@
 
     .reading-flight:hover,
     .reading-flight.is-returning {
-        color: var(--color-brand-hover);
+        color: var(--color-flight-wing-hover);
         opacity: 1;
         transform: translate(-.12rem, -50%);
     }
@@ -98,14 +107,17 @@
 
     .reading-flight-route {
         position: absolute;
-        top: .55rem;
-        bottom: .55rem;
+        top: calc((100% - var(--edge-control-length)) / 2);
         left: 50%;
-        width: 6px;
+        width: .48rem;
+        height: var(--edge-control-length);
         overflow: hidden;
-        border-radius: 4px;
-        background-color: rgb(var(--rgb-brand) / 8%);
-        box-shadow: inset 0 0 0 1px rgb(var(--rgb-brand) / 5%);
+        border-radius: .3rem;
+        background: radial-gradient(
+            ellipse at center,
+            rgb(var(--flight-rgb) / 8%) 0,
+            transparent 72%
+        );
         transform: translateX(-50%);
     }
 
@@ -117,7 +129,7 @@
         width: 1px;
         background: repeating-linear-gradient(
             to bottom,
-            rgb(var(--rgb-brand) / 17%) 0 2px,
+            rgb(var(--flight-rgb) / 24%) 0 2px,
             transparent 2px 6px
         );
         content: "";
@@ -127,14 +139,18 @@
     .reading-flight-trail {
         position: absolute;
         top: 0;
-        left: 0;
-        width: 100%;
+        left: 50%;
+        z-index: 1;
+        width: 2px;
         height: var(--reading-progress);
         background: linear-gradient(
             to bottom,
-            rgb(var(--rgb-brand) / 7%),
-            rgb(var(--rgb-brand) / 24%)
+            rgb(var(--flight-rgb) / 18%),
+            rgb(var(--flight-rgb) / 62%)
         );
+        border-radius: 1px;
+        box-shadow: 0 0 5px rgb(var(--flight-rgb) / 24%);
+        transform: translateX(-50%);
         transition: height .08s linear;
     }
 
@@ -143,14 +159,14 @@
         top: .55rem;
         left: 50%;
         display: block;
-        width: 1.85rem;
-        height: 1.85rem;
+        width: 2.08rem;
+        height: 2.3rem;
         pointer-events: none;
         transform: translate(-50%, -50%);
         transform-origin: center;
         transition:
             top .08s linear,
-            transform .28s ease;
+            transform .34s cubic-bezier(.2, .78, .25, 1);
     }
 
     .reading-flight-plane {
@@ -161,60 +177,87 @@
         height: 100%;
         overflow: visible;
         fill: currentColor;
-        filter: drop-shadow(0 1px 3px rgb(var(--rgb-white) / 85%));
+        filter:
+            drop-shadow(0 1px 1px rgb(var(--rgb-white) / 72%))
+            drop-shadow(0 2px 3px rgb(var(--flight-rgb) / 18%));
     }
 
     .reading-flight-plane-wing-far {
-        opacity: .58;
+        fill: var(--color-flight-wing-far);
     }
 
     .reading-flight-plane-flap {
-        fill: rgb(var(--rgb-white) / 25%);
+        fill: var(--color-flight-fold);
+        opacity: .28;
     }
 
-    .reading-flight-plane-fold {
+    .reading-flight-plane-flap-far {
+        opacity: .16;
+    }
+
+    .reading-flight-plane-fold,
+    .reading-flight-plane-edge {
         fill: none;
-        stroke: rgb(var(--rgb-white) / 46%);
+        stroke: var(--color-flight-fold);
         stroke-linecap: round;
-        stroke-width: .75;
+        stroke-width: .72;
+    }
+
+    .reading-flight-plane-edge {
+        opacity: .48;
+        stroke-width: .56;
     }
 
     .reading-flight-exhaust {
         position: absolute;
-        bottom: calc(100% - .32rem);
+        bottom: calc(100% - .35rem);
         left: 50%;
-        height: .78rem;
+        height: .94rem;
         display: grid;
-        grid-template-columns: repeat(3, 1.25px);
-        gap: 2.75px;
+        grid-template-columns: repeat(3, 1.2px);
+        gap: 3px;
+        filter: drop-shadow(0 0 2px rgb(var(--flight-rgb) / 25%));
         transform: translateX(-50%);
+        transform-origin: bottom;
+        transition: transform .25s ease;
     }
 
     .reading-flight-exhaust i {
         display: block;
         height: 100%;
-        background: rgb(var(--rgb-brand) / 70%);
+        border-radius: 1px;
+        background: rgb(var(--flight-rgb) / 62%);
         -webkit-mask-image: linear-gradient(
             to bottom,
-            rgb(0 0 0 / 18%),
+            transparent,
+            rgb(0 0 0 / 36%) 24%,
             #000
         );
-        mask-image: linear-gradient(to bottom, rgb(0 0 0 / 18%), #000);
+        mask-image: linear-gradient(
+            to bottom,
+            transparent,
+            rgb(0 0 0 / 36%) 24%,
+            #000
+        );
     }
 
     .reading-flight-exhaust i:nth-child(2) {
-        background: rgb(var(--rgb-brand) / 86%);
+        background: rgb(var(--flight-rgb) / 82%);
+        transform: scaleY(1.08);
+        transform-origin: bottom;
     }
 
     .reading-flight-headlights {
         position: absolute;
-        top: calc(100% - .22rem);
+        top: calc(100% - .26rem);
         left: 50%;
-        height: .3rem;
+        height: .34rem;
         display: grid;
-        grid-template-columns: repeat(2, 1.35px);
-        gap: 5.25px;
-        filter: drop-shadow(0 0 2px rgb(var(--rgb-brand) / 50%));
+        grid-template-columns: repeat(2, 1.5px);
+        gap: 5.75px;
+        filter:
+            drop-shadow(0 0 1px rgb(var(--rgb-white) / 78%))
+            drop-shadow(0 1px 3px rgb(var(--flight-rgb) / 62%));
         transform: translateX(-50%);
     }
 
@@ -222,29 +265,36 @@
         position: relative;
         display: block;
         height: 100%;
-        background: rgb(var(--rgb-brand) / 78%);
-        -webkit-mask-image: linear-gradient(
+        border-radius: 1px;
+        background: linear-gradient(
             to bottom,
-            #000,
-            rgb(0 0 0 / 14%)
+            rgb(var(--flight-rgb) / 96%),
+            rgb(var(--flight-rgb) / 72%) 42%,
+            transparent
         );
-        mask-image: linear-gradient(to bottom, #000, rgb(0 0 0 / 14%));
     }
 
     .reading-flight-headlights i::before {
         position: absolute;
-        top: -1px;
+        top: -1.5px;
         left: 50%;
-        width: 2px;
-        height: 2px;
+        width: 2.75px;
+        height: 2.75px;
         border-radius: 50%;
-        background: rgb(var(--rgb-white) / 82%);
+        background: var(--color-flight-fold);
+        box-shadow:
+            0 0 0 1px rgb(var(--flight-rgb) / 28%),
+            0 0 4px rgb(var(--flight-rgb) / 72%);
         content: "";
         transform: translateX(-50%);
     }
 
     .reading-flight:hover .reading-flight-aircraft {
-        transform: translate(-50%, -50%) rotate(180deg) scale(1.06);
+        transform: translate(-50%, -50%) rotate(180deg) scale(1.035);
+    }
+
+    .reading-flight:hover .reading-flight-exhaust {
+        transform: translateX(-50%) scaleY(1.08);
     }
 
     .reading-flight.is-returning .reading-flight-aircraft {
@@ -252,60 +302,20 @@
     }
 
     :global(.dark) .reading-flight {
-        color: var(--color-accent-cyan);
-    }
-
-    :global(.dark) .reading-flight:hover,
-    :global(.dark) .reading-flight.is-returning {
-        color: var(--color-accent-cyan-hover);
-    }
-
-    :global(.dark) .reading-flight-route {
-        background-color: rgb(var(--rgb-accent-cyan) / 9%);
-        box-shadow: inset 0 0 0 1px rgb(var(--rgb-accent-cyan) / 6%);
-    }
-
-    :global(.dark) .reading-flight-route::after {
-        background: repeating-linear-gradient(
-            to bottom,
-            rgb(var(--rgb-accent-cyan) / 19%) 0 2px,
-            transparent 2px 6px
-        );
-    }
-
-    :global(.dark) .reading-flight-trail {
-        background: linear-gradient(
-            to bottom,
-            rgb(var(--rgb-accent-cyan) / 8%),
-            rgb(var(--rgb-accent-cyan) / 27%)
-        );
-    }
-
-    :global(.dark) .reading-flight-exhaust i {
-        background: rgb(var(--rgb-accent-cyan) / 82%);
-    }
-
-    :global(.dark) .reading-flight-exhaust i:nth-child(2) {
-        background: rgb(var(--rgb-accent-cyan) / 96%);
-    }
-
-    :global(.dark) .reading-flight-headlights i {
-        background: rgb(var(--rgb-accent-cyan) / 92%);
-    }
-
-    :global(.dark) .reading-flight-headlights {
-        filter: drop-shadow(0 0 2px rgb(var(--rgb-accent-cyan) / 72%));
+        --flight-rgb: var(--rgb-accent-cyan);
     }
 
     :global(.dark) .reading-flight-plane {
-        filter: drop-shadow(0 2px 4px rgb(var(--rgb-black) / 58%));
+        filter:
+            drop-shadow(0 1px 1px rgb(var(--rgb-black) / 44%))
+            drop-shadow(0 2px 4px rgb(var(--rgb-black) / 58%));
     }
 
     @media screen and (max-width: 487px) {
         .reading-flight {
             right: 0;
-            width: 2.3rem;
-            height: 4.4rem;
+            width: 2.75rem;
+            height: 4.9rem;
         }
 
         .reading-flight-plane {
@@ -314,15 +324,16 @@
         }
 
         .reading-flight-aircraft {
-            width: 1.65rem;
-            height: 1.65rem;
+            width: 1.82rem;
+            height: 2.02rem;
         }
     }
 
     @media (prefers-reduced-motion: reduce) {
         .reading-flight,
         .reading-flight-trail,
-        .reading-flight-aircraft {
+        .reading-flight-aircraft,
+        .reading-flight-exhaust {
             transition: none;
         }
     }

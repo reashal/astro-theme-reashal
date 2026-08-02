@@ -28,9 +28,9 @@ aside {
 .aside-toggle-btn {
     position: absolute;
     right: -16px;
-    top: calc(50% - 30px);
+    top: calc(50% - var(--edge-control-length) / 2);
     width: 16px;
-    height: 60px;
+    height: var(--edge-control-length);
     border-radius: 0 .4rem .4rem 0;
     backdrop-filter: blur(2px);
     background-color: rgb(var(--rgb-toggle) / 36%);

@@ -19,6 +19,12 @@
     --color-indigo: #202e78;
     --color-slate: #9ea4b8;
 
+    /* 阅读航迹：同一青绿色系的纸面、背折面与折痕层级 */
+    --color-flight-wing: var(--color-brand);
+    --color-flight-wing-hover: var(--color-brand-hover);
+    --color-flight-wing-far: #4d999c;
+    --color-flight-fold: #d7edec;
+
     /* 浅色模式文字层级 */
     --text-primary: #1a1a1a;
     --text-strong: #333;
@@ -110,6 +116,10 @@
 }
 
 .dark {
+    --color-flight-wing: var(--color-accent-cyan);
+    --color-flight-wing-hover: var(--color-accent-cyan-hover);
+    --color-flight-wing-far: #4d969b;
+    --color-flight-fold: #ddf5f6;
     --surface-raised: var(--surface-dark-card);
     --surface-raised-hover: var(--surface-dark-card-hover);
     --surface-tint: rgb(var(--rgb-accent-cyan) / 5%);
