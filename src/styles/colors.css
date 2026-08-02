@@ -58,6 +58,11 @@
     --surface-dark-row: #252525;
     --surface-dark-input: #2d3748;
 
+    /* 组件表面：统一页面外壳与卡片的层级关系 */
+    --surface-raised: var(--color-white);
+    --surface-raised-hover: #fbfdfd;
+    --surface-tint: rgb(var(--rgb-brand) / 4%);
+
     /* 边框与分隔线 */
     --border-light: #e0e0e0;
     --border-light-subtle: #eee;
@@ -69,6 +74,19 @@
     --border-dark-input: #4a5568;
     --border-dark-divider: #313131;
     --rule-dark: #7e8fa6;
+    --border-surface: rgb(var(--rgb-brand) / 10%);
+
+    /* 阴影带有轻微品牌色，避免通用的纯黑悬浮感 */
+    --shadow-shell:
+        0 1.1rem 3rem rgb(var(--rgb-brand) / 7%),
+        0 .2rem .9rem rgb(var(--rgb-shadow-neutral) / 7%);
+    --shadow-banner: 0 .7rem 2rem rgb(var(--rgb-brand) / 8%);
+    --shadow-card:
+        0 .45rem 1.3rem rgb(var(--rgb-brand) / 7%),
+        0 1px .25rem rgb(var(--rgb-shadow-neutral) / 6%);
+    --shadow-card-hover:
+        0 .8rem 1.8rem rgb(var(--rgb-brand) / 10%),
+        0 .15rem .45rem rgb(var(--rgb-shadow-neutral) / 7%);
 
     /* 代码块窗口指示灯：功能性辨识色，不合并 */
     --terminal-red: #ff5f57;
@@ -86,4 +104,21 @@
     --rgb-dark-message: 30 38 54;
     --rgb-toggle: 106 126 154;
     --rgb-shadow-neutral: 100 100 111;
+}
+
+.dark {
+    --surface-raised: var(--surface-dark-card);
+    --surface-raised-hover: var(--surface-dark-card-hover);
+    --surface-tint: rgb(var(--rgb-accent-cyan) / 5%);
+    --border-surface: rgb(var(--rgb-accent-cyan) / 13%);
+    --shadow-shell:
+        0 1.2rem 3.2rem rgb(var(--rgb-black) / 24%),
+        0 0 0 1px rgb(var(--rgb-accent-cyan) / 4%);
+    --shadow-banner: 0 .8rem 2.2rem rgb(var(--rgb-black) / 20%);
+    --shadow-card:
+        0 .55rem 1.45rem rgb(var(--rgb-black) / 18%),
+        0 0 0 1px rgb(var(--rgb-accent-cyan) / 4%);
+    --shadow-card-hover:
+        0 .85rem 2rem rgb(var(--rgb-black) / 24%),
+        0 0 0 1px rgb(var(--rgb-accent-cyan) / 8%);
 }

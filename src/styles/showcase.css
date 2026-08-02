@@ -1,10 +1,12 @@
 .showcase-h {
-    padding: 6px 6px 6px 20px;
+    padding: .4rem 0;
     position: relative;
     font-size: 1.3rem;
     font-weight: 600;
-    margin-bottom: 4px;
+    margin: 1.35rem 0 .35rem;
     color: var(--text-strong);
+    letter-spacing: -.01em;
+    text-wrap: balance;
 }
 
 .showcase-intro::before {
@@ -16,14 +18,17 @@
 
 .showcase-intro {
     position: relative;
-    margin-bottom: 4px;
+    margin-top: .2rem;
+    margin-bottom: .2rem;
 }
 
 .showcase-p {
-    padding: 4px 6px 4px 20px;
+    max-width: 72ch;
+    padding: .2rem 0;
     color: var(--text-secondary);
     line-height: 1.6;
     margin: 0;
+    text-wrap: pretty;
 }
 
 /* ============================================ */
@@ -47,7 +52,10 @@
     color: var(--text-muted);
     font-size: 0.85rem;
     font-weight: 400;
-    transition: all 0.2s ease;
+    transition:
+        color .2s ease,
+        border-color .2s ease,
+        background-color .2s ease;
     position: relative;
     border-bottom: 2px solid transparent;
     margin-bottom: -1px;
@@ -55,6 +63,7 @@
 
 .showcase-nav a:hover {
     color: var(--text-secondary);
+    background: var(--surface-tint);
 }
 
 .showcase-nav a.active {
@@ -176,13 +185,14 @@
     text-decoration: none;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     text-align: center;
-    box-shadow: rgb(var(--rgb-black) / 10%) 0px 2px 8px;
+    border: 1px solid var(--border-surface);
+    box-shadow: var(--shadow-card);
 }
 
 .showcase-app-card:hover {
     transform: translateY(-2px);
-    box-shadow: rgb(var(--rgb-black) / 15%) 0px 4px 12px;
-    background: var(--color-white);
+    box-shadow: var(--shadow-card-hover);
+    background: var(--surface-raised-hover);
 }
 
 .showcase-app-card .showcase-avatar {
@@ -270,12 +280,13 @@
         box-shadow 0.3s ease,
         background-color 0.3s ease;
     height: 100%;
-    box-shadow: rgb(var(--rgb-black) / 10%) 0px 2px 8px;
+    border: 1px solid var(--border-surface);
+    box-shadow: var(--shadow-card);
 }
 
 .showcase-product-card:hover {
     transform: translateY(-2px);
-    box-shadow: rgb(var(--rgb-black) / 15%) 0px 4px 12px;
+    box-shadow: var(--shadow-card-hover);
     background: var(--showcase-card-hover-surface);
 }
 
@@ -359,9 +370,10 @@
     color: var(--text-tertiary);
     font-size: 0.7rem;
     line-height: 1;
-    padding: 4px 8px;
-    background: rgb(var(--rgb-black) / 3%);
-    border-radius: 999px;
+    padding: 4px 7px;
+    border: 1px solid var(--border-surface);
+    border-radius: .28rem;
+    background: transparent;
     white-space: nowrap;
 }
 
@@ -447,13 +459,30 @@ html[data-input-mode="keyboard"]
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     text-align: center;
     min-height: 60px;
-    box-shadow: rgb(var(--rgb-black) / 10%) 0px 2px 8px;
+    border: 1px solid var(--border-surface);
+    box-shadow: var(--shadow-card);
 }
 
 .showcase-text-only:hover {
     transform: translateY(-2px);
-    box-shadow: rgb(var(--rgb-black) / 15%) 0px 4px 12px;
-    background: var(--color-white);
+    box-shadow: var(--shadow-card-hover);
+    background: var(--surface-raised-hover);
+}
+
+html[data-input-mode="keyboard"] .showcase-nav a:focus-visible,
+html[data-input-mode="keyboard"] a.showcase-icon-simple:focus-visible,
+html[data-input-mode="keyboard"] a.showcase-app-card:focus-visible,
+html[data-input-mode="keyboard"] a.showcase-product-card:focus-visible,
+html[data-input-mode="keyboard"] a.showcase-text-only:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 3px;
+}
+
+a.showcase-icon-simple:active,
+a.showcase-app-card:active,
+a.showcase-product-card:active,
+a.showcase-text-only:active {
+    transform: translateY(1px) scale(.99);
 }
 
 .showcase-text-only .showcase-info {
@@ -591,7 +620,7 @@ html[data-input-mode="keyboard"]
 .dark .showcase-app-card,
 .dark .showcase-product-card {
     background: var(--surface-dark-card);
-    box-shadow: rgb(var(--rgb-accent-cyan) / 20%) 0px 2px 8px;
+    box-shadow: var(--shadow-card);
 }
 
 .dark .showcase-product-card {
@@ -602,7 +631,7 @@ html[data-input-mode="keyboard"]
 
 .dark .showcase-app-card:hover,
 .dark .showcase-product-card:hover {
-    box-shadow: rgb(var(--rgb-accent-cyan) / 30%) 0px 4px 12px;
+    box-shadow: var(--shadow-card-hover);
     background: var(--surface-dark-card-hover);
 }
 
@@ -617,7 +646,8 @@ html[data-input-mode="keyboard"]
 }
 
 .dark .showcase-product-card .showcase-spec {
-    background: rgb(var(--rgb-white) / 7%);
+    border-color: rgb(var(--rgb-accent-cyan) / 12%);
+    background: rgb(var(--rgb-white) / 3%);
 }
 
 .dark .showcase-app-card .showcase-avatar.no-image {
@@ -638,12 +668,20 @@ html[data-input-mode="keyboard"]
 
 .dark .showcase-text-only {
     background: var(--surface-dark-card);
-    box-shadow: rgb(var(--rgb-accent-cyan) / 20%) 0px 2px 8px;
+    box-shadow: var(--shadow-card);
 }
 
 .dark .showcase-text-only:hover {
     background: var(--surface-dark-card-hover);
-    box-shadow: rgb(var(--rgb-accent-cyan) / 30%) 0px 4px 12px;
+    box-shadow: var(--shadow-card-hover);
+}
+
+html.dark[data-input-mode="keyboard"] .showcase-nav a:focus-visible,
+html.dark[data-input-mode="keyboard"] a.showcase-icon-simple:focus-visible,
+html.dark[data-input-mode="keyboard"] a.showcase-app-card:focus-visible,
+html.dark[data-input-mode="keyboard"] a.showcase-product-card:focus-visible,
+html.dark[data-input-mode="keyboard"] a.showcase-text-only:focus-visible {
+    outline-color: var(--color-accent-cyan);
 }
 
 .dark .showcase-text-only .showcase-info h3 {

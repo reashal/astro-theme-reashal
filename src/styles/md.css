@@ -10,11 +10,8 @@
     --article-heading-strong: var(--text-strong);
     --article-heading-marker: var(--color-accent-pink);
 
-    max-width: 100%;
     margin-top: 2vh;
     margin-bottom: 2vh;
-    padding: 1rem;
-    box-shadow: rgb(var(--rgb-shadow-neutral) / 20%) 0px 7px 29px 0px;
     overflow-wrap: break-word;
 }
 
@@ -117,6 +114,7 @@
     gap: .55rem 1.15rem;
     color: var(--article-meta-color);
     font-size: .76rem;
+    font-variant-numeric: tabular-nums;
 }
 
 .article-meta time,
@@ -437,10 +435,6 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
     stroke: var(--color-accent-cyan);
 }
 
-.dark .article-container {
-    box-shadow: rgb(var(--rgb-accent-cyan) / 40%) 0px 0px 8px;
-}
-
 /* 文章标题层级 */
 .article-content h1,
 .article-content h2,
@@ -552,7 +546,15 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
 .doc blockquote p {
     margin: .8rem 0;
     overflow-wrap: break-word;
-    line-height: 1.6;
+    line-height: 1.72;
+    text-wrap: pretty;
+}
+
+.article-content > p,
+.article-content > blockquote,
+.article-content > ul,
+.article-content > ol {
+    max-width: 72ch;
 }
 
 .dark .article-container p {

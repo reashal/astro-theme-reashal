@@ -44,14 +44,32 @@
 /* === 文章条目基础样式 === */
 
 .docs-body {
+    position: relative;
     display: block;
-    padding: .4rem .6rem;
-    border-radius: 6px;
+    padding: .5rem .7rem .55rem;
+    overflow: hidden;
+    border-radius: .42rem;
     cursor: pointer;
     transition:
-        opacity .25s ease,
+        background-color .22s ease,
         transform .25s ease,
         box-shadow .25s ease;
+}
+
+.docs-body::before {
+    position: absolute;
+    top: .55rem;
+    bottom: .55rem;
+    left: 0;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--color-brand);
+    content: "";
+    opacity: 0;
+    transform: scaleY(.45);
+    transition:
+        opacity .22s ease,
+        transform .25s cubic-bezier(.22, 1, .36, 1);
 }
 
 .docs-a {
@@ -69,13 +87,24 @@ html[data-input-mode="keyboard"] .docs-body:focus-visible {
 
 /* 容器内有条目被 hover 时，其余条目淡出 */
 .article-container:has(.docs-body:hover) .docs-body:not(:hover) {
-    opacity: .45;
+    opacity: .7;
 }
 
 /* hover 的条目：微微凸起 */
 .docs-body:hover {
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px -4px rgb(var(--rgb-brand) / 18%);
+    background: var(--surface-tint);
+    box-shadow: 0 .35rem 1rem -.7rem rgb(var(--rgb-brand) / 22%);
+}
+
+.docs-body:hover::before,
+html[data-input-mode="keyboard"] .docs-body:focus-visible::before {
+    opacity: .9;
+    transform: scaleY(1);
+}
+
+.docs-body:active {
+    transform: translateY(1px);
 }
 
 .docs-fixed:hover {
@@ -83,8 +112,11 @@ html[data-input-mode="keyboard"] .docs-body:focus-visible {
 }
 
 .docs-h {
-    font-size: 1.4rem;
+    font-size: clamp(1.18rem, 1.8vw, 1.4rem);
+    line-height: 1.35;
+    letter-spacing: -.012em;
     padding-bottom: .2rem;
+    text-wrap: pretty;
 }
 
 .docs-p {
@@ -104,6 +136,7 @@ html[data-input-mode="keyboard"] .docs-body:focus-visible {
     line-height: 1.5;
     max-height: 4.5em;
     margin-bottom: .4rem;
+    text-wrap: pretty;
 }
 
 .docs-t {
@@ -111,7 +144,8 @@ html[data-input-mode="keyboard"] .docs-body:focus-visible {
     padding-bottom: .6rem;
     font-size: .8rem;
     color: var(--text-faint);
-    border-bottom: .2rem var(--border-light-soft) solid;
+    border-bottom: 1px var(--border-light-subtle) solid;
+    font-variant-numeric: tabular-nums;
 }
 
 /* === 置顶文章样式 === */
@@ -278,12 +312,16 @@ html.dark[data-input-mode="keyboard"] .page-btn:focus-visible {
 
 /* 其余条目淡出（暗色背景下 opacity 稍高，避免消失感太强） */
 .dark .article-container:has(.docs-body:hover) .docs-body:not(:hover) {
-    opacity: .35;
+    opacity: .68;
 }
 
 /* hover 阴影换为浅青色系 */
 .dark .docs-body:hover {
-    box-shadow: 0 2px 8px -4px rgb(var(--rgb-accent-cyan) / 18%);
+    box-shadow: 0 .35rem 1rem -.7rem rgb(var(--rgb-accent-cyan) / 24%);
+}
+
+.dark .docs-body::before {
+    background: var(--color-accent-cyan);
 }
 
 .dark .docs-fixed:hover {
@@ -293,7 +331,7 @@ html.dark[data-input-mode="keyboard"] .page-btn:focus-visible {
 
 /* 笔记标题底部：深灰色边框 */
 .dark .docs-t {
-    border-bottom: .2rem var(--border-dark-divider) solid;
+    border-bottom: 1px var(--border-dark-divider) solid;
 }
 
 /* 置顶文章标题：浅青色 */

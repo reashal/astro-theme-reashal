@@ -63,7 +63,7 @@ aside {
 /* ============================================
  * 侧边栏卡片基础样式
  * 所有卡片统一使用 aside-{模块}-card 命名
- * hover 效果：向下移动并缩小，阴影变浅
+ * hover 效果：轻微抬升，使用与主界面一致的品牌色阴影
  * ============================================ */
 .aside-body .aside-author-card,
 .aside-body .aside-links-card,
@@ -72,21 +72,27 @@ aside {
 .aside-body .aside-copyright-card {
     padding: 0.8rem;
     margin-bottom: 1.2rem;
+    border: 1px solid var(--border-surface);
     border-radius: 0.8rem;
-    box-shadow: rgb(var(--rgb-black) / 60%) 0px 5px 15px;
-    transition: all 0.3s ease;
-    background-color: rgb(var(--rgb-white) / 80%);
+    box-shadow: var(--shadow-card);
+    transition:
+        transform .28s cubic-bezier(.22, 1, .36, 1),
+        box-shadow .28s ease,
+        border-color .28s ease,
+        background-color .28s ease;
+    background-color: rgb(var(--rgb-white) / 78%);
 }
 
-/* 卡片 hover 效果："按下去"的视觉反馈 */
+/* 卡片 hover 效果：只做轻量抬升，避免整组侧栏产生跳动感 */
 .aside-body .aside-author-card:hover,
 .aside-body .aside-links-card:hover,
 .aside-body .aside-share-card:hover,
 .aside-body .aside-tags-card:hover,
 .aside-body .aside-copyright-card:hover {
-    transform: translateY(4px) scale(0.98);
-    box-shadow: rgb(var(--rgb-black) / 30%) 0px 2px 8px;
-    background-color: rgb(var(--rgb-brand) / 5%);
+    transform: translateY(-1px);
+    border-color: rgb(var(--rgb-brand) / 18%);
+    box-shadow: var(--shadow-card-hover);
+    background-color: rgb(var(--rgb-white) / 94%);
 }
 
 /* 站长信息 — "墨染" 微动效卡片
@@ -171,8 +177,7 @@ aside {
     grid-template-columns: 1fr 1fr;
     gap: 6px;
     text-align: center;
-    background-color: rgb(var(--rgb-brand) / 0%);
-    transition: all 0.3s ease;
+    background-color: rgb(var(--rgb-white) / 62%);
 }
 
 .aside-body .aside-links-card a {
@@ -195,8 +200,7 @@ aside {
     grid-template-columns: 1fr 1fr;
     gap: 6px;
     text-align: center;
-    background-color: rgb(var(--rgb-brand) / 0%);
-    transition: all 0.3s ease;
+    background-color: rgb(var(--rgb-white) / 62%);
 }
 
 .aside-body .share-link {
@@ -207,7 +211,10 @@ aside {
     color: var(--color-black);
     text-decoration: none;
     font-size: 0.9rem;
-    transition: all 0.3s ease;
+    transition:
+        color .2s ease,
+        background-color .2s ease,
+        transform .2s ease;
     grid-column: 1 / -1;
     cursor: pointer;
     width: 100%;
@@ -232,12 +239,11 @@ aside {
     align-self: end;
     width: calc(240px - 2rem);
     margin-bottom: 0;
-    background-color: rgb(var(--rgb-brand) / 0%);
+    background-color: rgb(var(--rgb-white) / 62%);
     font-size: 0.85rem;
     padding: 0.6rem;
     border-radius: 0.8rem;
-    box-shadow: rgb(var(--rgb-black) / 60%) 0px 5px 15px;
-    transition: all 0.3s ease;
+    box-shadow: var(--shadow-card);
 }
 
 .aside-body .aside-copyright-card div {
@@ -252,7 +258,9 @@ aside {
     color: var(--color-brand);
     text-decoration: none;
     font-weight: 500;
-    transition: all 0.2s ease;
+    transition:
+        color .2s ease,
+        border-color .2s ease;
     border-bottom: 1px dashed transparent;
 }
 
@@ -276,7 +284,7 @@ aside {
 
 /* 侧边栏展开时阴影 */
 .dark .aside-show aside {
-    box-shadow: rgb(var(--rgb-accent-cyan) / 40%) 0px 0px 8px;
+    box-shadow: .65rem 0 2rem rgb(var(--rgb-black) / 28%);
 }
 
 /* 暗黑模式卡片基础样式：更深的阴影和深色背景 */
@@ -285,28 +293,25 @@ aside {
 .dark .aside-body .aside-share-card,
 .dark .aside-body .aside-tags-card,
 .dark .aside-body .aside-copyright-card {
-    box-shadow: 
-        rgb(var(--rgb-black) / 50%) 0px 8px 20px,
-        rgb(var(--rgb-black) / 30%) 0px 2px 6px;
+    border-color: var(--border-surface);
+    box-shadow: var(--shadow-card);
     background-color: rgb(var(--rgb-dark-glass) / 80%);
-    transition: all 0.3s ease;
 }
 
-/* 暗黑模式卡片 hover："按下去"效果 + 青色边框 */
+/* 暗黑模式卡片 hover：延续主界面的低亮度青灰层级 */
 .dark .aside-body .aside-author-card:hover,
 .dark .aside-body .aside-links-card:hover,
 .dark .aside-body .aside-share-card:hover,
 .dark .aside-body .aside-tags-card:hover,
 .dark .aside-body .aside-copyright-card:hover {
-    transform: translateY(4px) scale(0.98);
-    box-shadow: 
-        rgb(var(--rgb-black) / 15%) 0px 1px 3px;
-    border-color: rgb(var(--rgb-accent-cyan) / 40%);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-card-hover);
+    border-color: rgb(var(--rgb-accent-cyan) / 22%);
     background-color: rgb(var(--rgb-dark-card) / 95%);
 }
 
 .dark .aside-body .aside-links-card {
-    background-color: rgb(var(--rgb-accent-cyan) / 0%);
+    background-color: rgb(var(--rgb-dark-glass) / 68%);
 }
 
 .dark .aside-body .aside-author-card::after {
@@ -342,7 +347,7 @@ aside {
 /* 侧边栏版权信息 */
 .dark .aside-body .aside-copyright-card {
     color: var(--text-on-dark);
-    background-color: rgb(var(--rgb-accent-cyan) / 0%);
+    background-color: rgb(var(--rgb-dark-glass) / 68%);
 }
 
 .dark .aside-body .aside-copyright-card a {
@@ -356,7 +361,7 @@ aside {
 
 /* 暗黑模式 - 分享按钮 */
 .dark .aside-body .aside-share-card {
-    background-color: rgb(var(--rgb-accent-cyan) / 0%);
+    background-color: rgb(var(--rgb-dark-glass) / 68%);
 }
 
 .dark .aside-body .share-link {

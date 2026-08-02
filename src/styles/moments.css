@@ -13,7 +13,7 @@
 .moment:not(:first-of-type) {
     margin-top: .2rem;
     padding-top: .6rem;
-    border-top: .1rem solid var(--border-light-soft);
+    border-top: 1px solid var(--border-light-subtle);
 }
 
 .dark .moment:not(:first-of-type) {
@@ -81,7 +81,7 @@
 }
 
 .dark .moment .author-date {
-    color: var(--text-on-dark-strong);
+    color: var(--text-on-dark-soft);
 }
 
 /* === 正文区域 === */
@@ -90,12 +90,13 @@
 }
 
 .moment-content p {
-    max-width: 100%;
+    max-width: 72ch;
     padding-top: .3rem;
     margin: 0;
     font-size: 1rem;
-    line-height: 1.4rem;
+    line-height: 1.6;
     white-space: pre-wrap;
+    text-wrap: pretty;
 }
 
 .dark .moment-content p {
