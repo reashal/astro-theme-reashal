@@ -179,11 +179,29 @@ const currentPath = Astro.url.pathname;
         setAsideOpen(!layout?.classList.contains("aside-show"));
     });
 
-    mainContent?.addEventListener("click", () => {
-        if (layout?.classList.contains("aside-show")) {
+    // 展开状态点击侧边栏外部：收起侧边栏，同时拦截内容的默认行为
+    // （打开大图、播放媒体、跳转链接），避免穿透触发；
+    // 页面自身控件（按钮）不拦截，仍可正常使用。
+    mainContent?.addEventListener(
+        "click",
+        (event) => {
+            if (!layout?.classList.contains("aside-show")) return;
+
             setAsideOpen(false);
-        }
-    });
+
+            const target = event.target as HTMLElement | null;
+            const swallow =
+                target &&
+                target.closest(
+                    "a, img, audio, video, [data-media-group], .music-toggle, [role='button']",
+                );
+            if (swallow) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        },
+        true,
+    );
 
     document.addEventListener("keydown", (event) => {
         if (

@@ -13,7 +13,7 @@
 .moment:not(:first-of-type) {
     margin-top: .2rem;
     padding-top: .6rem;
-    border-top: 1px solid var(--border-light-subtle);
+    border-top: .1rem solid var(--border-light-soft);
 }
 
 .dark .moment:not(:first-of-type) {
@@ -81,7 +81,7 @@
 }
 
 .dark .moment .author-date {
-    color: var(--text-on-dark-soft);
+    color: var(--text-on-dark-strong);
 }
 
 /* === 正文区域 === */

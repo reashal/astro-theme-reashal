@@ -68,7 +68,6 @@
 
 .showcase-nav a:hover {
     color: var(--text-secondary);
-    background: var(--surface-tint);
 }
 
 .showcase-nav a.active {
@@ -190,14 +189,13 @@
     text-decoration: none;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     text-align: center;
-    border: 1px solid var(--border-surface);
-    box-shadow: var(--shadow-card);
+    box-shadow: rgb(var(--rgb-black) / 10%) 0px 2px 8px;
 }
 
 .showcase-app-card:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-card-hover);
-    background: var(--surface-raised-hover);
+    box-shadow: rgb(var(--rgb-black) / 15%) 0px 4px 12px;
+    background: var(--color-white);
 }
 
 .showcase-app-card .showcase-avatar {
@@ -285,13 +283,12 @@
         box-shadow 0.3s ease,
         background-color 0.3s ease;
     height: 100%;
-    border: 1px solid var(--border-surface);
-    box-shadow: var(--shadow-card);
+    box-shadow: rgb(var(--rgb-black) / 10%) 0px 2px 8px;
 }
 
 .showcase-product-card:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-card-hover);
+    box-shadow: rgb(var(--rgb-black) / 15%) 0px 4px 12px;
     background: var(--showcase-card-hover-surface);
 }
 
@@ -375,10 +372,9 @@
     color: var(--text-tertiary);
     font-size: 0.7rem;
     line-height: 1;
-    padding: 4px 7px;
-    border: 1px solid var(--border-surface);
-    border-radius: .28rem;
-    background: transparent;
+    padding: 4px 8px;
+    background: rgb(var(--rgb-black) / 3%);
+    border-radius: 999px;
     white-space: nowrap;
 }
 
@@ -464,14 +460,13 @@ html[data-input-mode="keyboard"]
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     text-align: center;
     min-height: 60px;
-    border: 1px solid var(--border-surface);
-    box-shadow: var(--shadow-card);
+    box-shadow: rgb(var(--rgb-black) / 10%) 0px 2px 8px;
 }
 
 .showcase-text-only:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-card-hover);
-    background: var(--surface-raised-hover);
+    box-shadow: rgb(var(--rgb-black) / 15%) 0px 4px 12px;
+    background: var(--color-white);
 }
 
 html[data-input-mode="keyboard"] .showcase-nav a:focus-visible,
@@ -625,7 +620,7 @@ a.showcase-text-only:active {
 .dark .showcase-app-card,
 .dark .showcase-product-card {
     background: var(--surface-dark-card);
-    box-shadow: var(--shadow-card);
+    box-shadow: rgb(var(--rgb-accent-cyan) / 20%) 0px 2px 8px;
 }
 
 .dark .showcase-product-card {
@@ -636,7 +631,7 @@ a.showcase-text-only:active {
 
 .dark .showcase-app-card:hover,
 .dark .showcase-product-card:hover {
-    box-shadow: var(--shadow-card-hover);
+    box-shadow: rgb(var(--rgb-accent-cyan) / 30%) 0px 4px 12px;
     background: var(--surface-dark-card-hover);
 }
 
@@ -651,8 +646,7 @@ a.showcase-text-only:active {
 }
 
 .dark .showcase-product-card .showcase-spec {
-    border-color: rgb(var(--rgb-accent-cyan) / 12%);
-    background: rgb(var(--rgb-white) / 3%);
+    background: rgb(var(--rgb-white) / 7%);
 }
 
 .dark .showcase-app-card .showcase-avatar.no-image {

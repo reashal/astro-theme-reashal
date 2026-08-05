@@ -3,8 +3,8 @@ aside {
     position: relative;
     width: 240px;
     height: 100dvh;
-    border-radius: 0 .8rem .8rem 0;
-    background-color: var(--surface-soft);
+    background-color: #fcfbf7;
+    box-shadow: inset -1px 0 0 var(--panel-edge);
 }
 
 .aside-body {
@@ -19,6 +19,10 @@ aside {
 }
 
 @media screen and (min-width: 488px) {
+    aside {
+        border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    }
+
     .aside-body {
         height: 100dvh;
         top: 0;
@@ -69,7 +73,7 @@ aside {
 /* ============================================
  * 侧边栏卡片基础样式
  * 所有卡片统一使用 aside-{模块}-card 命名
- * hover 效果：轻微抬升，使用与主界面一致的品牌色阴影
+ * hover 效果：向下移动并缩小，阴影变浅
  * ============================================ */
 .aside-body .aside-author-card,
 .aside-body .aside-links-card,
@@ -78,26 +82,41 @@ aside {
 .aside-body .aside-copyright-card {
     padding: 0.8rem;
     margin-bottom: 1.2rem;
-    border: 1px solid var(--border-surface);
-    border-radius: 0.8rem;
-    box-shadow: var(--shadow-card);
+    border: 1px solid transparent;
+    border-radius: var(--radius-lg);
+    box-shadow:
+        var(--shadow-card),
+        inset 0 1px 0 var(--card-gloss);
     transition:
-        transform .28s cubic-bezier(.22, 1, .36, 1),
-        box-shadow .28s ease,
-        border-color .28s ease,
-        background-color .28s ease;
-    background-color: rgb(var(--rgb-white) / 78%);
+        transform .3s ease,
+        box-shadow .3s ease,
+        background-color .3s ease;
+    background-color: rgb(var(--rgb-white) / 62%);
 }
 
-/* 可交互卡片 hover 时轻量抬升。 */
+/* 卡片 hover 效果："按下去"的视觉反馈（五张卡片统一） */
 .aside-body .aside-author-card:hover,
+.aside-body .aside-links-card:hover,
 .aside-body .aside-share-card:hover,
 .aside-body .aside-tags-card:hover,
 .aside-body .aside-copyright-card:hover {
-    transform: translateY(-1px);
-    border-color: rgb(var(--rgb-brand) / 18%);
-    box-shadow: var(--shadow-card-hover);
-    background-color: rgb(var(--rgb-white) / 94%);
+    transform: translateY(4px) scale(0.98);
+    border-color: rgb(var(--rgb-brand) / 12%);
+    box-shadow:
+        var(--shadow-card-hover),
+        inset 0 1px 0 var(--card-gloss-hover);
+    background-color: rgb(var(--rgb-brand) / 6%);
+}
+
+/* 卡片被按下：统一回落反馈（五张卡片一致） */
+.aside-body .aside-author-card:active,
+.aside-body .aside-links-card:active,
+.aside-body .aside-share-card:active,
+.aside-body .aside-tags-card:active,
+.aside-body .aside-copyright-card:active {
+    transform: translateY(1px) scale(.985);
+    box-shadow: var(--shadow-card);
+    transition-duration: .1s;
 }
 
 /* 卡片内控件被按下时，父卡片应回落，而不是保持悬浮。 */
@@ -120,12 +139,6 @@ aside {
     cursor: pointer;
 }
 
-.aside-body .aside-author-card:active {
-    transform: translateY(1px) scale(.985);
-    box-shadow: var(--shadow-card);
-    transition-duration: .1s;
-}
-
 .aside-body .aside-author-card[aria-current="page"] {
     border-color: rgb(var(--rgb-brand) / 20%);
     background-color: rgb(var(--rgb-brand) / 6%);
@@ -140,36 +153,34 @@ aside {
     width: 6.25rem;
     height: 6.25rem;
     border-radius: 50%;
-    background: radial-gradient(circle, rgb(var(--rgb-brand) / 9%), transparent 68%);
+    background: radial-gradient(circle, rgb(var(--rgb-brand) / 12%), transparent 70%);
     pointer-events: none;
     z-index: 0;
-    opacity: .7;
-    transform: scale(.96);
-    transition:
-        opacity .28s ease,
-        transform .28s cubic-bezier(.22, 1, .36, 1);
+    opacity: 0;
+    transition: opacity .45s ease;
 }
 
 .aside-body .aside-author-card:hover::after {
     opacity: 1;
-    transform: scale(1.05);
 }
 
-/* 透明头像不显示画布边框，仅用随透明轮廓变化的投影建立层次。 */
+/* 头像：常态圆润，hover 时出现品牌光环 */
 .aside-body .author-avatar {
     position: relative;
     z-index: 1;
     flex-shrink: 0;
-    width: 2.875rem;
-    height: 2.875rem;
-    border-radius: .72rem;
-    filter: drop-shadow(0 .18rem .32rem rgb(var(--rgb-brand) / 13%));
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
     object-fit: cover;
-    transition: transform .28s cubic-bezier(.22, 1, .36, 1);
+    transition:
+        box-shadow .35s ease,
+        transform .35s ease;
 }
 
 .aside-body .aside-author-card:hover .author-avatar {
-    transform: translateY(-1px) scale(1.025);
+    box-shadow: 0 0 0 3px rgb(var(--rgb-brand) / 20%);
+    transform: scale(1.03);
 }
 
 .aside-body .aside-author-card:active .author-avatar {
@@ -234,7 +245,6 @@ aside {
     display: block;
     padding: .52rem;
     text-align: center;
-    background-color: rgb(var(--rgb-white) / 62%);
 }
 
 .aside-body .aside-links-primary,
@@ -248,10 +258,25 @@ aside {
 }
 
 .aside-body .aside-links-external {
+    position: relative;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    margin-top: .42rem;
-    padding-top: .42rem;
-    border-top: 1px solid var(--border-light-subtle);
+    margin-top: .52rem;
+    padding-top: .52rem;
+}
+
+.aside-body .aside-links-external::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: .52rem;
+    right: .52rem;
+    height: 2px;
+    border-radius: 999px;
+    background-color: var(--border-light);
+}
+
+.dark .aside-body .aside-links-external::before {
+    background-color: rgb(var(--rgb-accent-cyan) / 16%);
 }
 
 .aside-body .aside-links-card a {
@@ -326,7 +351,6 @@ aside {
     grid-template-columns: 1fr 1fr;
     gap: 6px;
     text-align: center;
-    background-color: rgb(var(--rgb-white) / 62%);
 }
 
 .aside-body .share-link {
@@ -358,11 +382,9 @@ aside {
     align-self: end;
     width: calc(240px - 2rem);
     margin-bottom: 0;
-    background-color: rgb(var(--rgb-white) / 62%);
     font-size: 0.85rem;
     padding: 0.6rem;
-    border-radius: 0.8rem;
-    box-shadow: var(--shadow-card);
+    border-radius: var(--radius-lg);
 }
 
 .aside-body .aside-copyright-card div {
@@ -396,55 +418,33 @@ aside {
  * hover 时添加青色边框高亮
  */
 
-/* 侧边栏背景 */
+/* 侧边栏背景：与主界面页面底色一致 */
 .dark aside {
-    background-color: var(--surface-dark-panel) !important;
+    background-color: var(--surface-page-dark);
 }
 
-/* 暗黑模式卡片基础样式：更深的阴影和深色背景 */
+/* 暗黑模式卡片：常态用亮一档的玻璃色，hover 按下回落到基础玻璃色 */
 .dark .aside-body .aside-author-card,
 .dark .aside-body .aside-links-card,
 .dark .aside-body .aside-share-card,
 .dark .aside-body .aside-tags-card,
 .dark .aside-body .aside-copyright-card {
-    border-color: var(--border-surface);
-    box-shadow: var(--shadow-card);
-    background-color: rgb(var(--rgb-dark-glass) / 80%);
+    background-color: rgb(var(--rgb-dark-glass) / 62%);
 }
 
-/* 暗黑模式可交互卡片：延续主界面的低亮度青灰层级。 */
+/* 暗黑模式卡片 hover："按下去"效果 + 青色边框（仅配色，结构沿用浅色） */
 .dark .aside-body .aside-author-card:hover,
+.dark .aside-body .aside-links-card:hover,
 .dark .aside-body .aside-share-card:hover,
 .dark .aside-body .aside-tags-card:hover,
 .dark .aside-body .aside-copyright-card:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-card-hover);
-    border-color: rgb(var(--rgb-accent-cyan) / 22%);
-    background-color: rgb(var(--rgb-dark-card) / 95%);
-}
-
-.dark .aside-body .aside-author-card:active {
-    transform: translateY(1px) scale(.985);
-    box-shadow: var(--shadow-card);
+    border-color: rgb(var(--rgb-accent-cyan) / 16%);
+    background-color: rgb(var(--rgb-dark-glass) / 82%);
 }
 
 .dark .aside-body .aside-author-card[aria-current="page"] {
     border-color: rgb(var(--rgb-accent-cyan) / 24%);
     background-color: rgb(var(--rgb-accent-cyan) / 7%);
-}
-
-.dark .aside-body .aside-share-card:has(.share-link:active),
-.dark .aside-body .aside-copyright-card:has(a:active) {
-    transform: translateY(1px) scale(.99);
-    box-shadow: var(--shadow-card);
-}
-
-.dark .aside-body .aside-links-card {
-    background-color: rgb(var(--rgb-dark-glass) / 68%);
-}
-
-.dark .aside-body .aside-links-external {
-    border-top-color: var(--border-dark-divider);
 }
 
 .dark .aside-body .aside-links-card a {
@@ -463,13 +463,11 @@ aside {
 }
 
 .dark .aside-body .aside-author-card::after {
-    background: radial-gradient(circle, rgb(var(--rgb-accent-cyan) / 11%), transparent 68%);
+    background: radial-gradient(circle, rgb(var(--rgb-accent-cyan) / 15%), transparent 70%);
 }
 
-.dark .aside-body .author-avatar {
-    filter:
-        drop-shadow(0 .2rem .34rem rgb(var(--rgb-black) / 22%))
-        drop-shadow(0 0 .24rem rgb(var(--rgb-accent-cyan) / 10%));
+.dark .aside-body .aside-author-card:hover .author-avatar {
+    box-shadow: 0 0 0 3px rgb(var(--rgb-accent-cyan) / 25%);
 }
 
 .dark .aside-body .author-name {
@@ -493,7 +491,6 @@ aside {
 /* 侧边栏版权信息 */
 .dark .aside-body .aside-copyright-card {
     color: var(--text-on-dark);
-    background-color: rgb(var(--rgb-dark-glass) / 68%);
 }
 
 .dark .aside-body .aside-copyright-card a {
@@ -506,10 +503,6 @@ aside {
 }
 
 /* 暗黑模式 - 分享按钮 */
-.dark .aside-body .aside-share-card {
-    background-color: rgb(var(--rgb-dark-glass) / 68%);
-}
-
 .dark .aside-body .share-link {
     color: var(--text-on-dark);
 }
@@ -600,49 +593,36 @@ aside {
     top: 0;
     display: flex;
     align-items: center;
-    gap: .34rem;
-    padding: .58rem .62rem;
-    border: 1px solid rgb(var(--rgb-brand) / 11%);
-    border-radius: .58rem;
-    background: rgb(var(--rgb-white) / 92%);
+    gap: .2rem;
+    padding: .65rem .7rem;
+    border-radius: var(--radius-md);
+    background: var(--surface-raised);
+    border: 1px solid rgb(var(--rgb-brand) / 16%);
     box-shadow:
-        0 .12rem .38rem rgb(var(--rgb-brand) / 7%),
-        inset 0 1px 0 rgb(var(--rgb-white) / 86%);
-    backdrop-filter: blur(.35rem);
-    color: inherit;
+        0 1px 4px rgb(var(--rgb-black) / 10%),
+        0 3px 8px rgb(var(--rgb-black) / 7%);
     text-decoration: none;
     pointer-events: none;
-    transition:
-        border-color .22s ease,
-        background-color .22s ease,
-        box-shadow .22s ease,
-        scale .12s ease;
 }
 
 .aside-body .message-card:nth-child(2) {
     border-color: rgb(var(--rgb-brand) / 12%);
-    background: rgb(var(--rgb-white) / 86%);
-    box-shadow: 0 .12rem .34rem rgb(var(--rgb-brand) / 8%);
+    background: var(--surface-soft);
 }
 
 .aside-body .message-card:nth-child(3) {
     border-color: rgb(var(--rgb-brand) / 9%);
-    background: rgb(var(--rgb-white) / 76%);
-    box-shadow: 0 .1rem .3rem rgb(var(--rgb-brand) / 6%);
+    background: var(--surface-muted);
 }
 
 .aside-body .message-card:first-child:hover {
-    border-color: rgb(var(--rgb-brand) / 18%);
-    background: rgb(var(--rgb-white) / 98%);
+    border-color: rgb(var(--rgb-brand) / 25%);
     box-shadow:
-        0 .2rem .54rem rgb(var(--rgb-brand) / 10%),
-        inset 0 1px 0 rgb(var(--rgb-white) / 92%);
+        0 3px 10px rgb(var(--rgb-black) / 10%);
 }
 
 .aside-body .message-card:first-child:active {
-    scale: .985;
-    border-color: rgb(var(--rgb-brand) / 14%);
-    box-shadow: 0 .06rem .2rem rgb(var(--rgb-brand) / 7%);
+    box-shadow: 0 1px 4px rgb(var(--rgb-black) / 10%);
 }
 
 html[data-input-mode="keyboard"] .aside-body .message-card:focus-visible,
@@ -656,25 +636,16 @@ html[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-visib
 
 /* 标签名称前的 # 符号 */
 .aside-body .msg-hashtag {
-    display: grid;
-    place-items: center;
-    width: 1.18rem;
-    height: 1.18rem;
-    border-radius: .36rem;
-    border: 1px solid rgb(var(--rgb-brand) / 13%);
-    background-color: rgb(var(--rgb-brand) / 14%);
-    font-size: .69rem;
-    font-weight: 600;
-    line-height: 1;
+    font-size: .75rem;
+    font-weight: 700;
     color: var(--color-brand);
     flex-shrink: 0;
 }
 
 /* 标签名称 */
 .aside-body .msg-name {
-    font-size: .79rem;
+    font-size: .8rem;
     font-weight: 600;
-    letter-spacing: -.01em;
     color: var(--text-primary);
     flex: 1;
     overflow: hidden;
@@ -684,29 +655,25 @@ html[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-visib
 
 /* 计数徽标 */
 .aside-body .msg-count {
-    min-width: 1.28rem;
-    padding: .08rem 0 .08rem .38rem;
-    border-left: 1px solid rgb(var(--rgb-brand) / 12%);
-    font-size: .61rem;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-    line-height: 1.2;
-    text-align: right;
-    color: var(--text-secondary);
+    font-size: .6rem;
+    font-weight: 700;
+    color: var(--color-white);
+    background: var(--color-brand);
+    padding: .06rem .35rem;
+    border-radius: .15rem;
     flex-shrink: 0;
+    line-height: 1.3;
 }
 
 /* 底部指示器 */
 .aside-body .stack-footer {
     text-align: center;
-    padding: .38rem 0 .02rem;
-    font-size: .58rem;
-    color: var(--text-secondary);
+    padding: .45rem 0 0;
+    font-size: .55rem;
+    color: rgb(var(--rgb-brand) / 35%);
     font-weight: 500;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: .08em;
+    letter-spacing: .02em;
     line-height: 1;
-    opacity: .68;
 }
 
 /* ============================================
@@ -715,11 +682,11 @@ html[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-visib
  * ============================================ */
 
 .dark .aside-body .message-card {
-    border-color: rgb(var(--rgb-accent-cyan) / 14%);
-    background: rgb(var(--rgb-dark-message) / 90%);
+    border-color: rgb(var(--rgb-accent-cyan) / 22%);
+    background: rgb(var(--rgb-dark-message));
     box-shadow:
-        0 .14rem .42rem rgb(var(--rgb-black) / 28%),
-        inset 0 1px 0 rgb(var(--rgb-white) / 4%);
+        0 2px 6px rgb(var(--rgb-black) / 40%),
+        0 6px 14px rgb(var(--rgb-black) / 28%);
 }
 
 .dark .aside-body .tag-dissolve-particle {
@@ -733,27 +700,29 @@ html[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-visib
 
 .dark .aside-body .message-card:nth-child(2) {
     border-color: rgb(var(--rgb-accent-cyan) / 14%);
-    background: rgb(var(--rgb-dark-message) / 84%);
-    box-shadow: 0 .14rem .38rem rgb(var(--rgb-black) / 28%);
+    background: rgb(var(--rgb-dark-card));
+    box-shadow:
+        0 .14rem .38rem rgb(var(--rgb-black) / 28%),
+        0 .42rem .9rem rgb(var(--rgb-black) / 20%);
 }
 
 .dark .aside-body .message-card:nth-child(3) {
     border-color: rgb(var(--rgb-accent-cyan) / 11%);
-    background: rgb(var(--rgb-dark-message) / 76%);
-    box-shadow: 0 .12rem .32rem rgb(var(--rgb-black) / 24%);
+    background: var(--surface-page-dark);
+    box-shadow:
+        0 .12rem .32rem rgb(var(--rgb-black) / 24%),
+        0 .36rem .8rem rgb(var(--rgb-black) / 18%);
 }
 
-.dark .aside-body .message-card:first-child:hover {
-    border-color: rgb(var(--rgb-accent-cyan) / 23%);
-    background: rgb(var(--rgb-dark-card) / 94%);
+.dark .aside-body .message-card:hover {
+    border-color: rgb(var(--rgb-accent-cyan) / 30%);
     box-shadow:
-        0 .22rem .58rem rgb(var(--rgb-black) / 34%),
-        inset 0 1px 0 rgb(var(--rgb-white) / 5%);
+        0 4px 12px rgb(var(--rgb-black) / 45%);
 }
 
 .dark .aside-body .message-card:first-child:active {
-    border-color: rgb(var(--rgb-accent-cyan) / 18%);
-    box-shadow: 0 .06rem .22rem rgb(var(--rgb-black) / 24%);
+    border-color: rgb(var(--rgb-accent-cyan) / 22%);
+    box-shadow: 0 2px 8px rgb(var(--rgb-black) / 40%);
 }
 
 html.dark[data-input-mode="keyboard"] .aside-body .message-card:focus-visible,
@@ -765,8 +734,6 @@ html.dark[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-
 }
 
 .dark .aside-body .msg-hashtag {
-    border-color: rgb(var(--rgb-accent-cyan) / 16%);
-    background-color: rgb(var(--rgb-accent-cyan) / 17%);
     color: var(--color-accent-cyan);
 }
 
@@ -775,12 +742,12 @@ html.dark[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-
 }
 
 .dark .aside-body .msg-count {
-    border-left-color: rgb(var(--rgb-accent-cyan) / 14%);
-    color: var(--text-secondary);
+    background: var(--color-accent-cyan);
+    color: var(--surface-dark-panel);
 }
 
 .dark .aside-body .stack-footer {
-    color: var(--text-secondary);
+    color: rgb(var(--rgb-accent-cyan) / 35%);
 }
 
 @media screen and (max-width: 560px), screen and (max-height: 680px) {
@@ -809,7 +776,7 @@ html.dark[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-
     .aside-body .author-avatar {
         width: 2.625rem;
         height: 2.625rem;
-        border-radius: .65rem;
+        border-radius: 50%;
     }
 
     .aside-body .aside-author-card {
@@ -850,9 +817,13 @@ html.dark[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-
 }
 
 @media (hover: none) {
+    .aside-body .aside-author-card:hover,
+    .aside-body .aside-links-card:hover,
     .aside-body .aside-share-card:hover,
     .aside-body .aside-tags-card:hover,
     .aside-body .aside-copyright-card:hover,
+    .dark .aside-body .aside-author-card:hover,
+    .dark .aside-body .aside-links-card:hover,
     .dark .aside-body .aside-share-card:hover,
     .dark .aside-body .aside-tags-card:hover,
     .dark .aside-body .aside-copyright-card:hover {

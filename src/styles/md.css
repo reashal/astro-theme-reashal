@@ -28,6 +28,10 @@
     --article-heading-marker: var(--color-accent-cyan);
 }
 
+.dark .article-container {
+    box-shadow: rgb(var(--rgb-accent-cyan) / 40%) 0px 0px 8px;
+}
+
 .doc .article-search-meta {
     position: absolute;
     width: 1px;
@@ -584,7 +588,7 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
 .doc pre {
     max-width: 100%;
     padding: 2.4rem .6rem .6rem .6rem;
-    border-radius: .5rem;
+    border-radius: var(--radius-md);
     font-size: 1rem;
     background-color: var(--surface-code) !important;
     border: 1px solid var(--border-code);

@@ -30,13 +30,7 @@ body {
 
 body {
     min-height: 100dvh;
-    background:
-        radial-gradient(
-            circle at 50% -12rem,
-            rgb(var(--rgb-brand) / 4%),
-            transparent 34rem
-        ),
-        var(--surface-page);
+    background-color: var(--surface-page);
     font-family:
         "HM",
         "HarmonyOS Sans SC",
@@ -46,13 +40,7 @@ body {
 }
 
 .dark body {
-    background:
-        radial-gradient(
-            circle at 50% -12rem,
-            rgb(var(--rgb-accent-cyan) / 5%),
-            transparent 34rem
-        ),
-        var(--surface-page-dark);
+    background-color: var(--surface-page-dark);
 }
 
 /* === 字体定义 === */
@@ -118,8 +106,6 @@ main {
     margin-top: 3.4vh;
     margin-bottom: 3.4vh;
     padding: clamp(1rem, 1.4vw, 1.25rem);
-    border: 1px solid var(--border-surface);
-    background: var(--surface-raised);
     box-shadow: var(--shadow-shell);
 }
 
@@ -137,7 +123,7 @@ main {
 }
 
 .aside-show aside {
-    box-shadow: var(--shadow-aside);
+    box-shadow: var(--shadow-aside), inset -1px 0 0 var(--panel-edge);
 }
 
 /* 侧边栏隐藏状态 */
@@ -173,21 +159,12 @@ main {
     margin: 1rem 0;
     padding: .6rem;
     background-color: var(--color-brand);
-    border-radius: .3rem;
+    border-radius: var(--radius-md);
     color: var(--color-white);
 }
 
 .article-container section.article-copy a {
     color: var(--color-white);
-    text-decoration: underline;
-    text-decoration-color: rgb(var(--rgb-white) / 38%);
-    text-underline-offset: .16em;
-    transition: text-decoration-color .2s ease;
-}
-
-.article-container section.article-copy a:hover {
-    color: var(--color-white);
-    text-decoration-color: currentColor;
 }
 
 .article-copy .article-copy-info {
@@ -236,9 +213,8 @@ main {
         margin: 2rem auto 0;
         width: min(80%, 72rem);
         height: 38vh;
-        border-radius: .8rem;
+        border-radius: var(--radius-lg);
         overflow: hidden;
-        box-shadow: var(--shadow-banner);
     }
 
     .main > article {
@@ -246,7 +222,7 @@ main {
         min-height: calc(100% - 43.4vh);
         margin-left: auto;
         margin-right: auto;
-        border-radius: .8rem;
+        border-radius: var(--radius-lg);
     }
 }
 

@@ -122,12 +122,8 @@ const structuredDataJson = structuredData
                 }
 
                 const hour = new Date().getHours();
-                const prefersDark = window.matchMedia(
-                    "(prefers-color-scheme: dark)",
-                ).matches;
-                const theme =
-                    manualTheme ??
-                    (hour > 20 || hour < 6 || prefersDark ? "dark" : "light");
+                // 20:00~06:00 自动深色，其余时间浅色；手动选择优先，超过缓存期后回到时间规则
+                const theme = manualTheme ?? (hour >= 20 || hour < 6 ? "dark" : "light");
 
                 root.classList.toggle("dark", theme === "dark");
                 root.style.colorScheme = theme;

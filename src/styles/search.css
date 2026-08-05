@@ -53,9 +53,11 @@ html[data-input-mode="keyboard"] .docs-search-toggle:focus-visible {
     width: min(23rem, calc(100vw - 2rem));
     padding: .75rem;
     border: 1px solid rgb(var(--rgb-white) / 18%);
-    border-radius: .75rem;
+    border-radius: var(--radius-lg);
     background: rgb(var(--rgb-dark-message) / 84%);
-    box-shadow: 0 .8rem 2.4rem rgb(var(--rgb-black) / 24%);
+    box-shadow:
+        0 .8rem 2.4rem rgb(var(--rgb-black) / 28%),
+        inset 0 1px 0 rgb(var(--rgb-white) / 6%);
     backdrop-filter: blur(16px) saturate(125%);
     color: var(--text-on-dark);
     transform-origin: top right;
@@ -73,7 +75,7 @@ html[data-input-mode="keyboard"] .docs-search-toggle:focus-visible {
     min-height: 2.6rem;
     padding: 0 .7rem;
     border: 1px solid rgb(var(--rgb-white) / 16%);
-    border-radius: .55rem;
+    border-radius: var(--radius-md);
     background: rgb(var(--rgb-white) / 9%);
     transition:
         border-color .2s ease,
@@ -144,7 +146,7 @@ html[data-input-mode="keyboard"] .docs-search-toggle:focus-visible {
     align-items: center;
     gap: .7rem;
     padding: .55rem .6rem;
-    border-radius: .5rem;
+    border-radius: var(--radius-md);
     color: var(--text-on-dark);
     font-weight: normal;
     transition:

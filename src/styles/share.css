@@ -11,7 +11,7 @@
     background-color: var(--color-brand);
     color: var(--color-white);
     border: none;
-    border-radius: 0.5rem;
+    border-radius: var(--radius-md);
     cursor: pointer;
     font-size: 0.9rem;
     transition: all 0.3s ease;
@@ -58,11 +58,11 @@ html[data-input-mode="keyboard"] .share-close:focus-visible {
 
 .share-card {
     background-color: var(--color-white);
-    border-radius: 1rem;
+    border-radius: var(--radius-xl);
     width: 90%;
     max-width: 400px;
     overflow: hidden;
-    box-shadow: 0 20px 60px rgb(var(--rgb-black) / 30%);
+    box-shadow: var(--shadow-pop);
     transform: scale(0.9);
     transition: transform 0.3s ease;
     position: relative;
@@ -157,7 +157,7 @@ html[data-input-mode="keyboard"] .share-close:focus-visible {
     flex: 1;
     padding: 0.5rem 1rem;
     border: 1px solid var(--border-light);
-    border-radius: 0.5rem;
+    border-radius: var(--radius-md);
     font-size: 0.85rem;
     background-color: var(--surface-soft);
     color: var(--text-strong);
@@ -171,7 +171,7 @@ html[data-input-mode="keyboard"] .share-close:focus-visible {
     background-color: var(--color-brand);
     color: var(--color-white);
     border: none;
-    border-radius: 0.5rem;
+    border-radius: var(--radius-md);
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 0.85rem;
@@ -194,7 +194,7 @@ html[data-input-mode="keyboard"] .share-close:focus-visible {
 
 .share-card-qrcode canvas {
     border: 2px solid var(--border-light);
-    border-radius: 0.5rem;
+    border-radius: var(--radius-md);
     padding: 0.5rem;
     background-color: var(--color-white);
     display: block;
@@ -228,6 +228,7 @@ html.dark .share-btn:hover {
 
 html.dark .share-card {
     background-color: var(--surface-dark-panel);
+    box-shadow: var(--shadow-pop);
 }
 
 html.dark .share-card-title {

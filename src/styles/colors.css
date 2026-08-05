@@ -64,10 +64,10 @@
     --surface-dark-row: #252525;
     --surface-dark-input: #2d3748;
 
-    /* 组件表面：统一页面外壳与卡片的层级关系 */
+    /* 组件表面：恢复为页面底色透出的层级关系 */
     --surface-raised: var(--color-white);
-    --surface-raised-hover: #fbfdfd;
-    --surface-tint: rgb(var(--rgb-brand) / 4%);
+    --surface-raised-hover: var(--color-white);
+    --surface-tint: rgb(var(--rgb-brand) / 5%);
 
     /* 边框与分隔线 */
     --border-light: #e0e0e0;
@@ -80,22 +80,38 @@
     --border-dark-input: #4a5568;
     --border-dark-divider: #313131;
     --rule-dark: #7e8fa6;
-    --border-surface: rgb(var(--rgb-brand) / 10%);
+    --border-surface: transparent;
 
-    /* 阴影带有轻微品牌色，避免通用的纯黑悬浮感 */
+    /* 圆角层级：内嵌元素紧、容器柔和（容器 > 控件 > 内部元素） */
+    --radius-sm: .3rem;
+    --radius-md: .5rem;
+    --radius-lg: .8rem;
+    --radius-xl: 1rem;
+    --radius-pill: 999px;
+
+    /* 阴影使用实黑投影，保持卡片的实体悬浮层次 */
     --shadow-shell:
-        0 1.1rem 3rem rgb(var(--rgb-brand) / 7%),
-        0 .2rem .9rem rgb(var(--rgb-shadow-neutral) / 7%);
-    --shadow-banner: 0 .7rem 2rem rgb(var(--rgb-brand) / 8%);
+        0 7px 29px 0 rgb(var(--rgb-shadow-neutral) / 20%);
+    --shadow-banner: none;
     --shadow-card:
-        0 .45rem 1.3rem rgb(var(--rgb-brand) / 7%),
-        0 1px .25rem rgb(var(--rgb-shadow-neutral) / 6%);
+        0 2px 6px rgb(var(--rgb-black) / 14%),
+        0 14px 26px rgb(var(--rgb-black) / 18%);
     --shadow-card-hover:
-        0 .8rem 1.8rem rgb(var(--rgb-brand) / 10%),
-        0 .15rem .45rem rgb(var(--rgb-shadow-neutral) / 7%);
+        0 1px 3px rgb(var(--rgb-black) / 10%),
+        0 5px 12px rgb(var(--rgb-black) / 12%);
     --shadow-aside:
-        1px 0 0 rgb(var(--rgb-brand) / 8%),
-        .32rem 0 .9rem -.68rem rgb(var(--rgb-brand) / 22%);
+        0 5px 15px rgb(var(--rgb-black) / 35%);
+    /* 弹层阴影：较远、分散、带底色调，光照方向与卡片一致（单光源自顶部） */
+    --shadow-pop:
+        0 .2rem .6rem rgb(var(--rgb-shadow-neutral) / 12%),
+        0 1rem 2.6rem rgb(var(--rgb-shadow-neutral) / 18%),
+        0 0 0 1px rgb(var(--rgb-brand) / 5%);
+
+    /* 卡片与面板边缘：结构在组件内统一定义，此处只随主题换色 */
+    --card-gloss: rgb(var(--rgb-white) / 80%);
+    --card-gloss-hover: rgb(var(--rgb-white) / 50%);
+    --card-hairline: rgb(var(--rgb-black) / 4%);
+    --panel-edge: rgb(var(--rgb-black) / 5%);
 
     /* 代码块窗口指示灯：功能性辨识色，不合并 */
     --terminal-red: #ff5f57;
@@ -123,18 +139,28 @@
     --surface-raised: var(--surface-dark-card);
     --surface-raised-hover: var(--surface-dark-card-hover);
     --surface-tint: rgb(var(--rgb-accent-cyan) / 5%);
-    --border-surface: rgb(var(--rgb-accent-cyan) / 13%);
+    --border-surface: transparent;
     --shadow-shell:
-        0 1.2rem 3.2rem rgb(var(--rgb-black) / 24%),
-        0 0 0 1px rgb(var(--rgb-accent-cyan) / 4%);
-    --shadow-banner: 0 .8rem 2.2rem rgb(var(--rgb-black) / 20%);
+        0 0 8px rgb(var(--rgb-accent-cyan) / 40%);
+    --shadow-banner: none;
     --shadow-card:
-        0 .55rem 1.45rem rgb(var(--rgb-black) / 18%),
-        0 0 0 1px rgb(var(--rgb-accent-cyan) / 4%);
+        0 2px 6px rgb(var(--rgb-black) / 35%),
+        0 14px 26px rgb(var(--rgb-black) / 30%),
+        0 0 8px rgb(var(--rgb-accent-cyan) / 20%);
     --shadow-card-hover:
-        0 .85rem 2rem rgb(var(--rgb-black) / 24%),
-        0 0 0 1px rgb(var(--rgb-accent-cyan) / 8%);
+        0 1px 4px rgb(var(--rgb-black) / 24%),
+        0 5px 12px rgb(var(--rgb-black) / 22%),
+        0 0 5px rgb(var(--rgb-accent-cyan) / 10%);
     --shadow-aside:
-        1px 0 0 rgb(var(--rgb-accent-cyan) / 7%),
-        .3rem 0 .85rem -.66rem rgb(var(--rgb-accent-cyan) / 13%);
+        0 5px 15px rgb(var(--rgb-black) / 30%),
+        0 0 8px rgb(var(--rgb-accent-cyan) / 40%);
+    --shadow-pop:
+        0 .2rem .6rem rgb(var(--rgb-black) / 32%),
+        0 1.2rem 3rem rgb(var(--rgb-black) / 44%),
+        0 0 0 1px rgb(var(--rgb-accent-cyan) / 6%);
+
+    --card-gloss: rgb(var(--rgb-white) / 14%);
+    --card-gloss-hover: rgb(var(--rgb-white) / 9%);
+    --card-hairline: rgb(var(--rgb-white) / 7%);
+    --panel-edge: rgb(var(--rgb-white) / 6%);
 }
