@@ -246,7 +246,7 @@
     aspect-ratio: 16 / 9;
     background:
         radial-gradient(circle at 50% 45%, rgb(var(--rgb-accent-cyan) / 18%), transparent 34%),
-        linear-gradient(145deg, var(--surface-dark-panel), var(--surface-dark-card));
+        linear-gradient(145deg, var(--media-placeholder-a), var(--media-placeholder-b));
 }
 
 .moment-media-grid .moment-video-placeholder {
@@ -779,6 +779,10 @@ html.dark[data-input-mode="keyboard"] .music-toggle:focus-visible {
 }
 
 .dark .comment-text {
+    color: var(--text-on-dark);
+}
+
+.dark .comment-item {
     color: var(--text-on-dark);
 }
 

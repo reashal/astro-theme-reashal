@@ -88,10 +88,6 @@
     color: var(--text-on-dark-strong);
 }
 
-.dark .doc .article-description {
-    color: var(--article-summary-color);
-}
-
 .doc .article-description {
     max-width: 46rem;
     margin: .42rem 0 0;
@@ -428,11 +424,8 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
 }
 
 .dark .doc .article-related-item:hover {
-    color: var(--color-accent-cyan);
-}
-
-.dark .doc .article-related-item:hover {
     border-color: rgb(var(--rgb-accent-cyan) / 32%);
+    color: var(--color-accent-cyan);
 }
 
 .dark .doc .article-related-item:hover > svg {
@@ -698,7 +691,7 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
     color: var(--shiki-dark, var(--text-on-dark)) !important;
 }
 
-/* 行内代码 */
+/* 行内代码：浅色基础用浅色 token，深色追加覆盖（覆盖表格/列表内的行内代码） */
 .doc code {
     max-width: 100%;
     white-space: pre-wrap;
@@ -707,22 +700,15 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
     line-height: 1rem;
     font-weight: bold;
     border-radius: .2rem;
-    background-color: var(--color-slate);
-    color: var(--text-on-dark);
+    border: 1px solid transparent;
+    background-color: var(--surface-code);
+    color: var(--text-strong);
 }
 
-.doc > p code,
-.doc blockquote p code {
-    background-color: var(--color-slate);
-    color: var(--text-on-dark);
-    border: none;
-}
-
-.dark .doc > p code,
-.dark .doc blockquote p code {
+.dark .doc code {
     color: var(--text-on-dark);
     background-color: var(--surface-dark-control);
-    border: 1px solid var(--border-dark-code);
+    border-color: var(--border-dark-code);
 }
 
 /* 列表 */

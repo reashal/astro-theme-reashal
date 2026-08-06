@@ -203,6 +203,21 @@ const currentPath = Astro.url.pathname;
         true,
     );
 
+    // 评论区（Giscus iframe）内的点击不会冒泡到父文档，但会把父文档
+    // 焦点移入 iframe：借此判定点击了评论等内嵌内容，并同步收起侧边栏。
+    window.addEventListener(
+        "blur",
+        () => {
+            if (
+                layout?.classList.contains("aside-show") &&
+                document.activeElement?.closest("iframe")
+            ) {
+                setAsideOpen(false);
+            }
+        },
+        true,
+    );
+
     document.addEventListener("keydown", (event) => {
         if (
             event.key === "Escape" &&

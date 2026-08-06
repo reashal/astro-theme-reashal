@@ -218,56 +218,56 @@ html[data-input-mode="keyboard"] .share-close:focus-visible {
 }
 
 /* 暗黑模式 */
-html.dark .share-btn {
+.dark .share-btn {
     background-color: var(--color-accent-cyan);
 }
 
-html.dark .share-btn:hover {
+.dark .share-btn:hover {
     background-color: var(--color-accent-cyan-hover);
 }
 
-html.dark .share-card {
+.dark .share-card {
     background-color: var(--surface-dark-panel);
     box-shadow: var(--shadow-pop);
 }
 
-html.dark .share-card-title {
+.dark .share-card-title {
     color: var(--text-on-dark);
 }
 
-html.dark .share-card-desc {
+.dark .share-card-desc {
     color: var(--text-on-dark-secondary);
 }
 
-html.dark .share-card-link input {
+.dark .share-card-link input {
     background-color: var(--surface-dark-input);
     border-color: var(--border-dark-input);
     color: var(--text-on-dark);
 }
 
-html.dark .copy-btn {
+.dark .copy-btn {
     background-color: var(--color-accent-cyan);
 }
 
-html.dark .copy-btn:hover {
+.dark .copy-btn:hover {
     background-color: var(--color-accent-cyan-hover);
 }
 
-html.dark .share-card-qrcode canvas {
+.dark .share-card-qrcode canvas {
     border-color: var(--border-dark-input);
 }
 
-html.dark .qrcode-tip {
+.dark .qrcode-tip {
     color: var(--text-on-dark-muted);
 }
 
-html.dark .share-feedback {
+.dark .share-feedback {
     color: var(--color-accent-cyan);
 }
 
-html.dark[data-input-mode="keyboard"] .share-btn:focus-visible,
-html.dark[data-input-mode="keyboard"] .copy-btn:focus-visible,
-html.dark[data-input-mode="keyboard"] .share-close:focus-visible {
+.dark[data-input-mode="keyboard"] .share-btn:focus-visible,
+.dark[data-input-mode="keyboard"] .copy-btn:focus-visible,
+.dark[data-input-mode="keyboard"] .share-close:focus-visible {
     outline-color: var(--color-accent-cyan);
 }
 

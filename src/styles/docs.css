@@ -306,8 +306,19 @@ html.dark[data-input-mode="keyboard"] .page-btn:focus-visible {
 }
 
 
+/* 列表条目文字：列表页不加载 md.css，需在此补齐深色文字层级 */
+.dark .docs-body,
+.dark .docs-h {
+    color: var(--text-on-dark-strong);
+}
+
+.dark .docs-p {
+    color: var(--text-on-dark-body);
+}
+
 /* 笔记标题底部：深灰色边框 */
 .dark .docs-t {
+    color: var(--text-on-dark-muted);
     border-bottom: .2rem var(--border-dark-divider) solid;
 }
 

@@ -580,10 +580,6 @@ a.showcase-text-only:active {
     color: var(--text-on-dark-strong);
 }
 
-.dark .showcase-intro::after {
-    color: var(--border-dark);
-}
-
 .dark .showcase-p {
     color: var(--text-on-dark-secondary);
 }

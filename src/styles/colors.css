@@ -52,6 +52,7 @@
     /* 表面与容器 */
     --surface-page: var(--color-white);
     --surface-page-dark: #111826;
+    --surface-aside: #fcfbf7;
     --surface-soft: #f8f9fa;
     --surface-muted: #f0f0f0;
     --surface-code: #f3f4f6;
@@ -129,6 +130,10 @@
     --rgb-dark-message: 30 38 54;
     --rgb-toggle: 106 126 154;
     --rgb-shadow-neutral: 100 100 111;
+
+    /* 视频占位帧：保持“屏幕”语义的深色画面，深浅主题各自定义色值 */
+    --media-placeholder-a: #2a3340;
+    --media-placeholder-b: #1b2230;
 }
 
 .dark {
@@ -163,4 +168,8 @@
     --card-gloss-hover: rgb(var(--rgb-white) / 9%);
     --card-hairline: rgb(var(--rgb-white) / 7%);
     --panel-edge: rgb(var(--rgb-white) / 6%);
+
+    --surface-aside: var(--surface-page-dark);
+    --media-placeholder-a: var(--surface-dark-panel);
+    --media-placeholder-b: var(--surface-dark-card);
 }

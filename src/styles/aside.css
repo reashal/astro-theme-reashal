@@ -3,7 +3,7 @@ aside {
     position: relative;
     width: 240px;
     height: 100dvh;
-    background-color: #fcfbf7;
+    background-color: var(--surface-aside);
     box-shadow: inset -1px 0 0 var(--panel-edge);
 }
 
@@ -240,17 +240,22 @@ aside {
 }
 
 
-/* 导航：站内三列、站外两列；外层负责层级，链接本身不再叠加阴影。 */
+/* 导航：站内三列、站外两列；外层负责层级，链接本身不再叠加阴影。
+ * 间距体系（8px 单位 + 4px 微观档，全部落在格线上）：
+ *   4px   图标↔文字 绑定成组
+ *   8px   单元格间距 / 卡片内边距 / 分隔条留白（单位档）
+ *   16px  分隔条上下合计 2× 单位，形成区段感
+ * 单元格统一 44px 高：触控目标达标，站内/站外两段基线对齐。 */
 .aside-body .aside-links-card {
     display: block;
-    padding: .52rem;
+    padding: .5rem;
     text-align: center;
 }
 
 .aside-body .aside-links-primary,
 .aside-body .aside-links-external {
     display: grid;
-    gap: .28rem;
+    gap: .5rem;
 }
 
 .aside-body .aside-links-primary {
@@ -260,16 +265,16 @@ aside {
 .aside-body .aside-links-external {
     position: relative;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    margin-top: .52rem;
-    padding-top: .52rem;
+    margin-top: .5rem;
+    padding-top: .5rem;
 }
 
 .aside-body .aside-links-external::before {
     content: "";
     position: absolute;
     top: 0;
-    left: .52rem;
-    right: .52rem;
+    left: .5rem;
+    right: .5rem;
     height: 2px;
     border-radius: 999px;
     background-color: var(--border-light);
@@ -283,30 +288,30 @@ aside {
     position: relative;
     display: flex;
     min-width: 0;
-    min-height: 3rem;
+    min-height: 2.75rem;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: .3rem;
-    padding: .42rem .18rem;
+    gap: .25rem;
+    padding: .25rem .5rem;
     overflow: hidden;
     border: 1px solid transparent;
-    border-radius: .46rem;
+    border-radius: var(--radius-md);
     background: transparent;
     box-shadow: none;
     color: var(--text-secondary);
-    font-size: .72rem;
+    font-size: .75rem;
     font-weight: 500;
     line-height: 1;
     transition:
-        background-color .18s ease,
-        border-color .18s ease,
-        color .18s ease,
-        transform .18s ease;
+        background-color .18s cubic-bezier(.22, 1, .36, 1),
+        border-color .18s cubic-bezier(.22, 1, .36, 1),
+        color .18s cubic-bezier(.22, 1, .36, 1),
+        transform .18s cubic-bezier(.22, 1, .36, 1);
 }
 
 .aside-body .aside-links-card a::before {
-    font-size: 1.05rem;
+    font-size: 1.125rem;
     line-height: 1;
 }
 
@@ -318,11 +323,9 @@ aside {
     white-space: nowrap;
 }
 
+/* 站外按钮与站内同构：图标在上、文字在下，撑满同一 44px 单元格，
+ * 仅以颜色弱化层级，避免横向布局造成上下留白不一致。 */
 .aside-body .aside-links-external a {
-    min-height: 2.35rem;
-    flex-direction: row;
-    gap: .32rem;
-    padding: .4rem .3rem;
     color: var(--text-muted);
 }
 
@@ -418,9 +421,13 @@ aside {
  * hover 时添加青色边框高亮
  */
 
-/* 侧边栏背景：与主界面页面底色一致 */
-.dark aside {
-    background-color: var(--surface-page-dark);
+/* 侧边栏背景：与主界面页面底色一致（底色换色已收口到 --surface-aside token） */
+.dark .aside-toggle-btn {
+    background-color: rgb(var(--rgb-white) / 10%);
+}
+
+.dark .aside-toggle-btn:active {
+    background-color: rgb(var(--rgb-white) / 18%);
 }
 
 /* 暗黑模式卡片：常态用亮一档的玻璃色，hover 按下回落到基础玻璃色 */
@@ -791,7 +798,7 @@ html.dark[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-
     }
 
     .aside-body .aside-links-card {
-        padding: .48rem;
+        padding: .5rem;
     }
 
     .aside-body .card-stack {
