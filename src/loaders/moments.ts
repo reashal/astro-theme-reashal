@@ -6,6 +6,7 @@ import type { Loader, LoaderContext } from "astro/loaders";
 const DATE_PATTERN = /^\d{4}\.\d{2}\.\d{2}$/;
 const MONTH_FILE_PATTERN = /^\d{4}-\d{2}\.json$/;
 const CUSTOM_ID_PATTERN = /^[a-z0-9][a-z0-9_-]{0,79}$/;
+const TIMESTAMP_ID_PATTERN = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.(\d{3})$/;
 
 const isValidDate = (value: string) => {
     if (!DATE_PATTERN.test(value)) return false;
@@ -17,6 +18,21 @@ const isValidDate = (value: string) => {
         date.getUTCDate() === day
     );
 };
+
+const isValidTimestampId = (value: string) => {
+    const match = value.match(TIMESTAMP_ID_PATTERN);
+    if (!match) return false;
+    const [, year, month, day, hour, minute, second] = match;
+    return (
+        isValidDate(`${year}.${month}.${day}`) &&
+        Number(hour) <= 23 &&
+        Number(minute) <= 59 &&
+        Number(second) <= 59
+    );
+};
+
+export const isValidMomentId = (value: string) =>
+    CUSTOM_ID_PATTERN.test(value) || isValidTimestampId(value);
 
 export function momentsLoader(directory: string): Loader {
     const sync = async (context: LoaderContext) => {
@@ -61,10 +77,10 @@ export function momentsLoader(directory: string): Loader {
                 if ("id" in rawItem) {
                     if (
                         typeof rawItem.id !== "string" ||
-                        !CUSTOM_ID_PATTERN.test(rawItem.id)
+                        !isValidMomentId(rawItem.id)
                     ) {
                         throw new TypeError(
-                            `${fileName} 中动态 id 无效：只能使用 1～80 位小写字母、数字、短横线或下划线，并以字母或数字开头`,
+                            `${fileName} 中动态 id 无效：应为精确到毫秒的本地时间 ID，或兼容的旧自定义 ID`,
                         );
                     }
                     id = rawItem.id;

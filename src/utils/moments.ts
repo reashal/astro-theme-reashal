@@ -4,6 +4,7 @@ export const MOMENTS_PAGE_SIZE = 10;
 
 export type MomentEntry = CollectionEntry<"moments">;
 export type MomentData = MomentEntry["data"] & { id: string };
+const TIMESTAMP_ID_PATTERN = /^\d{4}-\d{2}-\d{2}T(\d{2}:\d{2}:\d{2}\.\d{3})$/;
 type MomentsPage = {
     moments: MomentData[];
     page: number;
@@ -13,6 +14,10 @@ export const sortMoments = (moments: MomentEntry[]) =>
     [...moments].sort((a, b) => {
         const dateOrder = b.data.date.localeCompare(a.data.date);
         if (dateOrder !== 0) return dateOrder;
+        const leftTime = a.id.match(TIMESTAMP_ID_PATTERN)?.[1] ?? "";
+        const rightTime = b.id.match(TIMESTAMP_ID_PATTERN)?.[1] ?? "";
+        const timeOrder = rightTime.localeCompare(leftTime);
+        if (timeOrder !== 0) return timeOrder;
         return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
     });
 
