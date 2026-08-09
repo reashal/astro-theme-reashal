@@ -1,5 +1,6 @@
 {
   "version": 1,
+  "publicSiteUrl": "https://www.reashal.com",
   "resources": {
     "moments": {
       "root": "src/data/moments",

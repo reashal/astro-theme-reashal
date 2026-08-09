@@ -37,8 +37,8 @@ const articleDateSchema = z.preprocess((value) => {
 export const articleFrontmatterSchema = z.object({
     title: z.string(),
     desc: z.string(),
-    author: z.string(),
-    source: z.url(),
+    author: z.string().optional(),
+    source: z.url().optional(),
     pubDate: articleDateSchema,
     updatedDate: articleDateSchema.optional(),
     tags: z.array(z.string()).optional(),
