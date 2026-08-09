@@ -75,6 +75,22 @@ npm run build
 
 ### 内容维护
 
+#### Reashal Studio 管理后台
+
+本仓库已经包含 [`reashal-studio.config.json`](./reashal-studio.config.json) 和固定的 [GitHub Actions 验证工作流](./.github/workflows/reashal-studio-validate.yml)，可配合 [Reashal Studio](https://github.com/reashal/astro-studio-reashal) 管理动态、随笔、展示和图片。Studio 不管理音视频，也不会把浏览器校验当作安全边界。
+
+本地模式不会自动创建 Git Commit，只会在完整验证通过后原子写入审阅页列出的计划文件：
+
+```bash
+git clone https://github.com/reashal/astro-studio-reashal.git
+cd astro-studio-reashal
+npm ci
+npm run build
+npm start -- --repo /absolute/path/to/astro-theme-reashal
+```
+
+随后访问 `http://127.0.0.1:4322`。远程模式需要在独立 Gateway 的部署环境中配置 GitHub App 和 OAuth 密钥；这些敏感值不得写入主题仓库。主题仓库只保存公开的资源路径、图片限制和验证命令。
+
 #### 动态
 
 动态位于 `src/data/moments/`。每个月对应一个 `YYYY-MM.json` 文件，文件顶层必须是数组；每条动态的 `date` 必须使用 `YYYY.MM.DD` 格式，并与文件名中的年月一致。
@@ -84,7 +100,7 @@ npm run build
 ```json
 [
   {
-    "id": "2026-08-01-01",
+    "id": "2026-08-01T14:36:22.481",
     "date": "2026.08.01",
     "para": [
       "第一段正文。",
@@ -120,7 +136,7 @@ npm run build
 
 | 字段 | 类型 | 是否必需 | 说明 |
 | --- | --- | --- | --- |
-| `id` | `string` | 条件必需 | 一天只有一条动态时可省略；同日多条时必须提供不同 ID |
+| `id` | `string` | 否 | 旧内容可省略；Studio 新增内容时自动生成无时区的毫秒时间 ID |
 | `date` | `string` | 是 | 发布日期，格式为 `YYYY.MM.DD` |
 | `para` | `string[]` | 否 | 正文段落，一项对应一个自然段 |
 | `media` | `Media[]` | 否 | 图片与视频组成的有序数组，可以混合排列 |
@@ -161,7 +177,7 @@ npm run build
 
 音乐播放器提供播放、暂停、当前时间、总时长和进度拖动。同一时间只播放一首音乐；开始播放另一首音乐或在媒体查看器中播放视频时，当前音乐会暂停。
 
-自定义 `id` 只能包含 1～80 位小写字母、数字、短横线或下划线，并且必须以字母或数字开头。不同日期按日期倒序展示；日期相同时按 `id` 字典序从小到大展示。动态会以每页 10 条生成静态片段，滚动到底部或点击加载提示后继续载入；带动态锚点访问页面时，会自动加载到目标所在页。
+通过 Studio 新增动态时，调用方必须提供 `date`，Content Core 会拼接创建时的本地时分秒毫秒，生成类似 `2026-08-01T14:36:22.481` 的无时区 ID；同一毫秒碰撞时递增 1 毫秒。修改 `date` 时只同步 ID 的年月日，保留原时间部分，并在目标日期处理碰撞。旧的自定义 ID 和省略 ID 的内容继续兼容。不同日期按日期倒序展示，同日精确时间 ID 按时间倒序展示，旧 ID 作为稳定兜底。动态会以每页 10 条生成静态片段，滚动到底部或点击加载提示后继续载入；带动态锚点访问页面时，会自动加载到目标所在页。
 
 更多独立示例见 [`src/data/moments/README.md`](./src/data/moments/README.md)。
 
@@ -350,6 +366,22 @@ npm run build
 
 ### Content Authoring
 
+#### Reashal Studio Admin
+
+This repository includes [`reashal-studio.config.json`](./reashal-studio.config.json) and a fixed [GitHub Actions validation workflow](./.github/workflows/reashal-studio-validate.yml) for use with [Reashal Studio](https://github.com/reashal/astro-studio-reashal). Studio manages Moments, essays, showcase data, and images. It does not provide audio/video editors, and browser-side validation is never treated as a security boundary.
+
+Local mode does not create Git commits automatically. After full validation succeeds, it atomically writes only the files listed on the review screen:
+
+```bash
+git clone https://github.com/reashal/astro-studio-reashal.git
+cd astro-studio-reashal
+npm ci
+npm run build
+npm start -- --repo /absolute/path/to/astro-theme-reashal
+```
+
+Then open `http://127.0.0.1:4322`. Remote mode keeps GitHub App and OAuth credentials in the separately deployed Gateway environment; sensitive values must never be committed to the theme repository. This repository stores only public resource paths, image limits, and validation commands.
+
 #### Moments
 
 Moments live in `src/data/moments/`. Each month uses one `YYYY-MM.json` file whose top level must be an array. Every `date` must follow `YYYY.MM.DD` and match the year and month in its filename.
@@ -359,7 +391,7 @@ Complete example:
 ```json
 [
   {
-    "id": "2026-08-01-01",
+    "id": "2026-08-01T14:36:22.481",
     "date": "2026.08.01",
     "para": [
       "The first paragraph.",
@@ -395,7 +427,7 @@ Moment fields:
 
 | Field | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | `string` | Conditional | May be omitted for a single Moment on a date; required and unique when a date has multiple entries |
+| `id` | `string` | No | Legacy content may omit it; Studio generates a timezone-free millisecond timestamp ID for new content |
 | `date` | `string` | Yes | Publication date in `YYYY.MM.DD` format |
 | `para` | `string[]` | No | Body paragraphs, with one array item per paragraph |
 | `media` | `Media[]` | No | An ordered array containing images and videos in any combination |
@@ -436,7 +468,7 @@ Music fields:
 
 The music player provides play, pause, current time, duration, and seek controls. Only one track plays at a time. Starting another track or playing a video in the media viewer pauses the current track.
 
-A custom `id` must contain 1–80 lowercase letters, digits, hyphens, or underscores, and must start with a letter or digit. Dates are ordered newest first; entries on the same date are ordered by `id` in ascending lexicographical order. Static fragments contain 10 items each and are loaded when the reader reaches the bottom or activates the load control. A URL containing a Moment anchor automatically loads pages until the target is available.
+When Studio creates a Moment, the caller supplies `date` and Content Core appends the current local hour, minute, second, and millisecond to produce a timezone-free ID such as `2026-08-01T14:36:22.481`. A collision in the same millisecond is resolved by adding one millisecond. Changing `date` updates only the date portion of the ID, preserves its time component, and resolves collisions on the target date. Legacy custom IDs and entries without an explicit ID remain compatible. Dates are ordered newest first; timestamp IDs on the same date are ordered by time descending, with legacy IDs used as a stable fallback. Static fragments contain 10 items each and are loaded when the reader reaches the bottom or activates the load control. A URL containing a Moment anchor automatically loads pages until the target is available.
 
 See [`src/data/moments/README.md`](./src/data/moments/README.md) for additional focused examples.
 

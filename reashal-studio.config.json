@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "resources": {
+    "moments": {
+      "root": "src/data/moments",
+      "pageSize": 10
+    },
+    "essays": {
+      "root": "src/pages/docs",
+      "urlPrefix": "/docs"
+    },
+    "showcase": {
+      "file": "src/showcase.json"
+    },
+    "images": {
+      "roots": ["public/images"],
+      "extensions": ["jpg", "jpeg", "png", "webp", "gif", "avif"],
+      "emptyDirectoryMarker": ".gitkeep"
+    }
+  },
+  "imageUpload": {
+    "softLimitBytes": 10485760,
+    "maxBytes": 20971520,
+    "optimization": "lossless-if-smaller"
+  },
+  "validation": {
+    "commands": [
+      { "command": "npm", "args": ["run", "check"] },
+      { "command": "npm", "args": ["run", "build"] }
+    ],
+    "timeoutMs": 600000
+  },
+  "github": {
+    "validationWorkflow": "reashal-studio-validate.yml",
+    "validationTimeoutSeconds": 900
+  }
+}
