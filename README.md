@@ -89,7 +89,7 @@ npm run build
 npm start -- --repo /absolute/path/to/astro-theme-reashal
 ```
 
-随后访问 `http://127.0.0.1:4322`。远程模式需要在独立 Gateway 的部署环境中配置 GitHub App 和 OAuth 密钥；这些敏感值不得写入主题仓库。主题仓库只保存公开的资源路径、图片限制和验证命令。
+随后访问 `http://127.0.0.1:4322`。远程模式推荐将 Studio 仓库部署为 EdgeOne Makers 项目：Pages 提供后台界面，Node Cloud Functions 承担 Gateway，图片通过 Pages Blob 预签名 URL 临时直传，因此不需要常驻进程。GitHub App、OAuth 和 Session 密钥只能配置在 EdgeOne Production Secret 中，不得写入主题仓库；主题仓库只保存公开的资源路径、图片限制和验证命令。
 
 #### 动态
 
@@ -380,7 +380,7 @@ npm run build
 npm start -- --repo /absolute/path/to/astro-theme-reashal
 ```
 
-Then open `http://127.0.0.1:4322`. Remote mode keeps GitHub App and OAuth credentials in the separately deployed Gateway environment; sensitive values must never be committed to the theme repository. This repository stores only public resource paths, image limits, and validation commands.
+Then open `http://127.0.0.1:4322`. For remote mode, deploy the Studio repository as an EdgeOne Makers project: Pages serves the admin UI, Node Cloud Functions run the Gateway, and images are temporarily uploaded through signed Pages Blob URLs, so no persistent process is required. Keep GitHub App, OAuth, and session credentials exclusively in EdgeOne Production Secrets. This repository stores only public resource paths, image limits, and validation commands.
 
 #### Moments
 
