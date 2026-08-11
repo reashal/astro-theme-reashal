@@ -10,6 +10,7 @@ import {
     getDocsArticles,
     sortArticlesByDate,
 } from "../utils/articles";
+import { AUTHOR_INFO } from "../consts";
 import BaseLayout from "./BaseLayout.astro";
 
 interface Props {
@@ -24,6 +25,11 @@ const {
     rawContent: getRawContent,
 } = Astro.props as Props;
 const tags = frontmatter.tags || [];
+
+// 随笔可省略署名和来源：署名回退至站点作者，来源始终指向当前随笔的规范地址。
+const articleAuthor = frontmatter.author?.trim() || AUTHOR_INFO.name;
+const articleSource =
+    frontmatter.source || new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
 
 const normalizePath = (path: string) =>
     path.length > 1 ? path.replace(/\/+$/, "") : path;
@@ -190,13 +196,13 @@ const formatDate = (date: string) => {
         </div>
         <section class="article-copy" data-pagefind-ignore="all">
             <div>
-                本文作者：<a href={frontmatter.source} target="_blank" rel="noopener noreferrer"
-                    >{frontmatter.author}</a
+                本文作者：<a href={articleSource} target="_blank" rel="noopener noreferrer"
+                    >{articleAuthor}</a
                 >
             </div>
             <div>
-                本文来源：<a href={frontmatter.source} target="_blank" rel="noopener noreferrer"
-                    >{frontmatter.source}</a
+                本文来源：<a href={articleSource} target="_blank" rel="noopener noreferrer"
+                    >{articleSource}</a
                 >
             </div>
             <div class="article-copy-info">
