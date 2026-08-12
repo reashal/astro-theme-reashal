@@ -7,7 +7,7 @@
       {
         "type": "image",
         "alt": "N1",
-        "url": "/images/comments/N1.jpg"
+        "url": "/images/moments/N1.jpg"
       }
     ],
     "stars": ["reashal"],
@@ -32,7 +32,7 @@
       {
         "type": "image",
         "alt": "ICP注销通知",
-        "url": "/images/comments/icp.jpg"
+        "url": "/images/moments/icp.jpg"
       }
     ],
     "comments": ["心情很复杂"]
