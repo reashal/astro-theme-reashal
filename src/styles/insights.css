@@ -1,0 +1,240 @@
+/* ============================================
+ * 里程碑（蓦然回首）成就面板
+ * Double-Bezel：外层 Shell（表面下沉 + hairline + 大圆角）
+ * 嵌套内层 Core 磁贴（独立底色 + 内高光 + 同心圆角）
+ * ============================================ */
+
+.site-footprints {
+    --sf-accent: var(--color-brand);
+    --sf-accent-rgb: var(--rgb-brand);
+
+    position: relative;
+    margin: 2.6rem 0 1.6rem;
+    padding: 1.3rem 1.3rem 1.4rem;
+    border-radius: var(--radius-xl);
+    background-color: var(--surface-soft);
+    box-shadow:
+        var(--shadow-card),
+        inset 0 1px 0 var(--card-gloss),
+        inset 0 0 0 1px var(--card-hairline);
+}
+
+/* 标题：与正文小标题同源的圆头标尺，保持文气克制 */
+.sf-head {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    margin-bottom: 1.15rem;
+}
+
+.sf-head::before {
+    width: .26rem;
+    height: 1.08em;
+    border-radius: 999px;
+    background: var(--article-heading-marker);
+    content: "";
+}
+
+.sf-head h2 {
+    margin: 0;
+    color: var(--text-strong);
+    font-size: 1.3rem;
+    letter-spacing: .06em;
+    line-height: 1.45;
+}
+
+/* 成就磁贴网格：四格并排，窄屏两两成对，避免平铺对称的呆板 */
+.sf-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: .6rem;
+    margin: 0;
+}
+
+.sf-tile {
+    display: grid;
+    align-content: start;
+    gap: .3rem;
+    min-width: 0;
+    padding: .62rem .78rem .6rem;
+    border-radius: var(--radius-md);
+    background-color: rgb(var(--rgb-white) / 62%);
+    box-shadow:
+        var(--shadow-card-hover),
+        inset 0 1px 0 var(--card-gloss),
+        inset 0 0 0 1px var(--card-hairline);
+    transition:
+        transform .3s cubic-bezier(.22, 1, .36, 1),
+        box-shadow .3s cubic-bezier(.22, 1, .36, 1);
+}
+
+.sf-tile:hover {
+    transform: translateY(1px) scale(.98);
+    box-shadow:
+        var(--shadow-card-hover),
+        inset 0 1px 0 var(--card-gloss),
+        inset 0 0 0 1px rgb(var(--rgb-brand) / 14%);
+}
+
+.sf-tile:active {
+    transform: translateY(2px) scale(.97);
+    box-shadow:
+        var(--shadow-card-hover),
+        inset 0 1px 0 var(--card-gloss),
+        inset 0 0 0 1px rgb(var(--rgb-brand) / 20%);
+    transition-duration: .1s;
+}
+
+.sf-tile-label {
+    color: var(--text-tertiary);
+    font-size: .64rem;
+    font-weight: 600;
+    letter-spacing: .16em;
+}
+
+.sf-tile-metric {
+    display: flex;
+    align-items: baseline;
+    gap: .22rem;
+    margin: 0;
+}
+
+.sf-tile-metric strong {
+    color: var(--sf-accent);
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.01em;
+}
+
+.sf-tile-metric span {
+    color: var(--text-secondary);
+    font-size: .68rem;
+}
+
+/* 进度槽：向下一刻度推进的轨迹 */
+.sf-tile-track {
+    position: relative;
+    height: .24rem;
+    margin-top: .1rem;
+    border-radius: 999px;
+    overflow: hidden;
+    background-color: rgb(var(--sf-accent-rgb) / 10%);
+}
+
+.sf-tile-fill {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--sf-accent), var(--color-accent-cyan));
+    transform: scaleX(var(--fill, 0));
+    transform-origin: left;
+    animation: sf-fill-in-initial .7s cubic-bezier(.22, 1, .36, 1) both;
+    animation-delay: calc(var(--sf-index, 0) * 90ms);
+}
+
+@keyframes sf-fill-in-initial {
+    from {
+        transform: scaleX(0);
+    }
+}
+
+/* ============ 深色：结构与高光是同构的，只换主题色 ============ */
+.dark .site-footprints {
+    --sf-accent: var(--color-accent-cyan);
+    --sf-accent-rgb: var(--rgb-accent-cyan);
+
+    background-color: rgb(var(--rgb-dark-card) / 55%);
+    box-shadow:
+        var(--shadow-card),
+        inset 0 1px 0 var(--card-gloss),
+        inset 0 0 0 1px var(--card-hairline);
+}
+
+.dark .sf-head h2 {
+    color: var(--text-on-dark);
+}
+
+.dark .sf-tile {
+    background-color: rgb(var(--rgb-dark-panel) / 72%);
+    box-shadow:
+        var(--shadow-card-hover),
+        inset 0 1px 0 var(--card-gloss),
+        inset 0 0 0 1px var(--card-hairline);
+}
+
+.dark .sf-tile:hover {
+    box-shadow:
+        var(--shadow-card-hover),
+        inset 0 1px 0 var(--card-gloss),
+        inset 0 0 0 1px rgb(var(--rgb-accent-cyan) / 18%);
+}
+
+.dark .sf-tile:active {
+    box-shadow:
+        var(--shadow-card-hover),
+        inset 0 1px 0 var(--card-gloss),
+        inset 0 0 0 1px rgb(var(--rgb-accent-cyan) / 26%);
+    transition-duration: .1s;
+}
+
+.dark .sf-tile-label {
+    color: var(--text-on-dark-soft);
+}
+
+.dark .sf-tile-metric span {
+    color: var(--text-on-dark-secondary);
+}
+
+.dark .sf-tile-track {
+    background-color: rgb(var(--sf-accent-rgb) / 20%);
+}
+
+/* 窄屏：保持单行，卡片保底宽度，放不下时整行横向滚动，内容不溢出 */
+@media (max-width: 640px) {
+    .site-footprints {
+        padding: 1.1rem 1rem 1.15rem;
+    }
+
+    .sf-grid {
+        grid-template-columns: repeat(4, minmax(6.5rem, 1fr));
+        gap: .5rem;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        scrollbar-width: none;
+        cursor: grab;
+        touch-action: pan-y;
+        user-select: none;
+    }
+
+    .sf-grid.sf-grid-dragging {
+        cursor: grabbing;
+    }
+
+    .sf-tile {
+        padding: .5rem .55rem .48rem;
+    }
+
+    .sf-tile-label {
+        overflow: hidden;
+        font-size: .56rem;
+        letter-spacing: .1em;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .sf-tile-metric strong {
+        font-size: 1.05rem;
+    }
+
+    .sf-tile-metric span {
+        font-size: .56rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sf-tile-fill {
+        animation: none;
+    }
+}

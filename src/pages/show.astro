@@ -26,6 +26,7 @@ const hasValidImage = (image: string | undefined): boolean => !!image && image.t
 <BaseLayout
     pageTitle={pageMeta.title}
     pageDescription={pageMeta.description}
+    enableMediaViewer
 >
     <article class="article-container showcase">
         <nav class="showcase-nav" aria-label="展示分类">
@@ -83,6 +84,8 @@ const hasValidImage = (image: string | undefined): boolean => !!image && image.t
                                                         title={card.title}
                                                         loading="lazy"
                                                         decoding="async"
+                                                        data-view-image={card.image?.startsWith("/") ? "" : undefined}
+                                                        data-view-group={card.image?.startsWith("/") ? `showcase-${id}` : undefined}
                                                     />
                                                 )}
                                             </div>
@@ -99,6 +102,8 @@ const hasValidImage = (image: string | undefined): boolean => !!image && image.t
                                                         title={card.title}
                                                         loading="lazy"
                                                         decoding="async"
+                                                        data-view-image={card.image?.startsWith("/") ? "" : undefined}
+                                                        data-view-group={card.image?.startsWith("/") ? `showcase-${id}` : undefined}
                                                     />
                                                 )}
                                             </div>

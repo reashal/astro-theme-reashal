@@ -4,6 +4,7 @@ import "../styles/md.css";
 import ArticleToc from "../components/ArticleToc.astro";
 import Giscus from "../components/Giscus.astro";
 import ReadingProgress from "../components/ReadingProgress.astro";
+import SiteFootprints from "../components/SiteFootprints.astro";
 import type { ArticleFrontmatter } from "../types";
 import {
     estimateReadingMinutes,
@@ -35,6 +36,7 @@ const normalizePath = (path: string) =>
     path.length > 1 ? path.replace(/\/+$/, "") : path;
 const currentPath = normalizePath(Astro.url.pathname);
 const isDocsArticle = currentPath.startsWith("/docs/");
+const isAboutPage = currentPath === "/about";
 const rawArticle = isDocsArticle ? (getRawContent?.() ?? "") : "";
 const readingMinutes = estimateReadingMinutes(rawArticle);
 const tocHeadings = headings.filter(
@@ -194,72 +196,76 @@ const formatDate = (date: string) => {
         <div class="article-content">
             <slot />
         </div>
-        <section class="article-copy" data-pagefind-ignore="all">
-            <div>
-                本文作者：<a href={articleSource} target="_blank" rel="noopener noreferrer"
-                    >{articleAuthor}</a
-                >
-            </div>
-            <div>
-                本文来源：<a href={articleSource} target="_blank" rel="noopener noreferrer"
-                    >{articleSource}</a
-                >
-            </div>
-            <div class="article-copy-info">
-                许可协议：<a
-                    href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans"
-                    target="_blank"
-                    rel="noopener noreferrer">CC BY-NC-SA 4.0</a
-                >
-            </div>
-            <div class="article-copy-info">
-                本站随笔均为原创，涉及隐私且时效性较强，不允许任何人以任何形式转载。
-            </div>
-            <div class="article-copy-info">
-                本站笔记多对原始作品作出修改，允许非商业用途转载，转载时请注明出处。
-            </div>
-        </section>
+        {isAboutPage && <SiteFootprints />}
+        {!isAboutPage && (
+            <section class="article-copy" data-pagefind-ignore="all">
+                <div>
+                    本文作者：<a href={articleSource} target="_blank" rel="noopener noreferrer"
+                        >{articleAuthor}</a
+                    >
+                </div>
+                <div>
+                    本文来源：<a href={articleSource} target="_blank" rel="noopener noreferrer"
+                        >{articleSource}</a
+                    >
+                </div>
+                <div class="article-copy-info">
+                    许可协议：<a
+                        href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans"
+                        target="_blank"
+                        rel="noopener noreferrer">CC BY-NC-SA 4.0</a
+                    >
+                </div>
+                <div class="article-copy-info">
+                    本站随笔均为原创，涉及隐私且时效性较强，不允许任何人以任何形式转载。
+                </div>
+                <div class="article-copy-info">
+                    本站笔记多对原始作品作出修改，允许非商业用途转载，转载时请注明出处。
+                </div>
+            </section>
+        )}
         {
-            (previousArticle || nextArticle) && (
-                <nav
-                    class="article-neighbors"
-                    aria-label="相邻随笔"
-                    data-pagefind-ignore="all"
-                >
-                    {previousArticle && (
-                        <a
-                            href={previousArticle.url}
-                            class="article-neighbor article-neighbor-previous"
-                            rel="prev"
-                        >
-                            <span class="article-neighbor-direction">
-                                <i
-                                    class="iconfont icon-left"
-                                    aria-hidden="true"
-                                />
-                                上一篇
-                            </span>
-                            <strong>{previousArticle.frontmatter.title}</strong>
-                        </a>
-                    )}
-                    {nextArticle && (
-                        <a
-                            href={nextArticle.url}
-                            class="article-neighbor article-neighbor-next"
-                            rel="next"
-                        >
-                            <span class="article-neighbor-direction">
-                                下一篇
-                                <i
-                                    class="iconfont icon-right"
-                                    aria-hidden="true"
-                                />
-                            </span>
-                            <strong>{nextArticle.frontmatter.title}</strong>
-                        </a>
-                    )}
-                </nav>
-            )
+            !isAboutPage &&
+                (previousArticle || nextArticle) && (
+                    <nav
+                        class="article-neighbors"
+                        aria-label="相邻随笔"
+                        data-pagefind-ignore="all"
+                    >
+                        {previousArticle && (
+                            <a
+                                href={previousArticle.url}
+                                class="article-neighbor article-neighbor-previous"
+                                rel="prev"
+                            >
+                                <span class="article-neighbor-direction">
+                                    <i
+                                        class="iconfont icon-left"
+                                        aria-hidden="true"
+                                    />
+                                    上一篇
+                                </span>
+                                <strong>{previousArticle.frontmatter.title}</strong>
+                            </a>
+                        )}
+                        {nextArticle && (
+                            <a
+                                href={nextArticle.url}
+                                class="article-neighbor article-neighbor-next"
+                                rel="next"
+                            >
+                                <span class="article-neighbor-direction">
+                                    下一篇
+                                    <i
+                                        class="iconfont icon-right"
+                                        aria-hidden="true"
+                                    />
+                                </span>
+                                <strong>{nextArticle.frontmatter.title}</strong>
+                            </a>
+                        )}
+                    </nav>
+                )
         }
         {
             relatedArticles.length > 0 && (

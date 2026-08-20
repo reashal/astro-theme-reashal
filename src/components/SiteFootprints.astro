@@ -1,0 +1,78 @@
+---
+import { getSiteContentData } from "../utils/content-data";
+import "../styles/insights.css";
+
+const { milestones } = await getSiteContentData();
+const metricTiles = milestones.map((milestone, index) => {
+    const { current, latest, next } = milestone;
+    const ratio =
+        next === undefined ? 1 :
+        latest === undefined ? (next > 0 ? current / next : 0) :
+        (current - latest) / (next - latest);
+    const fill = Math.max(0, Math.min(1, ratio));
+    return { ...milestone, index, fill };
+});
+---
+
+<section class="site-footprints" aria-labelledby="site-footprints-title" data-pagefind-ignore="all">
+    <header class="sf-head">
+        <h2 id="site-footprints-title">蓦然回首</h2>
+    </header>
+    <dl class="sf-grid">
+        {metricTiles.map((tile) => (
+            <div
+                class="sf-tile"
+                style={`--fill:${tile.fill};--sf-index:${tile.index}`}
+            >
+                <dt class="sf-tile-label">{tile.label}</dt>
+                <dd class="sf-tile-metric">
+                    <strong>{tile.current}</strong>
+                    <span>{tile.unit}</span>
+                </dd>
+                <span class="sf-tile-track" aria-hidden="true">
+                    <span class="sf-tile-fill" />
+                </span>
+            </div>
+        ))}
+    </dl>
+</section>
+
+<script>
+    const isInSlider = (target: EventTarget | null) =>
+        target instanceof HTMLElement && !!target.closest(".sf-tile-track");
+
+    document.querySelectorAll<HTMLElement>(".sf-grid").forEach((grid) => {
+        let dragging = false;
+        let startX = 0;
+        let startScrollLeft = 0;
+
+        grid.addEventListener("pointerdown", (event) => {
+            if (event.pointerType === "mouse" && event.button !== 0) return;
+            if (isInSlider(event.target)) return;
+            if (grid.scrollWidth <= grid.clientWidth) return;
+            dragging = true;
+            startX = event.clientX;
+            startScrollLeft = grid.scrollLeft;
+            grid.setPointerCapture(event.pointerId);
+            grid.classList.add("sf-grid-dragging");
+        });
+
+        grid.addEventListener("pointermove", (event) => {
+            if (!dragging) return;
+            grid.scrollLeft = startScrollLeft - (event.clientX - startX);
+        });
+
+        const release = (event: PointerEvent) => {
+            if (!dragging) return;
+            dragging = false;
+            grid.classList.remove("sf-grid-dragging");
+            try {
+                grid.releasePointerCapture(event.pointerId);
+            } catch {
+                /* pointer capture may already be gone */
+            }
+        };
+        grid.addEventListener("pointerup", release);
+        grid.addEventListener("pointercancel", release);
+    });
+</script>

@@ -74,7 +74,8 @@ html[data-input-mode="pointer"] :focus-visible {
 .docs-search-results::-webkit-scrollbar,
 .article-toc-heading-list::-webkit-scrollbar,
 .doc pre code::-webkit-scrollbar,
-.doc table::-webkit-scrollbar {
+.doc table::-webkit-scrollbar,
+.sf-grid::-webkit-scrollbar {
     display: none;
 }
 

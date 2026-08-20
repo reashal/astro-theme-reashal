@@ -1,3 +1,8 @@
+import {
+    getImageReferences,
+    type ImageReference,
+} from "../utils/content-insights";
+
 type ViewerMedia =
     | {
           type: "image";
@@ -16,6 +21,10 @@ const viewerImage = document.getElementById("view-img") as HTMLImageElement | nu
 const viewerVideo = document.getElementById("view-video") as HTMLVideoElement | null;
 const viewerStage = document.getElementById("view-stage");
 const viewerCaption = document.getElementById("view-caption");
+const viewerReferences = document.getElementById("view-references");
+const viewerReferencesSummary = document.getElementById("view-references-summary");
+const viewerReferencesList = document.getElementById("view-references-list");
+const referenceSource = document.getElementById("image-reference-data");
 const viewerCounter = document.getElementById("view-counter");
 const loadingText = document.getElementById("view-loading");
 const errorText = document.getElementById("view-error");
@@ -36,6 +45,9 @@ if (
     viewerVideo &&
     viewerStage &&
     viewerCaption &&
+    viewerReferences &&
+    viewerReferencesSummary &&
+    viewerReferencesList &&
     viewerCounter &&
     loadingText &&
     errorText &&
@@ -47,6 +59,13 @@ if (
     scaleButton &&
     viewerTools
 ) {
+    let imageReferences: ImageReference[] = [];
+    try {
+        const parsed: unknown = JSON.parse(referenceSource?.textContent ?? "[]");
+        if (Array.isArray(parsed)) imageReferences = parsed as ImageReference[];
+    } catch {
+        imageReferences = [];
+    }
     const groups = new Map<string, ViewerMedia[]>();
     const initializedSections = new WeakSet<HTMLElement>();
     let currentGroup = "";
@@ -90,6 +109,38 @@ if (
         updateTransform();
     };
 
+    const referenceTypeLabels: Record<ImageReference["type"], string> = {
+        essay: "随笔",
+        moment: "动态",
+        showcase: "展示",
+        site: "站点",
+    };
+
+    const renderReferences = (item: ViewerMedia) => {
+        viewerReferencesList.replaceChildren();
+        if (item.type !== "image") {
+            viewerReferences.hidden = true;
+            return;
+        }
+        let path = "";
+        try {
+            path = decodeURI(new URL(item.url, location.href).pathname);
+        } catch {
+            path = item.url;
+        }
+        const matches = getImageReferences(path, imageReferences);
+        viewerReferencesSummary.textContent = matches.length > 0
+            ? `这幅光影还留在${matches.length}处文字里`
+            : "这幅光影暂未出现在公开内容中";
+        matches.forEach((reference) => {
+            const link = document.createElement("a");
+            link.href = reference.url;
+            link.textContent = `${referenceTypeLabels[reference.type]} · ${reference.title} · ${reference.field}`;
+            viewerReferencesList.append(link);
+        });
+        viewerReferences.hidden = false;
+    };
+
     const stopVideo = () => {
         viewerVideo.onloadeddata = null;
         viewerVideo.onerror = null;
@@ -128,6 +179,7 @@ if (
         viewer.classList.remove("has-error", "is-video");
         viewerStage.classList.remove("is-video");
         viewerCaption.textContent = item.alt;
+        renderReferences(item);
         viewerCounter.textContent = `${currentIndex + 1} / ${media.length}`;
         loadingText.textContent =
             item.type === "video" ? "正在载入视频" : "正在载入图片";
@@ -352,8 +404,39 @@ if (
             });
     };
 
+    const collectMarkedImages = () => {
+        const markedImages = Array.from(
+            document.querySelectorAll<HTMLImageElement>("img[data-view-image]"),
+        );
+        const grouped = new Map<string, HTMLImageElement[]>();
+        markedImages.forEach((image) => {
+            const groupId = image.dataset.viewGroup ?? "marked-images";
+            const group = grouped.get(groupId) ?? [];
+            group.push(image);
+            grouped.set(groupId, group);
+        });
+        grouped.forEach((images, groupId) => {
+            groups.set(groupId, images.map((image) => ({
+                type: "image",
+                url: image.currentSrc || image.src,
+                alt: image.alt,
+            })));
+            images.forEach((image, index) => {
+                image.tabIndex = 0;
+                image.setAttribute("role", "button");
+                image.setAttribute("aria-haspopup", "dialog");
+                image.addEventListener("click", (event) => {
+                    event.preventDefault();
+                    openViewer(groupId, index, image);
+                });
+                addKeyboardActivation(image, () => openViewer(groupId, index, image));
+            });
+        });
+    };
+
     collectArticleImages();
     collectMomentMedia();
+    collectMarkedImages();
     document.addEventListener("moments:updated", collectMomentMedia);
 
     closeButton.addEventListener("click", closeViewer);
@@ -447,7 +530,7 @@ if (
         if (event.key === "Tab") {
             const focusable = Array.from(
                 viewer.querySelectorAll<HTMLElement>(
-                    "button:not([hidden]):not([disabled]), video:not([hidden]), [tabindex]:not([tabindex='-1'])",
+                    "a[href], button:not([hidden]):not([disabled]), video:not([hidden]), [tabindex]:not([tabindex='-1'])",
                 ),
             );
             const first = focusable[0];

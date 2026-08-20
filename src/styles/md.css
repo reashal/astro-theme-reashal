@@ -814,12 +814,23 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
     color: var(--color-brand-hover);
 }
 
+/* Markdown 正文链接沿用随笔列表的置顶标题强调色。 */
+.article-container.doc .article-content a,
+.article-container.doc .article-content a:hover {
+    color: var(--color-accent-pink);
+}
+
 .dark .article-container a {
     color: var(--text-on-dark);
 }
 
 .dark .article-container a:hover {
     color: var(--text-link-dark-hover);
+}
+
+.dark .article-container.doc .article-content a,
+.dark .article-container.doc .article-content a:hover {
+    color: var(--color-accent-cyan);
 }
 
 /* 暗黑模式引用块代码 */

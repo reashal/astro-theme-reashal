@@ -1,3 +1,10 @@
+---
+import { getSiteContentData } from "../utils/content-data";
+
+const { references } = await getSiteContentData();
+const referenceJson = JSON.stringify(references).replaceAll("<", "\\u003c");
+---
+
 <section
     class="view-box view-box-hide"
     id="view-box"
@@ -43,7 +50,13 @@
             <span class="view-loading" id="view-loading" aria-live="polite">正在载入媒体</span>
             <span class="view-error" id="view-error" role="status">媒体暂时无法载入</span>
         </div>
-        <figcaption class="view-caption" id="view-caption"></figcaption>
+        <div class="view-details">
+            <figcaption class="view-caption" id="view-caption"></figcaption>
+            <section class="view-references" id="view-references" hidden aria-label="图片引用位置">
+                <p id="view-references-summary"></p>
+                <div id="view-references-list"></div>
+            </section>
+        </div>
     </figure>
 
     <button class="view-control view-nav view-next" id="view-next" type="button" aria-label="下一项媒体">
@@ -58,6 +71,8 @@
         <button class="view-tool" id="view-zoom-in" type="button" aria-label="放大图片">＋</button>
     </div>
 </section>
+
+<script is:inline type="application/json" id="image-reference-data" set:html={referenceJson}></script>
 
 <script src="../scripts/image-viewer.ts"></script>
 
@@ -317,6 +332,62 @@
         text-align: center;
     }
 
+    .view-details {
+        display: grid;
+        justify-items: center;
+        gap: .45rem;
+    }
+
+    .view-references {
+        width: min(82vw, 36rem);
+        padding: .5rem .15rem 0;
+        border-top: .12rem solid rgb(var(--rgb-accent-cyan) / 18%);
+        user-select: text;
+    }
+
+    .view-references[hidden] {
+        display: none;
+    }
+
+    .view-references > p {
+        color: rgb(var(--rgb-white) / 58%);
+        font-size: .7rem;
+        line-height: 1.45;
+        text-align: center;
+    }
+
+    #view-references-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: .25rem .8rem;
+        margin-top: .25rem;
+    }
+
+    #view-references-list a {
+        overflow: hidden;
+        color: rgb(var(--rgb-white) / 76%);
+        font-size: .68rem;
+        font-weight: 600;
+        line-height: 1.45;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        transition:
+            color .18s cubic-bezier(.2, .7, .2, 1),
+            opacity .18s cubic-bezier(.2, .7, .2, 1),
+            transform .18s cubic-bezier(.2, .7, .2, 1);
+    }
+
+    #view-references-list a:hover,
+    html[data-input-mode="keyboard"] #view-references-list a:focus-visible {
+        color: var(--color-accent-cyan);
+        outline: none;
+    }
+
+    #view-references-list a:active {
+        transform: translateY(1px) scale(.98);
+    }
+
     .view-tools {
         position: absolute;
         bottom: max(1rem, env(safe-area-inset-bottom));
@@ -392,7 +463,7 @@
     @media (max-width: 640px) {
         .view-content {
             width: 94vw;
-            height: 76dvh;
+            height: 72dvh;
         }
 
         .view-tools {

@@ -1,5 +1,6 @@
 ---
 import type { ArticleModule } from "../types";
+import { getSiteContentData } from "../utils/content-data";
 import "../styles/search.css";
 
 interface DevelopmentSearchEntry {
@@ -7,9 +8,37 @@ interface DevelopmentSearchEntry {
     content: string;
 }
 
-let developmentEntries: DevelopmentSearchEntry[] = [];
+const currentPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const contentScope = currentPath === "/" ? "moment" : "essay";
+const contentLabel = contentScope === "moment" ? "动态" : "随笔";
+const searchPlaceholder = contentScope === "moment" ? "搜索动态正文" : "搜索标题、摘要或标签";
+const searchPrompt = contentScope === "moment" ? "输入一句话，找回一则动态" : "输入只言片语，找回一篇随笔";
+const searchEmpty = contentScope === "moment" ? "没有找到相关动态" : "没有找到相关随笔";
 
-if (import.meta.env.DEV) {
+let developmentEntries: DevelopmentSearchEntry[] = [];
+const { entries, momentSearchEntries } = await getSiteContentData();
+const exploreEntries = entries.filter(({ type }) => type === contentScope);
+const exploreYears = [...new Set(exploreEntries.map(({ date }) => date.slice(0, 4)))].sort().reverse();
+const exploreMonthsByYear = Object.fromEntries(
+    exploreYears.map((year) => [
+        year,
+        [...new Set(
+            exploreEntries
+                .filter(({ date }) => date.startsWith(`${year}-`))
+                .map(({ date }) => date.slice(5, 7)),
+        )].sort().reverse(),
+    ]),
+);
+const randomCandidates = exploreEntries.map(({ url }) => ({ url }));
+const randomCandidateJson = JSON.stringify(randomCandidates).replaceAll("<", "\\u003c");
+const exploreMonthsJson = JSON.stringify(exploreMonthsByYear).replaceAll("<", "\\u003c");
+
+const momentTitle = (text: string) => {
+    if (!text) return "一则未写正文的动态";
+    return text.length > 42 ? `${text.slice(0, 42).trimEnd()}…` : text;
+};
+
+if (import.meta.env.DEV && contentScope === "essay") {
     const { getDocsArticles, processArticles } = await import(
         "../utils/articles"
     );
@@ -36,12 +65,12 @@ if (import.meta.env.DEV) {
 }
 ---
 
-<div class="docs-search">
+<div class="docs-search" data-content-scope={contentScope}>
     <button
         id="docsSearchToggle"
         class="docs-search-toggle"
         type="button"
-        aria-label="搜索随笔"
+        aria-label={`打开${contentLabel}查找`}
         aria-expanded="false"
         aria-controls="docsSearchPanel"
     >
@@ -54,105 +83,180 @@ if (import.meta.env.DEV) {
     <section
         id="docsSearchPanel"
         class="docs-search-panel"
-        aria-label="搜索随笔"
+        aria-label={`寻找站内${contentLabel}`}
         hidden
     >
-        <label class="docs-search-field" for="docsSearchInput">
-            <svg aria-hidden="true" viewBox="0 0 24 24">
-                <circle cx="10.8" cy="10.8" r="6.8"></circle>
-                <path d="m16 16 4.2 4.2"></path>
-            </svg>
-            <input
-                id="docsSearchInput"
-                type="search"
-                inputmode="search"
-                autocomplete="off"
-                aria-label="搜索随笔关键词"
-                placeholder="搜索标题、摘要或标签"
-            />
-            <kbd>ESC</kbd>
-        </label>
+        <div class="docs-search-panel-core">
+            <div id="docsSearchMain">
+                <label class="docs-search-field" for="docsSearchInput">
+                    <svg aria-hidden="true" viewBox="0 0 24 24">
+                        <circle cx="10.8" cy="10.8" r="6.8"></circle>
+                        <path d="m16 16 4.2 4.2"></path>
+                    </svg>
+                    <input
+                        id="docsSearchInput"
+                        type="search"
+                        inputmode="search"
+                        autocomplete="off"
+                        aria-label={`搜索${contentLabel}关键词`}
+                        placeholder={searchPlaceholder}
+                    />
+                    <kbd>ESC</kbd>
+                </label>
 
-        <div class="docs-search-status" aria-live="polite">
-            <span id="docsSearchPrompt">输入关键词，寻找一篇随笔</span>
-            <span id="docsSearchCount" hidden></span>
-        </div>
+                <div class="docs-search-status" aria-live="polite">
+                    <span id="docsSearchPrompt">{searchPrompt}</span>
+                    <span id="docsSearchCount" hidden></span>
+                </div>
 
-        <div id="docsSearchResults" class="docs-search-results">
-            {
-                developmentEntries.map(({ article, content }) => {
-                    const { title, desc, tags = [] } = article.frontmatter;
-                    const searchMetadata = [title, desc, ...tags]
-                        .join(" ")
-                        .normalize("NFKC")
-                        .toLocaleLowerCase("zh-CN");
-
-                    return (
+                <div id="docsSearchResults" class="docs-search-results">
+                    {contentScope === "moment" && momentSearchEntries.map(({ url, date, text }) => (
                         <a
-                            href={article.url}
+                            href={url}
                             class="docs-search-result"
-                            data-search-metadata={searchMetadata}
-                            data-search-content={content}
-                            data-search-description={desc}
+                            data-search-kind="moment"
+                            data-search-metadata=""
+                            data-search-content={text}
+                            data-search-description={date}
                             hidden
                         >
                             <span class="docs-search-result-copy">
-                                <strong>{title}</strong>
-                                <small>{desc}</small>
+                                <strong>{momentTitle(text)}</strong>
+                                <small>{date}</small>
                             </span>
                             <svg aria-hidden="true" viewBox="0 0 24 24">
                                 <path d="M5 12h13"></path>
                                 <path d="m14 7 5 5-5 5"></path>
                             </svg>
                         </a>
-                    );
-                })
-            }
+                    ))}
+                    {developmentEntries.map(({ article, content }) => {
+                        const { title, desc, tags = [] } = article.frontmatter;
+                        const searchMetadata = [title, desc, ...tags]
+                            .join(" ")
+                            .normalize("NFKC")
+                            .toLocaleLowerCase("zh-CN");
+
+                        return (
+                            <a
+                                href={article.url}
+                                class="docs-search-result"
+                                data-search-kind="essay"
+                                data-search-metadata={searchMetadata}
+                                data-search-content={content}
+                                data-search-description={desc}
+                                hidden
+                            >
+                                <span class="docs-search-result-copy">
+                                    <strong>{title}</strong>
+                                    <small>{desc}</small>
+                                </span>
+                                <svg aria-hidden="true" viewBox="0 0 24 24">
+                                    <path d="M5 12h13"></path>
+                                    <path d="m14 7 5 5-5 5"></path>
+                                </svg>
+                            </a>
+                        );
+                    })}
+                </div>
+
+                <template id="docsSearchResultTemplate">
+                    <a class="docs-search-result">
+                        <span class="docs-search-result-copy">
+                            <strong></strong>
+                            <small></small>
+                        </span>
+                        <svg aria-hidden="true" viewBox="0 0 24 24">
+                            <path d="M5 12h13"></path>
+                            <path d="m14 7 5 5-5 5"></path>
+                        </svg>
+                    </a>
+                </template>
+
+                <nav
+                    id="docsSearchPagination"
+                    class="docs-search-pagination"
+                    aria-label="搜索结果分页"
+                    hidden
+                >
+                    <button id="docsSearchPrevious" type="button" aria-label="上一页搜索结果">
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14.5 7-5 5 5 5"></path></svg>
+                    </button>
+                    <span id="docsSearchPage" aria-live="polite"></span>
+                    <button id="docsSearchNext" type="button" aria-label="下一页搜索结果">
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9.5 7 5 5-5 5"></path></svg>
+                    </button>
+                </nav>
+
+                <p id="docsSearchEmpty" class="docs-search-empty" hidden>{searchEmpty}</p>
+
+                <footer class="docs-search-discovery">
+                    <span>锚定时光，穿梭过往</span>
+                    <span class="docs-search-discovery-links">
+                        <button id="timeExploreOpen" type="button">时间范围</button>
+                        <i aria-hidden="true">·</i>
+                        <button id="randomExplore" type="button">随即跳转</button>
+                    </span>
+                </footer>
+            </div>
+
+            <section id="timeExplorePanel" class="time-explore" aria-label={`按日期寻找${contentLabel}`} hidden>
+                <header class="time-explore-heading">
+                    <button id="timeExploreBack" type="button" aria-label={`返回${contentLabel}搜索`}>
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"></path></svg>
+                    </button>
+                    <div>
+                        <strong>循着日子找</strong>
+                        <p>挑一段日子，只看看那时留下的{contentLabel}。</p>
+                    </div>
+                </header>
+
+                <div class="time-explore-fields">
+                    <label>
+                        <span>方式</span>
+                        <select id="timeExploreGranularity">
+                            <option value="all">全部时间</option>
+                            <option value="year">按年份</option>
+                            <option value="month">按月份</option>
+                            <option value="custom">自定日期</option>
+                        </select>
+                    </label>
+                    <label id="timeExploreYearField" hidden>
+                        <span>年份</span>
+                        <select id="timeExploreYear">
+                            {exploreYears.map((year) => <option value={year}>{year} 年</option>)}
+                        </select>
+                    </label>
+                    <label id="timeExploreMonthField" hidden>
+                        <span>月份</span>
+                        <select id="timeExploreMonth"></select>
+                    </label>
+                </div>
+                <div class="time-explore-custom" id="timeExploreCustom" hidden>
+                    <label><span>从</span><input id="timeExploreFrom" type="date" /></label>
+                    <label><span>到</span><input id="timeExploreTo" type="date" /></label>
+                </div>
+
+                <p class="time-explore-status" id="timeExploreStatus" aria-live="polite"></p>
+                <div class="time-explore-results" id="timeExploreResults">
+                    {exploreEntries.map((entry) => (
+                        <a
+                            href={entry.url}
+                            class="time-explore-result"
+                            data-time-entry
+                            data-date={entry.date}
+                            data-type={entry.type}
+                        >
+                            <time datetime={entry.date}>{entry.date}</time>
+                            <strong>{entry.type === "moment" ? entry.summary : entry.title}</strong>
+                        </a>
+                    ))}
+                </div>
+                <p class="time-explore-empty" id="timeExploreEmpty" hidden>那段日子没有留下公开的{contentLabel}。</p>
+            </section>
         </div>
-
-        <template id="docsSearchResultTemplate">
-            <a class="docs-search-result">
-                <span class="docs-search-result-copy">
-                    <strong></strong>
-                    <small></small>
-                </span>
-                <svg aria-hidden="true" viewBox="0 0 24 24">
-                    <path d="M5 12h13"></path>
-                    <path d="m14 7 5 5-5 5"></path>
-                </svg>
-            </a>
-        </template>
-
-        <nav
-            id="docsSearchPagination"
-            class="docs-search-pagination"
-            aria-label="搜索结果分页"
-            hidden
-        >
-            <button
-                id="docsSearchPrevious"
-                type="button"
-                aria-label="上一页搜索结果"
-            >
-                <svg aria-hidden="true" viewBox="0 0 24 24">
-                    <path d="m14.5 7-5 5 5 5"></path>
-                </svg>
-            </button>
-            <span id="docsSearchPage" aria-live="polite"></span>
-            <button
-                id="docsSearchNext"
-                type="button"
-                aria-label="下一页搜索结果"
-            >
-                <svg aria-hidden="true" viewBox="0 0 24 24">
-                    <path d="m9.5 7 5 5-5 5"></path>
-                </svg>
-            </button>
-        </nav>
-
-        <p id="docsSearchEmpty" class="docs-search-empty" hidden>
-            没有找到相关随笔
-        </p>
+        <script is:inline type="application/json" id="randomExploreData" set:html={randomCandidateJson}></script>
+        <script is:inline type="application/json" id="timeExploreMonthsData" set:html={exploreMonthsJson}></script>
     </section>
 </div>
 
