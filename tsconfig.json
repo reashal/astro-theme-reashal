@@ -1,9 +1,3 @@
 {
-  "extends": "astro/tsconfigs/base",
-
-  // 内容集合
-  "compilerOptions": {
-    "strictNullChecks": true, // 使用 `base` 模板需要添加
-    "allowJs": true // 必需，包含在所有 Astro 模板中
-  }
+  "extends": "astro/tsconfigs/strict"
 }

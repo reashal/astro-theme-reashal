@@ -27,7 +27,6 @@ const {
 } = Astro.props as Props;
 const tags = frontmatter.tags || [];
 
-// 随笔可省略署名和来源：署名回退至站点作者，来源始终指向当前随笔的规范地址。
 const articleAuthor = frontmatter.author?.trim() || AUTHOR_INFO.name;
 const articleSource =
     frontmatter.source || new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
@@ -43,18 +42,8 @@ const tocHeadings = headings.filter(
     (heading) => heading.depth >= 2 && heading.depth <= 6,
 );
 const hasArticleToc = isDocsArticle && tocHeadings.length >= 3;
-const rawPublishedDate = frontmatter.pubDate as string | Date;
-const publishedDate =
-    rawPublishedDate instanceof Date
-        ? rawPublishedDate.toISOString().slice(0, 10)
-        : String(rawPublishedDate).slice(0, 10);
-const rawUpdatedDate = frontmatter.updatedDate as string | Date | undefined;
-const updatedDate =
-    rawUpdatedDate instanceof Date
-        ? rawUpdatedDate.toISOString().slice(0, 10)
-        : rawUpdatedDate
-          ? String(rawUpdatedDate).slice(0, 10)
-          : undefined;
+const publishedDate = frontmatter.pubDate;
+const updatedDate = frontmatter.updatedDate;
 const showUpdatedDate = updatedDate && updatedDate !== publishedDate;
 
 const allArticles = getDocsArticles();

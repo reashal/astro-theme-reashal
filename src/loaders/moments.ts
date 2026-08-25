@@ -31,7 +31,7 @@ const isValidTimestampId = (value: string) => {
     );
 };
 
-export const isValidMomentId = (value: string) =>
+const isValidMomentId = (value: string) =>
     CUSTOM_ID_PATTERN.test(value) || isValidTimestampId(value);
 
 export function momentsLoader(directory: string): Loader {

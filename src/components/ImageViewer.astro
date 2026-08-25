@@ -32,7 +32,6 @@ const referenceJson = JSON.stringify(references).replaceAll("<", "\\u003c");
     <figure class="view-content" id="view-content">
         <div class="view-stage" id="view-stage">
             <img
-                src=""
                 alt=""
                 class="view-img"
                 id="view-img"
@@ -76,10 +75,9 @@ const referenceJson = JSON.stringify(references).replaceAll("<", "\\u003c");
 
 <script src="../scripts/image-viewer.ts"></script>
 
-<style is:inline>
+<style is:global>
     .view-box {
         --viewer-surface: rgb(var(--rgb-dark-message) / 82%);
-        --viewer-control: rgb(var(--rgb-white) / 10%);
         --viewer-control-hover: rgb(var(--rgb-accent-cyan) / 22%);
         position: fixed;
         inset: 0;
@@ -98,8 +96,8 @@ const referenceJson = JSON.stringify(references).replaceAll("<", "\\u003c");
         pointer-events: none;
         user-select: none;
         transition:
-            opacity .24s ease,
-            visibility .24s ease;
+            opacity .24s cubic-bezier(.22, 1, .36, 1),
+            visibility .24s step-end;
     }
 
     .view-box-show {
@@ -154,10 +152,10 @@ const referenceJson = JSON.stringify(references).replaceAll("<", "\\u003c");
         height: 2.55rem;
         border-radius: 50%;
         transition:
-            color .2s ease,
-            border-color .2s ease,
-            background-color .2s ease,
-            transform .2s ease;
+            color .2s cubic-bezier(.22, 1, .36, 1),
+            border-color .2s cubic-bezier(.22, 1, .36, 1),
+            background-color .2s cubic-bezier(.22, 1, .36, 1),
+            transform .2s cubic-bezier(.22, 1, .36, 1);
     }
 
     .view-control svg {
@@ -251,8 +249,8 @@ const referenceJson = JSON.stringify(references).replaceAll("<", "\\u003c");
         transform: translate3d(0, 0, 0) scale(1);
         transform-origin: center;
         transition:
-            opacity .18s ease,
-            transform .16s ease;
+            opacity .18s cubic-bezier(.22, 1, .36, 1),
+            transform .16s cubic-bezier(.22, 1, .36, 1);
         cursor: default;
         -webkit-user-drag: none;
     }
@@ -279,7 +277,7 @@ const referenceJson = JSON.stringify(references).replaceAll("<", "\\u003c");
 
     .view-stage.is-dragging .view-img {
         cursor: grabbing;
-        transition: opacity .18s ease;
+        transition: opacity .18s cubic-bezier(.22, 1, .36, 1);
     }
 
     .view-box.is-loading .view-img,
@@ -312,7 +310,7 @@ const referenceJson = JSON.stringify(references).replaceAll("<", "\\u003c");
         box-shadow:
             .55rem 0 rgb(var(--rgb-accent-cyan) / 62%),
             1.1rem 0 rgb(var(--rgb-accent-cyan) / 28%);
-        animation: viewer-loading 1s ease-in-out infinite alternate;
+        animation: viewer-loading 1s cubic-bezier(.45, 0, .55, 1) infinite alternate;
     }
 
     .view-box.is-loading .view-loading,
@@ -407,9 +405,9 @@ const referenceJson = JSON.stringify(references).replaceAll("<", "\\u003c");
         color: rgb(var(--rgb-white) / 76%);
         background: transparent;
         transition:
-            color .2s ease,
-            background-color .2s ease,
-            transform .2s ease;
+            color .2s cubic-bezier(.22, 1, .36, 1),
+            background-color .2s cubic-bezier(.22, 1, .36, 1),
+            transform .2s cubic-bezier(.22, 1, .36, 1);
     }
 
     .view-tool:active,

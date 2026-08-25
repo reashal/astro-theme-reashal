@@ -48,14 +48,14 @@ export interface ContentStats {
 const DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
 const LOCAL_IMAGE_EXTENSIONS = /\.(?:avif|gif|jpe?g|png|svg|webp)$/i;
 
-export const MILESTONE_DEFINITIONS: readonly MilestoneDefinition[] = [
+const MILESTONE_DEFINITIONS: readonly MilestoneDefinition[] = [
     { id: "essays", label: "随笔", unit: "篇", thresholds: [1, 5, 10, 25, 50, 100] },
     { id: "moments", label: "片刻", unit: "则", thresholds: [1, 10, 25, 50, 100, 250, 500] },
     { id: "images", label: "光影", unit: "张", thresholds: [1, 10, 25, 50, 100, 250, 500] },
     { id: "siteDays", label: "跨度", unit: "天", thresholds: [30, 100, 365, 1000, 2000, 3650] },
 ];
 
-export function parseCalendarDate(value: string): Date | undefined {
+function parseCalendarDate(value: string): Date | undefined {
     const match = value.match(DATE_PATTERN);
     if (!match) return undefined;
     const year = Number(match[1]);
@@ -203,7 +203,7 @@ export function calculateMilestones(
     });
 }
 
-export function normalizeContentUrl(value: string): string {
+function normalizeContentUrl(value: string): string {
     try {
         const url = new URL(value, "https://local.invalid");
         return `${url.pathname.replace(/\/$/, "") || "/"}${url.hash}`;

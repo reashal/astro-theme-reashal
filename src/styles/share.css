@@ -14,7 +14,9 @@
     border-radius: var(--radius-md);
     cursor: pointer;
     font-size: 0.9rem;
-    transition: all 0.3s ease;
+    transition:
+        background-color .3s cubic-bezier(.22, 1, .36, 1),
+        transform .3s cubic-bezier(.22, 1, .36, 1);
 }
 
 .share-btn:hover {
@@ -45,7 +47,7 @@ html[data-input-mode="keyboard"] .share-close:focus-visible {
     align-items: center;
     z-index: 999999;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity .3s cubic-bezier(.22, 1, .36, 1);
 }
 
 .share-overlay[hidden] {
@@ -64,7 +66,7 @@ html[data-input-mode="keyboard"] .share-close:focus-visible {
     overflow: hidden;
     box-shadow: var(--shadow-pop);
     transform: scale(0.9);
-    transition: transform 0.3s ease;
+    transition: transform .3s cubic-bezier(.22, 1, .36, 1);
     position: relative;
 }
 
@@ -85,10 +87,10 @@ html[data-input-mode="keyboard"] .share-close:focus-visible {
     backdrop-filter: blur(8px);
     cursor: pointer;
     transition:
-        color .2s ease,
-        border-color .2s ease,
-        background-color .2s ease,
-        transform .2s ease;
+        color .2s cubic-bezier(.22, 1, .36, 1),
+        border-color .2s cubic-bezier(.22, 1, .36, 1),
+        background-color .2s cubic-bezier(.22, 1, .36, 1),
+        transform .2s cubic-bezier(.22, 1, .36, 1);
 }
 
 .share-close:hover {
@@ -125,7 +127,6 @@ html[data-input-mode="keyboard"] .share-close:focus-visible {
     background-image: var(--wallpaper);
     background-size: cover;
     background-position: center bottom 28%;
-    filter: blur(0);
 }
 
 .share-card-content {
@@ -173,7 +174,9 @@ html[data-input-mode="keyboard"] .share-close:focus-visible {
     border: none;
     border-radius: var(--radius-md);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition:
+        background-color .3s cubic-bezier(.22, 1, .36, 1),
+        transform .3s cubic-bezier(.22, 1, .36, 1);
     font-size: 0.85rem;
     white-space: nowrap;
 }

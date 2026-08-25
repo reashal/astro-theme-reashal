@@ -1,42 +1,29 @@
-/* ============================================ */
-/* 笔记页面样式 (docs.css)
-/* 配合 /src/pages/docs.astro 使用
-/* 展示随笔列表，支持置顶功能
-/* ============================================ */
-
 /* === 响应式每页文章数 === */
 
-/* 大屏幕：高度 >= 900px */
 @media (min-height: 900px) {
     :root {
         --per-page: 8;
     }
 }
 
-/* 中等大屏幕：高度 700-899px */
 @media (min-height: 700px) and (max-height: 899px) {
     :root {
         --per-page: 6;
     }
 }
 
-/* 中等小屏幕：高度 500-699px */
 @media (min-height: 500px) and (max-height: 699px) {
     :root {
         --per-page: 4;
     }
 }
 
-/* 小屏幕：高度 < 500px */
 @media (max-height: 499px) {
     :root {
         --per-page: 2;
     }
 }
 
-/* === 列表页面专用样式 === */
-
-/* 取消文章容器内段落的首行缩进 */
 .article-container p {
     text-indent: 0;
 }
@@ -49,8 +36,8 @@
     border-radius: 6px;
     cursor: pointer;
     transition:
-        transform .25s ease,
-        box-shadow .25s ease;
+        transform .25s cubic-bezier(.22, 1, .36, 1),
+        box-shadow .25s cubic-bezier(.22, 1, .36, 1);
 }
 
 .docs-a {
@@ -66,12 +53,10 @@ html[data-input-mode="keyboard"] .docs-body:focus-visible {
     outline-offset: 2px;
 }
 
-/* 容器内有条目被 hover 时，其余条目淡出 */
 .article-container:has(.docs-body:hover) .docs-body:not(:hover) {
     opacity: .45;
 }
 
-/* hover 的条目：微微凸起 */
 .docs-body:hover {
     transform: translateY(-1px);
     box-shadow: 0 2px 8px -4px rgb(var(--rgb-brand) / 18%);
@@ -122,30 +107,19 @@ html[data-input-mode="keyboard"] .docs-body:focus-visible {
     font-variant-numeric: tabular-nums;
 }
 
-/* === 置顶文章样式 === */
-
-/* 置顶标识 */
 .docs-fixed h2::before {
     content: "『置顶』";
 }
 
-/* 置顶文章标题颜色 */
 .docs-fixed h2 {
     color: var(--color-accent-pink);
 }
 
-
-/* === 最后一篇文章样式 === */
-
-/* 最后一篇：移除分隔条和底部间隙 */
 .docs-last .docs-t {
     border-bottom: none;
     padding-bottom: 0;
 }
 
-/* === 页面底部 === */
-
-/* 底部结束提示容器 */
 .docs-footer {
     margin-top: .8rem;
     margin-bottom: -.5rem;
@@ -183,9 +157,9 @@ html[data-input-mode="keyboard"] .docs-body:focus-visible {
     font-family: inherit;
     cursor: pointer;
     transition:
-        background-color .15s ease,
-        color .15s ease,
-        transform .15s ease;
+        background-color .15s cubic-bezier(.22, 1, .36, 1),
+        color .15s cubic-bezier(.22, 1, .36, 1),
+        transform .15s cubic-bezier(.22, 1, .36, 1);
     user-select: none;
 }
 
@@ -228,20 +202,9 @@ html[data-input-mode="keyboard"] .page-btn:focus-visible {
     padding: 0 .1rem;
 }
 
-/* 暗黑模式 */
 .dark .page-btn {
     background-color: var(--surface-dark-control);
     color: var(--text-on-dark);
-}
-
-.dark .page-btn:hover:not(:disabled) {
-    background-color: var(--color-brand);
-    color: var(--color-white);
-}
-
-.dark .page-btn.page-active {
-    background-color: var(--color-brand);
-    color: var(--color-white);
 }
 
 html.dark[data-input-mode="keyboard"] .docs-body:focus-visible,
@@ -253,7 +216,6 @@ html.dark[data-input-mode="keyboard"] .page-btn:focus-visible {
     color: var(--text-on-dark-faint);
 }
 
-/* "故事暂且讲到这里"提示文字 */
 .docs-footer .end-tip {
     padding: 0;
     margin: 0;
@@ -268,7 +230,6 @@ html.dark[data-input-mode="keyboard"] .page-btn:focus-visible {
     gap: .5rem;
 }
 
-/* 提示文字两侧的装饰线 */
 .docs-footer .end-tip::before,
 .docs-footer .end-tip::after {
     content: '';
@@ -276,7 +237,6 @@ html.dark[data-input-mode="keyboard"] .page-btn:focus-visible {
     min-width: 0.5rem;
     max-width: 2rem;
     height: 1px;
-    background: linear-gradient(to right, transparent, var(--surface-code));
 }
 
 .docs-footer .end-tip::before {
@@ -287,16 +247,12 @@ html.dark[data-input-mode="keyboard"] .page-btn:focus-visible {
     background: linear-gradient(to left, transparent, var(--surface-code));
 }
 
-/* ============================================ */
 /* === 暗黑模式 === */
-/* ============================================ */
 
-/* 其余条目淡出（暗色背景下 opacity 稍高，避免消失感太强） */
 .dark .article-container:has(.docs-body:hover) .docs-body:not(:hover) {
     opacity: .35;
 }
 
-/* hover 阴影换为浅青色系 */
 .dark .docs-body:hover {
     box-shadow: 0 2px 8px -4px rgb(var(--rgb-accent-cyan) / 18%);
 }
@@ -316,31 +272,21 @@ html.dark[data-input-mode="keyboard"] .page-btn:focus-visible {
     color: var(--text-on-dark-body);
 }
 
-/* 笔记标题底部：深灰色边框 */
 .dark .docs-t {
     color: var(--text-on-dark-muted);
     border-bottom: .2rem var(--border-dark-divider) solid;
 }
 
-/* 置顶文章标题：浅青色 */
 .dark .article-container .docs-fixed .docs-h {
     color: var(--color-accent-cyan) !important;
 }
 
-/* 最后一篇文章：移除分隔条 */
 .dark .docs-last .docs-t {
     border-bottom: none;
 }
 
-/* 底部提示文字暗黑模式 */
 .dark .docs-footer .end-tip {
     color: var(--text-on-dark-faint);
-}
-
-/* 底部装饰线暗黑模式 */
-.dark .docs-footer .end-tip::before,
-.dark .docs-footer .end-tip::after {
-    background: linear-gradient(to right, transparent, var(--border-dark), transparent);
 }
 
 .dark .docs-footer .end-tip::before {

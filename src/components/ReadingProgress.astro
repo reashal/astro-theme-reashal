@@ -10,54 +10,55 @@
     </span>
     <span
         class="reading-flight-aircraft"
-        data-reading-flight-plane
         aria-hidden="true"
     >
-        <span class="reading-flight-exhaust">
-            <i></i>
-            <i></i>
-            <i></i>
-        </span>
-        <svg
-            class="reading-flight-plane"
-            viewBox="0 0 36 40"
-            focusable="false"
-        >
-            <path
-                class="reading-flight-plane-wing"
-                d="M17.58 36.84c-.25.48-.94.43-1.12-.08L2.74 6.22c-.4-.9.14-1.48 1.08-1.18l13.3 3.38c.52.13.88.6.88 1.14v25.88c0 .49-.14.97-.42 1.4Z"
-            ></path>
-            <path
-                class="reading-flight-plane-wing reading-flight-plane-wing-far"
-                d="M18.42 36.84c.25.48.94.43 1.12-.08L33.26 6.22c.4-.9-.14-1.48-1.08-1.18l-13.3 3.38c-.52.13-.88.6-.88 1.14v25.88c0 .49.14.97.42 1.4Z"
-            ></path>
-            <path
-                class="reading-flight-plane-flap"
-                d="M18 9.18 11.92 23.56 18 20.88Z"
-            ></path>
-            <path
-                class="reading-flight-plane-flap reading-flight-plane-flap-far"
-                d="M18 9.18 24.08 23.56 18 20.88Z"
-            ></path>
-            <path
-                class="reading-flight-plane-fold"
-                d="M18 9.28v25.86"
-            ></path>
-            <path
-                class="reading-flight-plane-edge"
-                d="m3.82 5.58 13.3 3.46M32.18 5.58l-13.3 3.46"
-            ></path>
-        </svg>
-        <span class="reading-flight-headlights">
-            <i></i>
-            <i></i>
+        <span class="reading-flight-aircraft-body">
+            <span class="reading-flight-exhaust">
+                <i></i>
+                <i></i>
+                <i></i>
+            </span>
+            <svg
+                class="reading-flight-plane"
+                viewBox="0 0 36 40"
+                focusable="false"
+            >
+                <path
+                    class="reading-flight-plane-wing"
+                    d="M17.58 36.84c-.25.48-.94.43-1.12-.08L2.74 6.22c-.4-.9.14-1.48 1.08-1.18l13.3 3.38c.52.13.88.6.88 1.14v25.88c0 .49-.14.97-.42 1.4Z"
+                ></path>
+                <path
+                    class="reading-flight-plane-wing reading-flight-plane-wing-far"
+                    d="M18.42 36.84c.25.48.94.43 1.12-.08L33.26 6.22c.4-.9-.14-1.48-1.08-1.18l-13.3 3.38c-.52.13-.88.6-.88 1.14v25.88c0 .49-.14.97-.42 1.4Z"
+                ></path>
+                <path
+                    class="reading-flight-plane-flap"
+                    d="M18 9.18 11.92 23.56 18 20.88Z"
+                ></path>
+                <path
+                    class="reading-flight-plane-flap reading-flight-plane-flap-far"
+                    d="M18 9.18 24.08 23.56 18 20.88Z"
+                ></path>
+                <path
+                    class="reading-flight-plane-fold"
+                    d="M18 9.28v25.86"
+                ></path>
+                <path
+                    class="reading-flight-plane-edge"
+                    d="m3.82 5.58 13.3 3.46M32.18 5.58l-13.3 3.46"
+                ></path>
+            </svg>
+            <span class="reading-flight-headlights">
+                <i></i>
+                <i></i>
+            </span>
         </span>
     </span>
 </button>
 
 <style>
     .reading-flight {
-        --reading-progress: 0%;
+        --reading-progress: 0;
         --flight-rgb: var(--rgb-brand);
 
         position: fixed;
@@ -75,9 +76,9 @@
         pointer-events: none;
         transform: translate(.65rem, -50%);
         transition:
-            opacity .25s ease,
-            transform .25s ease,
-            color .2s ease;
+            opacity .25s cubic-bezier(.22, 1, .36, 1),
+            transform .25s cubic-bezier(.22, 1, .36, 1),
+            color .2s cubic-bezier(.22, 1, .36, 1);
     }
 
     .reading-flight.is-visible {
@@ -142,7 +143,7 @@
         left: 50%;
         z-index: 1;
         width: 2px;
-        height: var(--reading-progress);
+        height: 100%;
         background: linear-gradient(
             to bottom,
             rgb(var(--flight-rgb) / 18%),
@@ -150,23 +151,31 @@
         );
         border-radius: 1px;
         box-shadow: 0 0 5px rgb(var(--flight-rgb) / 24%);
-        transform: translateX(-50%);
-        transition: height .08s linear;
+        transform: translateX(-50%) scaleY(var(--reading-progress));
+        transform-origin: top;
+        transition: transform .08s cubic-bezier(.22, 1, .36, 1);
     }
 
     .reading-flight-aircraft {
         position: absolute;
-        top: .55rem;
+        top: 0;
         left: 50%;
         display: block;
         width: 2.08rem;
         height: 2.3rem;
         pointer-events: none;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%) translateY(var(--reading-plane-y, .55rem));
         transform-origin: center;
-        transition:
-            top .08s linear,
-            transform .34s cubic-bezier(.2, .78, .25, 1);
+        transition: transform .08s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .reading-flight-aircraft-body {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 100%;
+        transform-origin: center;
+        transition: transform .34s cubic-bezier(.2, .78, .25, 1);
     }
 
     .reading-flight-plane {
@@ -219,7 +228,7 @@
         filter: drop-shadow(0 0 2px rgb(var(--flight-rgb) / 25%));
         transform: translateX(-50%);
         transform-origin: bottom;
-        transition: transform .25s ease;
+        transition: transform .25s cubic-bezier(.22, 1, .36, 1);
     }
 
     .reading-flight-exhaust i {
@@ -289,26 +298,32 @@
         transform: translateX(-50%);
     }
 
-    .reading-flight:hover .reading-flight-aircraft {
-        transform: translate(-50%, -50%) rotate(180deg) scale(1.035);
+    @media (hover: hover) {
+        .reading-flight:hover .reading-flight-aircraft-body {
+            transform: rotate(180deg) scale(1.035);
+        }
+
+        .reading-flight:hover .reading-flight-exhaust {
+            transform: translateX(-50%) scaleY(1.08);
+        }
     }
 
-    .reading-flight:hover .reading-flight-exhaust {
-        transform: translateX(-50%) scaleY(1.08);
-    }
-
-    .reading-flight.is-returning .reading-flight-aircraft {
-        transform: translate(-50%, -50%) rotate(180deg);
+    .reading-flight.is-returning .reading-flight-aircraft-body {
+        transform: rotate(180deg);
     }
 
     :global(.dark) .reading-flight {
         --flight-rgb: var(--rgb-accent-cyan);
     }
 
-    :global(.dark) .reading-flight-plane {
-        filter:
-            drop-shadow(0 1px 1px rgb(var(--rgb-black) / 44%))
-            drop-shadow(0 2px 4px rgb(var(--rgb-black) / 58%));
+    @media (hover: none) {
+        .reading-flight:active .reading-flight-aircraft-body {
+            transform: rotate(180deg) scale(1.035);
+        }
+
+        .reading-flight:active .reading-flight-exhaust {
+            transform: translateX(-50%) scaleY(1.08);
+        }
     }
 
     @media screen and (max-width: 487px) {
@@ -333,6 +348,7 @@
         .reading-flight,
         .reading-flight-trail,
         .reading-flight-aircraft,
+        .reading-flight-aircraft-body,
         .reading-flight-exhaust {
             transition: none;
         }
@@ -347,9 +363,6 @@
         "[data-reading-flight-trail]",
     );
     const flightRoute = flightTrail?.parentElement;
-    const flightPlane = document.querySelector<HTMLElement>(
-        "[data-reading-flight-plane]",
-    );
     const scrollContainer = document.querySelector<HTMLElement>(".main");
     const articleContent = document.querySelector<HTMLElement>(
         ".article-container.doc .article-content",
@@ -359,7 +372,6 @@
         readingFlight &&
         flightRoute &&
         flightTrail &&
-        flightPlane &&
         scrollContainer &&
         articleContent
     ) {
@@ -392,12 +404,15 @@
 
             readingFlight.style.setProperty(
                 "--reading-progress",
-                `${progress}%`,
+                String(progress / 100),
             );
-            flightPlane.style.top = `${
-                flightRoute.offsetTop +
-                (progress / 100) * flightRoute.offsetHeight
-            }px`;
+            readingFlight.style.setProperty(
+                "--reading-plane-y",
+                `${
+                    flightRoute.offsetTop +
+                    (progress / 100) * flightRoute.offsetHeight
+                }px`,
+            );
             readingFlight.classList.toggle(
                 "is-visible",
                 scrollContainer.scrollHeight > scrollContainer.clientHeight &&

@@ -27,13 +27,12 @@ const {
     enableMediaViewer = false,
 } = Astro.props as Props;
 
-// 获取当前路径，用于侧边栏高亮
 const currentPath = Astro.url.pathname;
 const siteOrigin = Astro.site ?? Astro.url.origin;
 const canonicalUrl = new URL(currentPath, siteOrigin);
 const socialImageUrl = new URL(SITE_INFO.wallpaper, siteOrigin);
 const fullTitle = `${pageTitle}｜${SITE_INFO.title}`;
-const fullDescription = `『${pageDescription}』『有限的文字无法写尽余生,希望我们能在前行的路上久别重逢』`;
+const fullDescription = `『${pageDescription}』『有限的文字无法写尽余生,${AUTHOR_INFO.description}』`;
 const structuredData =
     pageType === "article" && publishedTime
         ? {
@@ -90,7 +89,7 @@ const structuredDataJson = structuredData
 ---
 
 <!doctype html>
-<html lang="zh-cn" data-active-page={currentPath}>
+<html lang="zh-cn">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -131,7 +130,7 @@ const structuredDataJson = structuredData
         </script>
         <title>{fullTitle}</title>
         <meta name="description" content={fullDescription} />
-        <meta name="author" content="睿屿青衫" />
+        <meta name="author" content={AUTHOR_INFO.name} />
         <meta
             name="keywords"
             content="睿屿青衫,reashal,blog,life,博客,随笔,记录,点滴,主页"
@@ -200,9 +199,9 @@ const structuredDataJson = structuredData
         {enableMediaViewer && <ImageViewer />}
         <canvas
             class="fireworks"
-            style="position:fixed;left:0;top:0;z-index:99999999;pointer-events:none;"
+            aria-hidden="true"
         ></canvas>
         <script src="../scripts/focus-modality.ts"></script>
-        <script is:inline src="/static/scripts/cursor.js"></script>
+        <script src="../scripts/fireworks.ts"></script>
     </body>
 </html>

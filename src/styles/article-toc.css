@@ -9,6 +9,7 @@
     --toc-summary-width: 5.25rem;
     --toc-summary-radius: .76rem;
     --toc-panel-radius: .78rem;
+    --toc-aside-offset: 0px;
 
     position: fixed;
     top: .4rem;
@@ -19,12 +20,12 @@
     margin: 0;
     color: var(--toc-island-text);
     pointer-events: none;
-    transform: translateX(-50%);
-    transition: left .3s ease;
+    transform: translate3d(calc(-50% + var(--toc-aside-offset)), 0, 0);
+    transition: transform .3s cubic-bezier(.22, 1, .36, 1);
 }
 
 .aside-show .article-toc {
-    left: calc(50% + 240px);
+    --toc-aside-offset: var(--aside-width);
 }
 
 .article-toc-summary {
@@ -53,12 +54,12 @@
     pointer-events: auto;
     user-select: none;
     transition:
-        border-color .2s ease,
-        background-color .2s ease,
-        box-shadow .2s ease,
-        opacity .16s ease,
+        border-color .2s cubic-bezier(.22, 1, .36, 1),
+        background-color .2s cubic-bezier(.22, 1, .36, 1),
+        box-shadow .2s cubic-bezier(.22, 1, .36, 1),
+        opacity .16s cubic-bezier(.22, 1, .36, 1),
         transform .2s cubic-bezier(.22, 1, .36, 1),
-        visibility 0s linear;
+        visibility 0s step-end;
 }
 
 .article-toc-summary > span {
@@ -71,7 +72,8 @@
 .article-toc-summary > span.is-overflowing {
     margin: 0;
     animation: article-toc-title-scroll
-        var(--toc-title-duration, 1s) linear .12s infinite alternate both;
+        var(--toc-title-duration, 1s) cubic-bezier(.45, 0, .55, 1) .12s
+        infinite alternate both;
     will-change: transform;
 }
 
@@ -286,8 +288,8 @@ html[data-input-mode="keyboard"] .article-toc-viewport:focus-visible {
     text-overflow: ellipsis;
     white-space: nowrap;
     transition:
-        background-color .18s ease,
-        color .18s ease;
+        background-color .18s cubic-bezier(.22, 1, .36, 1),
+        color .18s cubic-bezier(.22, 1, .36, 1);
     -webkit-user-drag: none;
 }
 
@@ -340,7 +342,9 @@ html[data-input-mode="keyboard"] .doc .article-toc a:focus-visible {
     color: var(--toc-island-muted);
     cursor: pointer;
     font-size: .58rem;
-    transition: color .18s ease, transform .18s ease;
+    transition:
+        color .18s cubic-bezier(.22, 1, .36, 1),
+        transform .18s cubic-bezier(.22, 1, .36, 1);
 }
 
 .article-toc-level-switcher button:active:not(:disabled) {

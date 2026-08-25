@@ -1,6 +1,5 @@
 .doc {
     --article-rule: rgb(var(--rgb-brand) / 14%);
-    --article-rule-soft: rgb(var(--rgb-brand) / 5%);
     --article-meta-color: var(--text-tertiary);
     --article-summary-color: var(--text-secondary);
     --article-tag-surface: rgb(var(--rgb-brand) / 7%);
@@ -17,7 +16,6 @@
 
 .dark .doc {
     --article-rule: rgb(var(--rgb-accent-cyan) / 22%);
-    --article-rule-soft: rgb(var(--rgb-accent-cyan) / 7%);
     --article-meta-color: var(--text-on-dark-soft);
     --article-summary-color: var(--text-on-dark-secondary);
     --article-tag-surface: rgb(var(--rgb-accent-cyan) / 8%);

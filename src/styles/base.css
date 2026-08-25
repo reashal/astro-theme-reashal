@@ -1,13 +1,7 @@
-/* ============================================ */
-/* 全局基础样式 (base.css)
-/* 为整站提供基础布局和通用样式
-/* ============================================ */
-
-/* === 全局重置 === */
-
 @import "./colors.css";
 
 :root {
+    --aside-width: 15rem;
     --edge-control-length: 3.75rem;
 }
 
@@ -86,9 +80,9 @@ main {
     display: grid;
     position: relative;
     left: 0;
-    width: calc(100vw + 240px);
+    width: calc(100vw + var(--aside-width));
     height: 100%;
-    grid-template-columns: 240px 100vw;
+    grid-template-columns: var(--aside-width) 100vw;
     overflow-x: hidden;
 }
 
@@ -115,7 +109,7 @@ main {
 
 /* 侧边栏初始状态：隐藏在左侧 */
 .aside-init {
-    left: -240px;
+    left: calc(-1 * var(--aside-width));
 }
 
 /* 侧边栏显示状态 */
@@ -130,14 +124,14 @@ main {
 
 /* 侧边栏隐藏状态 */
 .aside-hide {
-    left: -240px;
+    left: calc(-1 * var(--aside-width));
     animation: hide-aside .3s;
 }
 
 /* 侧边栏显示动画 */
 @keyframes show-aside {
     0% {
-        left: -240px;
+        left: calc(-1 * var(--aside-width));
     }
     100% {
         left: 0;
@@ -150,7 +144,7 @@ main {
         left: 0;
     }
     100% {
-        left: -240px;
+        left: calc(-1 * var(--aside-width));
     }
 }
 
@@ -177,6 +171,15 @@ main {
 .article-container section.article-copy .article-copy-info a {
     color: inherit;
     font-weight: normal;
+}
+
+.fireworks {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    width: 100vw;
+    height: 100dvh;
+    pointer-events: none;
 }
 
 /* ============================================ */
@@ -242,21 +245,21 @@ main {
 /* === 大屏设备（≥ 688px）=== */
 @media screen and (min-width: 688px) {
     .main > header {
-        height: 46vh !important;
+        height: 46vh;
     }
 
     .main > article {
-        min-height: calc(100% - 51.4vh) !important;
+        min-height: calc(100% - 51.4vh);
     }
 }
 
 /* === 超大屏设备（≥ 888px）=== */
 @media screen and (min-width: 888px) {
     .main > header {
-        height: 400px !important;
+        height: 400px;
     }
 
     .main > article {
-        min-height: calc(calc(100% - 400px) - 5.4vh) !important;
+        min-height: calc(calc(100% - 400px) - 5.4vh);
     }
 }

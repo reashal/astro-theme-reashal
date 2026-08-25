@@ -245,7 +245,6 @@ if (import.meta.env.DEV && contentScope === "essay") {
                             class="time-explore-result"
                             data-time-entry
                             data-date={entry.date}
-                            data-type={entry.type}
                         >
                             <time datetime={entry.date}>{entry.date}</time>
                             <strong>{entry.type === "moment" ? entry.summary : entry.title}</strong>

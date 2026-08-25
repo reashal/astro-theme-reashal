@@ -1,41 +1,20 @@
 ---
-/**
- * 标签详情页
- * 职责：
- * 1. 生成所有标签的静态路径
- * 2. 获取指定标签的所有文章
- * 3. 按发表时间倒序排列文章
- * 4. 渲染文章列表
- */
 import ArticleList from "../../components/ArticleList.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getDocsArticles, sortArticlesByDate } from "../../utils/articles";
+import {
+    getArticleTagCounts,
+    getDocsArticles,
+    sortArticlesByDate,
+} from "../../utils/articles";
 
-// 生成所有标签的静态路径
 export async function getStaticPaths() {
-    const allArticles = getDocsArticles();
-    
-    // 收集所有标签
-    const allTags = new Set<string>();
-    
-    allArticles.forEach(post => {
-        if (post.frontmatter.tags && post.frontmatter.tags.length > 0) {
-            post.frontmatter.tags.forEach((tag: string) => allTags.add(tag));
-        }
-    });
-    
-    const tags = Array.from(allTags);
-    
-    return tags.map(tag => ({
-        params: { tag }
+    return Array.from(getArticleTagCounts(getDocsArticles()).keys(), (tag) => ({
+        params: { tag },
     }));
 }
 
-// 获取当前标签的文章
 const tag = Astro.params.tag!;
 const allArticles = getDocsArticles();
-
-// 筛选并排序文章
 const tagArticles = sortArticlesByDate(
     allArticles.filter((post) => post.frontmatter.tags?.includes(tag)),
 );

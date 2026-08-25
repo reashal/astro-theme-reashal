@@ -11,7 +11,6 @@ import {
     extractMarkdownImagePaths,
     normalizeImagePath,
     type ContentInsight,
-    type ContentStats,
     type ImageReference,
     type MilestoneProgress,
 } from "./content-insights";
@@ -24,7 +23,7 @@ const rawMarkdownModules = import.meta.glob<string>("../pages/**/*.md", {
 });
 const IMAGE_EXTENSION = /\.(?:avif|gif|jpe?g|png|svg|webp)$/i;
 
-export interface SiteContentData {
+interface SiteContentData {
     entries: ContentInsight[];
     momentSearchEntries: Array<{
         url: string;
@@ -32,7 +31,6 @@ export interface SiteContentData {
         text: string;
     }>;
     references: ImageReference[];
-    stats: ContentStats;
     milestones: MilestoneProgress[];
 }
 
@@ -42,8 +40,7 @@ const plainText = (value: string) =>
         .replace(/\s+/g, " ")
         .trim();
 
-const excerpt = (value: string, maxLength = 88) => {
-    const text = plainText(value);
+const excerpt = (text: string, maxLength = 88) => {
     return text.length > maxLength ? `${text.slice(0, maxLength).trimEnd()}…` : text;
 };
 
@@ -84,22 +81,31 @@ async function buildSiteContentData(): Promise<SiteContentData> {
         date: article.frontmatter.pubDate,
         url: article.url,
     }));
-    const momentEntries: ContentInsight[] = moments.map((moment) => {
+    const momentViews = moments.map((moment) => {
         const date = moment.data.date.replaceAll(".", "-");
-        const summary = excerpt(moment.data.para.join(" ")) || moment.data.media[0]?.alt || "一则影像记录";
+        const text = plainText(moment.data.para.join(" "));
+        const url = `/#${getMomentDomId(moment)}`;
         return {
-            id: moment.id,
-            type: "moment",
-            title: `动态 · ${date}`,
-            summary,
+            moment,
             date,
-            url: `/#${getMomentDomId({ id: moment.id })}`,
+            text,
+            url,
+            title: `动态 · ${date}`,
+            summary: excerpt(text) || moment.data.media[0]?.alt || "一则影像记录",
         };
     });
-    const momentSearchEntries = moments.map((moment) => ({
-        url: `/#${getMomentDomId({ id: moment.id })}`,
-        date: moment.data.date.replaceAll(".", "-"),
-        text: plainText(moment.data.para.join(" ")),
+    const momentEntries: ContentInsight[] = momentViews.map((view) => ({
+        id: view.moment.id,
+        type: "moment",
+        title: view.title,
+        summary: view.summary,
+        date: view.date,
+        url: view.url,
+    }));
+    const momentSearchEntries = momentViews.map(({ url, date, text }) => ({
+        url,
+        date,
+        text,
     }));
 
     for (const article of articles) {
@@ -132,9 +138,7 @@ async function buildSiteContentData(): Promise<SiteContentData> {
         }
     }
 
-    for (const moment of moments) {
-        const url = `/#${getMomentDomId({ id: moment.id })}`;
-        const title = `动态 · ${moment.data.date.replaceAll(".", "-")}`;
+    for (const { moment, url, title } of momentViews) {
         moment.data.media.forEach((media, index) => {
             addReference(references, {
                 path: media.type === "image" ? media.url : media.poster,
@@ -200,7 +204,6 @@ async function buildSiteContentData(): Promise<SiteContentData> {
         entries,
         momentSearchEntries,
         references,
-        stats,
         milestones: calculateMilestones(stats),
     };
 }

@@ -29,9 +29,11 @@ const metricTiles = milestones.map((milestone, index) => {
                     <strong>{tile.current}</strong>
                     <span>{tile.unit}</span>
                 </dd>
-                <span class="sf-tile-track" aria-hidden="true">
-                    <span class="sf-tile-fill" />
-                </span>
+                <dd class="sf-tile-progress" aria-hidden="true">
+                    <span class="sf-tile-track">
+                        <span class="sf-tile-fill" />
+                    </span>
+                </dd>
             </div>
         ))}
     </dl>
@@ -66,10 +68,8 @@ const metricTiles = milestones.map((milestone, index) => {
             if (!dragging) return;
             dragging = false;
             grid.classList.remove("sf-grid-dragging");
-            try {
+            if (grid.hasPointerCapture(event.pointerId)) {
                 grid.releasePointerCapture(event.pointerId);
-            } catch {
-                /* pointer capture may already be gone */
             }
         };
         grid.addEventListener("pointerup", release);

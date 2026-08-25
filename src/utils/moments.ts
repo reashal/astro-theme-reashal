@@ -1,8 +1,8 @@
 import type { CollectionEntry } from "astro:content";
 
-export const MOMENTS_PAGE_SIZE = 10;
+const MOMENTS_PAGE_SIZE = 10;
 
-export type MomentEntry = CollectionEntry<"moments">;
+type MomentEntry = CollectionEntry<"moments">;
 export type MomentData = MomentEntry["data"] & { id: string };
 const TIMESTAMP_ID_PATTERN = /^\d{4}-\d{2}-\d{2}T(\d{2}:\d{2}:\d{2}\.\d{3})$/;
 type MomentsPage = {
@@ -10,7 +10,7 @@ type MomentsPage = {
     page: number;
 };
 
-export const sortMoments = (moments: MomentEntry[]) =>
+export const sortMoments = (moments: readonly MomentEntry[]) =>
     [...moments].sort((a, b) => {
         const dateOrder = b.data.date.localeCompare(a.data.date);
         if (dateOrder !== 0) return dateOrder;
@@ -26,7 +26,7 @@ const serializeMoment = ({ id, data }: MomentEntry): MomentData => ({
     ...data,
 });
 
-export const paginateMoments = (moments: MomentEntry[]): MomentsPage[] => {
+export const paginateMoments = (moments: readonly MomentEntry[]): MomentsPage[] => {
     const sortedMoments = sortMoments(moments);
     const pageCount = Math.ceil(sortedMoments.length / MOMENTS_PAGE_SIZE);
 

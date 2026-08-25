@@ -1,15 +1,4 @@
 ---
-/**
- * 文章列表组件
- * 职责：
- * 1. 提供文章列表的容器和基础样式
- * 2. 实现分页功能（根据屏幕高度自动计算每页显示数量）
- * 3. 显示底部提示信息
- * 4. 渲染文章卡片（支持置顶文章）
- * 
- * 使用方式：
- * <ArticleList articles={articleArray} />
- */
 import { SITE_INFO } from "../consts";
 import type { ArticleModule } from "../types";
 import "../styles/docs.css";
@@ -22,21 +11,20 @@ const { articles } = Astro.props as Props;
 ---
 
 <article class="article-container docs" id="docs-container">
-    {articles.map((post, index) => {
+    {articles.map((post) => {
         const isPinned = post.frontmatter.pinned === true;
         return (
             <a
                 href={post.url}
                 class={`docs-body docs-a ${isPinned ? "docs-fixed" : ""}`}
-                data-article-index={index}
             >
                 <h2 class="docs-h">{post.frontmatter.title}</h2>
                 <p class="docs-p">{post.frontmatter.desc}</p>
                 <time
                     class="docs-t"
-                    datetime={post.frontmatter.pubDate?.slice(0, 10)}
+                    datetime={post.frontmatter.pubDate}
                 >
-                    {post.frontmatter.pubDate?.slice(0, 10)}
+                    {post.frontmatter.pubDate}
                 </time>
             </a>
         );
@@ -58,21 +46,22 @@ const { articles } = Astro.props as Props;
             const container = document.getElementById("docs-container")!;
             const pagination = document.getElementById("docs-pagination")!;
             const endTip = document.getElementById("docs-end-tip")!;
-            
             const allItems = Array.from(
-                container.querySelectorAll(".docs-body"),
-            ) as HTMLElement[];
+                container.querySelectorAll<HTMLElement>(".docs-a"),
+            );
             if (allItems.length === 0) return;
 
+            const MIN_END_TIP_SPACE = 100;
+            const reduceMotion = window.matchMedia(
+                "(prefers-reduced-motion: reduce)",
+            );
             let currentPage = 0;
             let perPage = 1;
-            let hasEnoughSpace = false;
             type HistoryMode = "none" | "push" | "replace";
 
             function calcPerPage(): number {
                 const rootStyle = getComputedStyle(document.documentElement);
-                const perPage = parseInt(rootStyle.getPropertyValue('--per-page')) || 1;
-                return perPage;
+                return parseInt(rootStyle.getPropertyValue("--per-page")) || 1;
             }
 
             function totalPages(): number {
@@ -99,13 +88,9 @@ const { articles } = Astro.props as Props;
                 ](null, "", `${url.pathname}${url.search}${url.hash}`);
             }
 
-            function checkEnoughSpace(): void {
+            function hasRoomForEndTip(): boolean {
                 const footerEl = document.getElementById("docs-footer") as HTMLElement | null;
-                if (!footerEl) {
-                    hasEnoughSpace = false;
-                    return;
-                }
-                
+                if (!footerEl) return false;
                 const availableHeight = container.clientHeight;
                 const footerH = footerEl.offsetHeight;
                 const articleStyle = getComputedStyle(container);
@@ -113,7 +98,6 @@ const { articles } = Astro.props as Props;
                     parseFloat(articleStyle.paddingTop) +
                     parseFloat(articleStyle.paddingBottom);
                 
-                // 计算实际使用的空间
                 let usedHeight = articlePaddingV;
                 allItems.forEach(item => {
                     const itemStyle = getComputedStyle(item);
@@ -122,9 +106,8 @@ const { articles } = Astro.props as Props;
                         parseFloat(itemStyle.marginBottom);
                 });
                 
-                // 检查是否有足够的空间（至少 100px）
                 const available = availableHeight - usedHeight - footerH;
-                hasEnoughSpace = available > 100;
+                return available > MIN_END_TIP_SPACE;
             }
 
             function showPage(
@@ -150,13 +133,9 @@ const { articles } = Astro.props as Props;
                     syncPageUrl(historyMode);
                 }
 
-                // 先隐藏提示并完成条目、分页布局，再检查真实剩余空间
-                endTip.style.display = "none";
+                endTip.hidden = true;
                 if (totalPages() === 1) {
-                    checkEnoughSpace();
-                    endTip.style.display = hasEnoughSpace ? "" : "none";
-                } else {
-                    hasEnoughSpace = false;
+                    endTip.hidden = !hasRoomForEndTip();
                 }
             }
 
@@ -239,7 +218,12 @@ const { articles } = Astro.props as Props;
 
             function scrollToTop(): void {
                 const mainEl = document.querySelector(".main") as HTMLElement | null;
-                if (mainEl) mainEl.scrollTo({ top: 0, behavior: "smooth" });
+                if (mainEl) {
+                    mainEl.scrollTo({
+                        top: 0,
+                        behavior: reduceMotion.matches ? "auto" : "smooth",
+                    });
+                }
             }
 
             function init(): void {
@@ -248,8 +232,7 @@ const { articles } = Astro.props as Props;
                 if (document.fonts?.ready) {
                     void document.fonts.ready.then(() => {
                         if (totalPages() !== 1) return;
-                        checkEnoughSpace();
-                        endTip.style.display = hasEnoughSpace ? "" : "none";
+                        endTip.hidden = !hasRoomForEndTip();
                     });
                 }
             }

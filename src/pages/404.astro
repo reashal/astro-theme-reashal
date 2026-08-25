@@ -10,16 +10,16 @@ import { ERROR_404 } from '../consts';
             <h1 class="not-found-title">{ERROR_404.errorTitle}</h1>
             <p class="not-found-desc">{ERROR_404.errorDesc}</p>
             <div class="not-found-buttons">
-                <button onclick="window.history.back()" class="btn-back">
-                    <i class="iconfont icon-arrow-left"></i> {ERROR_404.backText}
+                <button type="button" class="btn-back" data-back-button>
+                    <i class="iconfont icon-arrow-left" aria-hidden="true"></i> {ERROR_404.backText}
                 </button>
                 <a href="/" class="btn-home">
-                    <i class="iconfont icon-Home"></i> {ERROR_404.homeText}
+                    <i class="iconfont icon-Home" aria-hidden="true"></i> {ERROR_404.homeText}
                 </a>
             </div>
-            <div class="not-found-quote">
+            <blockquote class="not-found-quote">
                 <p>"{ERROR_404.quote}"</p>
-            </div>
+            </blockquote>
         </div>
     </div>
     <style>
@@ -42,12 +42,9 @@ import { ERROR_404 } from '../consts';
             font-size: 5rem;
             font-weight: 700;
             margin: 0;
-            background: linear-gradient(45deg, var(--color-brand), var(--color-accent-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--color-brand);
             line-height: 1;
-            animation: float 3s ease-in-out infinite;
+            animation: float 3s cubic-bezier(.45, 0, .55, 1) infinite;
         }
 
         .not-found-title {
@@ -80,7 +77,10 @@ import { ERROR_404 } from '../consts';
             font-size: 0.95rem;
             font-weight: 500;
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition:
+                background-color .3s cubic-bezier(.22, 1, .36, 1),
+                color .3s cubic-bezier(.22, 1, .36, 1),
+                transform .3s cubic-bezier(.22, 1, .36, 1);
             border: 2px solid var(--color-brand);
         }
 
@@ -222,5 +222,21 @@ import { ERROR_404 } from '../consts';
                 font-size: 0.9rem;
             }
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            .not-found-number {
+                animation: none;
+            }
+
+            .btn-back,
+            .btn-home {
+                transition: none;
+            }
+        }
     </style>
+    <script>
+        document
+            .querySelector<HTMLButtonElement>("[data-back-button]")
+            ?.addEventListener("click", () => history.back());
+    </script>
 </BaseLayout>

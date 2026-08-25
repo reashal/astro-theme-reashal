@@ -1,18 +1,4 @@
 ---
-/**
- * 侧边栏组件
- * 
- * 包含模块：
- * 1. 站长信息卡片 (aside-author-card) - 显示头像、名称、简介
- * 2. 导航链接卡片 (aside-links-card) - 网站主要页面导航
- * 3. 分享按钮卡片 (aside-share-card) - 分享当前页面功能
- * 4. 标签云卡片 (aside-tags-card) - 显示所有文章标签
- * 5. 版权信息卡片 (aside-copyright-card) - 网站版权信息
- * 
- * 命名规范：
- * - 卡片类名统一使用 aside-{模块}-card 格式
- * - 卡片内部元素使用 {模块}-{元素} 格式，如 author-avatar、author-name
- */
 import "../styles/aside.css";
 import { AUTHOR_INFO } from "../consts";
 import { pagesConfig } from "../utils/pages";
@@ -46,7 +32,6 @@ const currentPath = Astro.url.pathname;
 
 <aside aria-label="站点侧边栏">
     <section class="aside-body" aria-hidden="true" inert>
-        <!-- 站长信息卡片：整卡链接到关于页面 -->
         <a
             class="aside-author-card"
             href="/about"
@@ -76,7 +61,6 @@ const currentPath = Astro.url.pathname;
             </div>
         </a>
 
-        <!-- 导航链接卡片：站内三列、站外两列的紧凑矩阵 -->
         <nav class="aside-links-card" aria-label="站点导航">
             {
                 navGroups.map((group) =>
@@ -90,11 +74,11 @@ const currentPath = Astro.url.pathname;
                                 const isActive =
                                     currentPath === link.href ||
                                     (link.href !== "/" &&
-                                        currentPath.startsWith(link.href));
+                                        currentPath.startsWith(`${link.href}/`));
                                 return (
                                     <a
                                         href={link.href}
-                                        target={link.external ? "_blank" : "_self"}
+                                        target={link.external ? "_blank" : undefined}
                                         rel={link.external ? "noopener noreferrer" : undefined}
                                         class={`${link.icon} ${isActive ? "active" : ""}`}
                                         aria-current={isActive ? "page" : undefined}
@@ -110,7 +94,6 @@ const currentPath = Astro.url.pathname;
             }
         </nav>
 
-        <!-- 分享按钮卡片 -->
         <section class="aside-share-card">
             <button type="button" class="share-link" id="aside-share-btn">
                 <i class="iconfont icon-share"></i>
@@ -118,10 +101,8 @@ const currentPath = Astro.url.pathname;
             </button>
         </section>
 
-        <!-- 标签云卡片 -->
         <GetTags />
 
-        <!-- 版权信息卡片 -->
         <section class="aside-copyright-card">
             <div>
                 Powered By <a href="//astro.build" class="copy-a" target="_blank"
@@ -136,7 +117,6 @@ const currentPath = Astro.url.pathname;
         </section>
     </section>
 
-    <!-- 侧边栏折叠/展开按钮 -->
     <button
         type="button"
         class="aside-toggle-btn"
@@ -146,8 +126,8 @@ const currentPath = Astro.url.pathname;
 </aside>
 
 <script>
-    const layout = document.querySelector("main");
-    const mainContent = layout?.querySelector(".main");
+    const layout = document.querySelector<HTMLElement>("main");
+    const mainContent = layout?.querySelector<HTMLElement>(".main");
     const asideBody = document.querySelector<HTMLElement>(".aside-body");
     const asideToggle =
         document.querySelector<HTMLButtonElement>(".aside-toggle-btn");
@@ -249,7 +229,6 @@ const currentPath = Astro.url.pathname;
         }
     });
 
-    // 分享按钮点击事件：先折叠侧边栏，再弹出分享卡片
     if (asideShareBtn) {
         asideShareBtn.addEventListener("click", () => {
             const wasOpen = layout?.classList.contains("aside-show") ?? false;

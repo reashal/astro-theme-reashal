@@ -113,8 +113,13 @@
     font-size: .68rem;
 }
 
+.sf-tile-progress {
+    margin: 0;
+}
+
 /* 进度槽：向下一刻度推进的轨迹 */
 .sf-tile-track {
+    display: block;
     position: relative;
     height: .24rem;
     margin-top: .1rem;

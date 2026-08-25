@@ -1,7 +1,7 @@
 aside {
     display: flex;
     position: relative;
-    width: 240px;
+    width: var(--aside-width);
     height: 100dvh;
     background-color: var(--surface-aside);
     box-shadow: inset -1px 0 0 var(--panel-edge);
@@ -13,7 +13,7 @@ aside {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    width: 240px;
+    width: var(--aside-width);
     height: 100dvh;
     padding: 1rem;
 }
@@ -102,16 +102,13 @@ html[data-input-mode="keyboard"] .aside-toggle-btn:focus-visible::after {
     box-shadow: var(--toggle-edge-shadow);
 }
 
-/* ============================================
- * 侧边栏卡片基础样式
- * 所有卡片统一使用 aside-{模块}-card 命名
- * hover 效果：向下移动并缩小，阴影变浅
- * ============================================ */
-.aside-body .aside-author-card,
-.aside-body .aside-links-card,
-.aside-body .aside-share-card,
-.aside-body .aside-tags-card,
-.aside-body .aside-copyright-card {
+.aside-body :is(
+    .aside-author-card,
+    .aside-links-card,
+    .aside-share-card,
+    .aside-tags-card,
+    .aside-copyright-card
+) {
     padding: 0.8rem;
     margin-bottom: 1.2rem;
     border: 1px solid transparent;
@@ -120,18 +117,19 @@ html[data-input-mode="keyboard"] .aside-toggle-btn:focus-visible::after {
         var(--shadow-card),
         inset 0 1px 0 var(--card-gloss);
     transition:
-        transform .3s ease,
-        box-shadow .3s ease,
-        background-color .3s ease;
+        transform .3s cubic-bezier(.22, 1, .36, 1),
+        box-shadow .3s cubic-bezier(.22, 1, .36, 1),
+        background-color .3s cubic-bezier(.22, 1, .36, 1);
     background-color: rgb(var(--rgb-white) / 62%);
 }
 
-/* 卡片 hover 效果："按下去"的视觉反馈（五张卡片统一） */
-.aside-body .aside-author-card:hover,
-.aside-body .aside-links-card:hover,
-.aside-body .aside-share-card:hover,
-.aside-body .aside-tags-card:hover,
-.aside-body .aside-copyright-card:hover {
+.aside-body :is(
+    .aside-author-card,
+    .aside-links-card,
+    .aside-share-card,
+    .aside-tags-card,
+    .aside-copyright-card
+):hover {
     transform: translateY(4px) scale(0.98);
     border-color: rgb(var(--rgb-brand) / 12%);
     box-shadow:
@@ -140,12 +138,13 @@ html[data-input-mode="keyboard"] .aside-toggle-btn:focus-visible::after {
     background-color: rgb(var(--rgb-brand) / 6%);
 }
 
-/* 卡片被按下：统一回落反馈（五张卡片一致） */
-.aside-body .aside-author-card:active,
-.aside-body .aside-links-card:active,
-.aside-body .aside-share-card:active,
-.aside-body .aside-tags-card:active,
-.aside-body .aside-copyright-card:active {
+.aside-body :is(
+    .aside-author-card,
+    .aside-links-card,
+    .aside-share-card,
+    .aside-tags-card,
+    .aside-copyright-card
+):active {
     transform: translateY(1px) scale(.985);
     box-shadow: var(--shadow-card);
     transition-duration: .1s;
@@ -158,7 +157,6 @@ html[data-input-mode="keyboard"] .aside-toggle-btn:focus-visible::after {
     box-shadow: var(--shadow-card);
 }
 
-/* 站长信息：整张作者铭牌都是前往关于页面的入口。 */
 .aside-body .aside-author-card {
     position: relative;
     display: flex;
@@ -189,14 +187,13 @@ html[data-input-mode="keyboard"] .aside-toggle-btn:focus-visible::after {
     pointer-events: none;
     z-index: 0;
     opacity: 0;
-    transition: opacity .45s ease;
+    transition: opacity .45s cubic-bezier(.22, 1, .36, 1);
 }
 
 .aside-body .aside-author-card:hover::after {
     opacity: 1;
 }
 
-/* 头像：常态圆润，hover 时出现品牌光环 */
 .aside-body .author-avatar {
     position: relative;
     z-index: 1;
@@ -206,8 +203,8 @@ html[data-input-mode="keyboard"] .aside-toggle-btn:focus-visible::after {
     border-radius: 50%;
     object-fit: cover;
     transition:
-        box-shadow .35s ease,
-        transform .35s ease;
+        box-shadow .35s cubic-bezier(.22, 1, .36, 1),
+        transform .35s cubic-bezier(.22, 1, .36, 1);
 }
 
 .aside-body .aside-author-card:hover .author-avatar {
@@ -219,7 +216,6 @@ html[data-input-mode="keyboard"] .aside-toggle-btn:focus-visible::after {
     transform: scale(.985);
 }
 
-/* 文字区域 */
 .aside-body .author-info {
     position: relative;
     z-index: 1;
@@ -227,7 +223,6 @@ html[data-input-mode="keyboard"] .aside-toggle-btn:focus-visible::after {
     min-width: 0;
 }
 
-/* 网名 */
 .aside-body .author-name {
     display: block;
     margin: 0 0 .16rem;
@@ -389,7 +384,6 @@ html[data-input-mode="keyboard"] .aside-toggle-btn:focus-visible::after {
     font-weight: 600;
 }
 
-/* 分享按钮 */
 .aside-body .aside-share-card {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -406,9 +400,9 @@ html[data-input-mode="keyboard"] .aside-toggle-btn:focus-visible::after {
     text-decoration: none;
     font-size: 0.9rem;
     transition:
-        color .2s ease,
-        background-color .2s ease,
-        transform .2s ease;
+        color .2s cubic-bezier(.22, 1, .36, 1),
+        background-color .2s cubic-bezier(.22, 1, .36, 1),
+        transform .2s cubic-bezier(.22, 1, .36, 1);
     grid-column: 1 / -1;
     cursor: pointer;
     width: 100%;
@@ -417,14 +411,13 @@ html[data-input-mode="keyboard"] .aside-toggle-btn:focus-visible::after {
     font-family: inherit;
 }
 
-/* 主题信息 */
 .aside-body p {
     margin: 0;
 }
 
 .aside-body .aside-copyright-card {
     align-self: end;
-    width: calc(240px - 2rem);
+    width: calc(var(--aside-width) - 2rem);
     margin-bottom: 0;
     font-size: 0.85rem;
     padding: 0.6rem;
@@ -444,8 +437,8 @@ html[data-input-mode="keyboard"] .aside-toggle-btn:focus-visible::after {
     text-decoration: none;
     font-weight: 500;
     transition:
-        color .2s ease,
-        border-color .2s ease;
+        color .2s cubic-bezier(.22, 1, .36, 1),
+        border-color .2s cubic-bezier(.22, 1, .36, 1);
     border-bottom: 1px dashed transparent;
 }
 
@@ -453,14 +446,6 @@ html[data-input-mode="keyboard"] .aside-toggle-btn:focus-visible::after {
     color: var(--color-brand-hover);
     border-bottom-color: var(--color-brand);
 }
-
-/* ============================================
- * === 暗黑模式 ===
- * ============================================
- * 暗黑模式下所有卡片使用统一的深色主题
- * 阴影效果比亮色模式更深，营造层次感
- * hover 时添加青色边框高亮
- */
 
 .dark .aside-toggle-btn {
     --toggle-edge-shadow:
@@ -482,30 +467,36 @@ html.dark[data-input-mode="keyboard"]
     box-shadow: var(--toggle-edge-shadow);
 }
 
-.dark .aside-body .aside-author-card,
-.dark .aside-body .aside-links-card,
-.dark .aside-body .aside-share-card,
-.dark .aside-body .aside-tags-card,
-.dark .aside-body .aside-copyright-card {
+.dark .aside-body :is(
+    .aside-author-card,
+    .aside-links-card,
+    .aside-share-card,
+    .aside-tags-card,
+    .aside-copyright-card
+) {
     background-color: var(--surface-aside-card);
     box-shadow: var(--shadow-aside-card);
 }
 
-.dark .aside-body .aside-author-card:hover,
-.dark .aside-body .aside-links-card:hover,
-.dark .aside-body .aside-share-card:hover,
-.dark .aside-body .aside-tags-card:hover,
-.dark .aside-body .aside-copyright-card:hover {
+.dark .aside-body :is(
+    .aside-author-card,
+    .aside-links-card,
+    .aside-share-card,
+    .aside-tags-card,
+    .aside-copyright-card
+):hover {
     border-color: rgb(var(--rgb-accent-cyan) / 12%);
     background-color: var(--surface-aside-card-hover);
     box-shadow: var(--shadow-aside-card-hover);
 }
 
-.dark .aside-body .aside-author-card:active,
-.dark .aside-body .aside-links-card:active,
-.dark .aside-body .aside-share-card:active,
-.dark .aside-body .aside-tags-card:active,
-.dark .aside-body .aside-copyright-card:active,
+.dark .aside-body :is(
+    .aside-author-card,
+    .aside-links-card,
+    .aside-share-card,
+    .aside-tags-card,
+    .aside-copyright-card
+):active,
 .dark .aside-body .aside-share-card:has(.share-link:active),
 .dark .aside-body .aside-copyright-card:has(a:active) {
     box-shadow: var(--shadow-aside-card);
@@ -551,7 +542,6 @@ html.dark[data-input-mode="keyboard"]
     color: var(--text-on-dark-soft);
 }
 
-/* 侧边栏三级标题 */
 .dark aside h3 {
     color: var(--text-on-dark) !important;
 }
@@ -560,7 +550,6 @@ html.dark[data-input-mode="keyboard"]
     color: var(--text-on-dark) !important;
 }
 
-/* 侧边栏版权信息 */
 .dark .aside-body .aside-copyright-card {
     color: var(--text-on-dark);
 }
@@ -574,7 +563,6 @@ html.dark[data-input-mode="keyboard"]
     border-bottom-color: var(--color-accent-cyan);
 }
 
-/* 暗黑模式 - 分享按钮 */
 .dark .aside-body .share-link {
     color: var(--text-on-dark);
 }
@@ -585,7 +573,6 @@ html.dark[data-input-mode="keyboard"]
  * 至多 3 张可见，滑动向上消失，循环流转
  * ============================================ */
 
-/* --- 卡片堆叠容器 --- */
 .aside-body .card-stack {
     position: relative;
     height: 52px;
@@ -669,7 +656,6 @@ html.dark[data-input-mode="keyboard"]
     }
 }
 
-/* --- 消息卡片 --- */
 .aside-body .message-card {
     position: absolute;
     left: 0;
@@ -720,7 +706,6 @@ html[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-visib
     outline-offset: 2px;
 }
 
-/* 标签名称前的 # 符号 */
 .aside-body .msg-hashtag {
     font-size: .75rem;
     font-weight: 700;
@@ -729,7 +714,6 @@ html[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-visib
     flex-shrink: 0;
 }
 
-/* 标签名称 */
 .aside-body .msg-name {
     font-size: .8rem;
     font-weight: 600;
@@ -741,7 +725,6 @@ html[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-visib
     white-space: nowrap;
 }
 
-/* 计数徽标 */
 .aside-body .msg-count {
     font-size: .6rem;
     font-weight: 700;
@@ -753,7 +736,6 @@ html[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-visib
     line-height: 1.3;
 }
 
-/* 底部指示器 */
 .aside-body .stack-footer {
     text-align: center;
     padding: .6rem 0 0;
@@ -763,11 +745,6 @@ html[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-visib
     letter-spacing: .02em;
     line-height: 1;
 }
-
-/* ============================================
- * 暗黑模式 — 消息堆叠
- * 深色玻璃效果
- * ============================================ */
 
 .dark .aside-body .message-card {
     border-color: var(--border-tag-front);
@@ -837,11 +814,13 @@ html.dark[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-
         overscroll-behavior: contain;
     }
 
-    .aside-body .aside-author-card,
-    .aside-body .aside-links-card,
-    .aside-body .aside-share-card,
-    .aside-body .aside-tags-card,
-    .aside-body .aside-copyright-card {
+    .aside-body :is(
+        .aside-author-card,
+        .aside-links-card,
+        .aside-share-card,
+        .aside-tags-card,
+        .aside-copyright-card
+    ) {
         flex-shrink: 0;
         margin-bottom: .72rem;
         padding: .65rem;
@@ -897,16 +876,20 @@ html.dark[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-
         transform: translate(-50%, -50%);
     }
 
-    .aside-body .aside-author-card:hover,
-    .aside-body .aside-links-card:hover,
-    .aside-body .aside-share-card:hover,
-    .aside-body .aside-tags-card:hover,
-    .aside-body .aside-copyright-card:hover,
-    .dark .aside-body .aside-author-card:hover,
-    .dark .aside-body .aside-links-card:hover,
-    .dark .aside-body .aside-share-card:hover,
-    .dark .aside-body .aside-tags-card:hover,
-    .dark .aside-body .aside-copyright-card:hover {
+    .aside-body :is(
+        .aside-author-card,
+        .aside-links-card,
+        .aside-share-card,
+        .aside-tags-card,
+        .aside-copyright-card
+    ):hover,
+    .dark .aside-body :is(
+        .aside-author-card,
+        .aside-links-card,
+        .aside-share-card,
+        .aside-tags-card,
+        .aside-copyright-card
+    ):hover {
         transform: none;
     }
 }

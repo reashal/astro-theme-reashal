@@ -27,7 +27,7 @@
     background: none;
     user-select: none;
     cursor: pointer;
-    transition: transform .18s ease;
+    transition: transform .18s cubic-bezier(.22, 1, .36, 1);
   }
   #themeToggle:active {
     transform: translateY(1px) scale(.94);
@@ -58,7 +58,6 @@
   };
   syncThemeButtonLabel();
 
-  // 点击切换：写入手动记录和时间戳
   const handleToggleClick = () => {
     const element = document.documentElement;
     element.classList.toggle("dark");
