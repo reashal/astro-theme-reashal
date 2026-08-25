@@ -30,44 +30,76 @@ aside {
 }
 
 .aside-toggle-btn {
+    --toggle-edge-shadow:
+        inset -1px 0 0 var(--border-light),
+        inset 0 1px 0 var(--border-light-subtle),
+        inset 0 -1px 0 var(--border-light-subtle);
     position: absolute;
-    right: -16px;
+    right: -28px;
     top: calc(50% - var(--edge-control-length) / 2);
-    width: 16px;
+    width: 28px;
     height: var(--edge-control-length);
     border-radius: 0 .4rem .4rem 0;
-    backdrop-filter: blur(2px);
-    background-color: rgb(var(--rgb-toggle) / 36%);
+    background: transparent;
     border: 0;
     padding: 0;
-    z-index: 999;
-    transition:
-        background-color .18s ease,
-        transform .18s ease;
+    color: rgb(var(--rgb-toggle));
+    cursor: pointer;
+    touch-action: manipulation;
+    z-index: 2;
+    transition: transform .18s cubic-bezier(.22, 1, .36, 1);
 }
 
-.aside-toggle-btn:hover {
-    cursor: pointer;
+.aside-toggle-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 -1px;
+    width: 17px;
+    border-radius: 0 .4rem .4rem 0;
+    background-color: var(--surface-aside);
+    box-shadow: var(--toggle-edge-shadow);
 }
 
 .aside-toggle-btn:active {
-    background-color: rgb(var(--rgb-toggle) / 52%);
     transform: translateX(-1px) scale(.97);
 }
 
-.aside-toggle-btn.is-escape-focus:focus,
-.aside-toggle-btn.is-escape-focus:focus-visible {
-    outline: none;
-    box-shadow: none;
+.aside-toggle-btn::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    width: 2px;
+    height: 16px;
+    border-radius: var(--radius-pill);
+    background-color: currentColor;
+    opacity: .8;
+    transform: translate(-50%, -50%);
+    transform-origin: center;
+    z-index: 1;
+    transition:
+        opacity .18s cubic-bezier(.22, 1, .36, 1),
+        transform .18s cubic-bezier(.22, 1, .36, 1);
 }
 
-.aside-toggle-btn::before {
-    content: "|";
-    position: absolute;
-    left: 6px;
-    top: 20px;
-    display: block;
-    color: var(--color-white);
+.aside-toggle-btn:hover::before {
+    opacity: .98;
+    transform: translate(-50%, -50%) scaleY(1.125);
+}
+
+html[data-input-mode="keyboard"] .aside-toggle-btn:focus-visible {
+    outline: none;
+}
+
+html[data-input-mode="keyboard"] .aside-toggle-btn:focus-visible::after {
+    box-shadow:
+        var(--toggle-edge-shadow),
+        0 0 0 2px rgb(var(--rgb-brand) / 45%);
+}
+
+.aside-toggle-btn.is-escape-focus:focus::after,
+.aside-toggle-btn.is-escape-focus:focus-visible::after {
+    box-shadow: var(--toggle-edge-shadow);
 }
 
 /* ============================================
@@ -264,24 +296,25 @@ aside {
 
 .aside-body .aside-links-external {
     position: relative;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    margin-top: .5rem;
-    padding-top: .5rem;
+    grid-template-columns: repeat(2, 3.625rem);
+    justify-content: center;
+    margin-top: .375rem;
+    padding-top: .375rem;
 }
 
 .aside-body .aside-links-external::before {
     content: "";
     position: absolute;
     top: 0;
-    left: .5rem;
-    right: .5rem;
-    height: 2px;
+    left: 0;
+    right: 0;
+    height: 1px;
     border-radius: 999px;
     background-color: var(--border-light);
 }
 
 .dark .aside-body .aside-links-external::before {
-    background-color: rgb(var(--rgb-accent-cyan) / 16%);
+    background-color: rgb(var(--rgb-accent-cyan) / 24%);
 }
 
 .aside-body .aside-links-card a {
@@ -329,11 +362,19 @@ aside {
     color: var(--text-muted);
 }
 
+.aside-body .aside-links-external a::before {
+    transition: color .18s cubic-bezier(.22, 1, .36, 1);
+}
+
 .aside-body .aside-links-card a:hover {
     border-color: rgb(var(--rgb-brand) / 12%);
     background-color: var(--surface-tint);
     color: var(--color-brand);
     transform: translateY(-1px);
+}
+
+.aside-body .aside-links-external a:hover {
+    color: var(--color-accent-pink);
 }
 
 .aside-body .aside-links-card a:active,
@@ -421,32 +462,53 @@ aside {
  * hover 时添加青色边框高亮
  */
 
-/* 侧边栏背景：与主界面页面底色一致（底色换色已收口到 --surface-aside token） */
 .dark .aside-toggle-btn {
-    background-color: rgb(var(--rgb-white) / 10%);
+    --toggle-edge-shadow:
+        inset -1px 0 0 var(--border-dark),
+        inset 0 1px 0 var(--border-dark-soft),
+        inset 0 -1px 0 var(--border-dark-soft);
+    color: rgb(var(--rgb-white) / 76%);
 }
 
-.dark .aside-toggle-btn:active {
-    background-color: rgb(var(--rgb-white) / 18%);
+html.dark[data-input-mode="keyboard"]
+    .aside-toggle-btn:focus-visible::after {
+    box-shadow:
+        var(--toggle-edge-shadow),
+        0 0 0 2px rgb(var(--rgb-accent-cyan) / 45%);
 }
 
-/* 暗黑模式卡片：常态用亮一档的玻璃色，hover 按下回落到基础玻璃色 */
+.dark .aside-toggle-btn.is-escape-focus:focus::after,
+.dark .aside-toggle-btn.is-escape-focus:focus-visible::after {
+    box-shadow: var(--toggle-edge-shadow);
+}
+
 .dark .aside-body .aside-author-card,
 .dark .aside-body .aside-links-card,
 .dark .aside-body .aside-share-card,
 .dark .aside-body .aside-tags-card,
 .dark .aside-body .aside-copyright-card {
-    background-color: rgb(var(--rgb-dark-glass) / 62%);
+    background-color: var(--surface-aside-card);
+    box-shadow: var(--shadow-aside-card);
 }
 
-/* 暗黑模式卡片 hover："按下去"效果 + 青色边框（仅配色，结构沿用浅色） */
 .dark .aside-body .aside-author-card:hover,
 .dark .aside-body .aside-links-card:hover,
 .dark .aside-body .aside-share-card:hover,
 .dark .aside-body .aside-tags-card:hover,
 .dark .aside-body .aside-copyright-card:hover {
-    border-color: rgb(var(--rgb-accent-cyan) / 16%);
-    background-color: rgb(var(--rgb-dark-glass) / 82%);
+    border-color: rgb(var(--rgb-accent-cyan) / 12%);
+    background-color: var(--surface-aside-card-hover);
+    box-shadow: var(--shadow-aside-card-hover);
+}
+
+.dark .aside-body .aside-author-card:active,
+.dark .aside-body .aside-links-card:active,
+.dark .aside-body .aside-share-card:active,
+.dark .aside-body .aside-tags-card:active,
+.dark .aside-body .aside-copyright-card:active,
+.dark .aside-body .aside-share-card:has(.share-link:active),
+.dark .aside-body .aside-copyright-card:has(a:active) {
+    box-shadow: var(--shadow-aside-card);
 }
 
 .dark .aside-body .aside-author-card[aria-current="page"] {
@@ -463,6 +525,10 @@ aside {
     border-color: rgb(var(--rgb-accent-cyan) / 18%);
     background-color: rgb(var(--rgb-accent-cyan) / 8%);
     color: var(--color-accent-cyan) !important;
+}
+
+.dark .aside-body .aside-links-external a:hover {
+    color: var(--color-accent-pink) !important;
 }
 
 .dark .aside-body .aside-links-card a.active {
@@ -490,8 +556,7 @@ aside {
     color: var(--text-on-dark) !important;
 }
 
-/* 侧边栏链接 */
-.dark aside a {
+.dark aside a:not(.copy-a) {
     color: var(--text-on-dark) !important;
 }
 
@@ -523,63 +588,75 @@ aside {
 /* --- 卡片堆叠容器 --- */
 .aside-body .card-stack {
     position: relative;
-    height: 62px;
-    overflow: hidden;
+    height: 52px;
+    overflow: visible;
     cursor: grab;
     isolation: isolate;
 }
 
 .aside-body .aside-tags-card {
     position: relative;
-    overflow: visible;
+    padding-bottom: .58rem;
+    overflow: hidden;
 }
 
 .aside-body .card-stack:active {
     cursor: grabbing;
 }
 
-/* 顶层标签滑走时留下少量同色系碎屑，不干扰堆叠卡片的操作。 */
 .aside-body .tag-dissolve-layer {
     position: absolute;
-    inset: 0;
-    z-index: 1000;
-    overflow: visible;
+    z-index: 4;
+    overflow: hidden;
+    border-radius: var(--radius-md);
     pointer-events: none;
 }
 
 .aside-body .tag-dissolve-particle {
     position: absolute;
-    width: var(--particle-size, 3px);
-    height: var(--particle-size, 3px);
-    border-radius: 36%;
-    background-color: rgb(var(--rgb-brand) / 88%);
-    box-shadow: 0 0 .34rem rgb(var(--rgb-brand) / 38%);
-    animation: tag-card-dissolve var(--particle-duration, 440ms)
-        cubic-bezier(.2, .7, .25, 1) var(--particle-delay, 0ms) forwards;
-    will-change: transform, opacity;
-}
-
-.aside-body .tag-dissolve-particle:nth-child(3n) {
+    width: var(--particle-width, 2px);
+    height: var(--particle-height, 2px);
     border-radius: 50%;
-    background-color: rgb(var(--rgb-brand) / 52%);
+    background-color: var(--particle-color, var(--surface-raised));
+    opacity: 0;
+    transform-origin: 50% 50%;
+    animation: tag-card-dissolve var(--particle-duration, 620ms)
+        cubic-bezier(.32, .08, .5, 1) var(--particle-delay, 0ms) both;
+    will-change: transform, opacity;
 }
 
 @keyframes tag-card-dissolve {
     0% {
-        opacity: 0;
-        transform: translate3d(0, 0, 0) scale(.45) rotate(0deg);
+        opacity: .92;
+        transform: translate3d(0, 0, 0) scale(1);
     }
 
-    14% {
-        opacity: .94;
+    18% {
+        opacity: .9;
+        transform: translate3d(
+            var(--particle-break-x, 0),
+            var(--particle-break-y, -.35rem),
+            0
+        ) scale(.94);
     }
 
-    62% {
-        opacity: .82;
+    65% {
+        opacity: .72;
+        transform: translate3d(
+            var(--particle-mid-x, 0),
+            var(--particle-mid-y, -1rem),
+            0
+        ) scale(.72);
     }
 
-    84% {
-        opacity: .46;
+    86% {
+        opacity: .3;
+        transform: translate3d(
+            var(--particle-tail-x, 0),
+            var(--particle-tail-y, -1.6rem),
+            0
+        ) scale(.38);
+        animation-timing-function: cubic-bezier(.48, .02, .78, .28);
     }
 
     100% {
@@ -588,7 +665,7 @@ aside {
             var(--particle-x, 0),
             var(--particle-y, -2rem),
             0
-        ) scale(.12) rotate(var(--particle-rotate, 90deg));
+        ) scale(.08);
     }
 }
 
@@ -610,14 +687,16 @@ aside {
         0 3px 8px rgb(var(--rgb-black) / 7%);
     text-decoration: none;
     pointer-events: none;
+    transform-origin: 50% 0;
+    backface-visibility: hidden;
 }
 
-.aside-body .message-card:nth-child(2) {
+.aside-body .message-card[data-depth="1"] {
     border-color: rgb(var(--rgb-brand) / 12%);
     background: var(--surface-soft);
 }
 
-.aside-body .message-card:nth-child(3) {
+.aside-body .message-card[data-depth="2"] {
     border-color: rgb(var(--rgb-brand) / 9%);
     background: var(--surface-muted);
 }
@@ -645,6 +724,7 @@ html[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-visib
 .aside-body .msg-hashtag {
     font-size: .75rem;
     font-weight: 700;
+    line-height: 1.2;
     color: var(--color-brand);
     flex-shrink: 0;
 }
@@ -653,6 +733,7 @@ html[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-visib
 .aside-body .msg-name {
     font-size: .8rem;
     font-weight: 600;
+    line-height: 1.2;
     color: var(--text-primary);
     flex: 1;
     overflow: hidden;
@@ -675,7 +756,7 @@ html[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-visib
 /* 底部指示器 */
 .aside-body .stack-footer {
     text-align: center;
-    padding: .45rem 0 0;
+    padding: .6rem 0 0;
     font-size: .55rem;
     color: rgb(var(--rgb-brand) / 35%);
     font-weight: 500;
@@ -689,47 +770,31 @@ html[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-visib
  * ============================================ */
 
 .dark .aside-body .message-card {
-    border-color: rgb(var(--rgb-accent-cyan) / 22%);
-    background: rgb(var(--rgb-dark-message));
-    box-shadow:
-        0 2px 6px rgb(var(--rgb-black) / 40%),
-        0 6px 14px rgb(var(--rgb-black) / 28%);
+    border-color: var(--border-tag-front);
+    background: var(--surface-tag-front);
+    box-shadow: var(--shadow-tag-front);
 }
 
-.dark .aside-body .tag-dissolve-particle {
-    background-color: rgb(var(--rgb-accent-cyan) / 90%);
-    box-shadow: 0 0 .36rem rgb(var(--rgb-accent-cyan) / 40%);
+.dark .aside-body .message-card[data-depth="1"] {
+    border-color: var(--border-tag-middle);
+    background: var(--surface-tag-middle);
+    box-shadow: var(--shadow-tag-middle);
 }
 
-.dark .aside-body .tag-dissolve-particle:nth-child(3n) {
-    background-color: rgb(var(--rgb-accent-cyan) / 56%);
-}
-
-.dark .aside-body .message-card:nth-child(2) {
-    border-color: rgb(var(--rgb-accent-cyan) / 14%);
-    background: rgb(var(--rgb-dark-card));
-    box-shadow:
-        0 .14rem .38rem rgb(var(--rgb-black) / 28%),
-        0 .42rem .9rem rgb(var(--rgb-black) / 20%);
-}
-
-.dark .aside-body .message-card:nth-child(3) {
-    border-color: rgb(var(--rgb-accent-cyan) / 11%);
-    background: var(--surface-page-dark);
-    box-shadow:
-        0 .12rem .32rem rgb(var(--rgb-black) / 24%),
-        0 .36rem .8rem rgb(var(--rgb-black) / 18%);
+.dark .aside-body .message-card[data-depth="2"] {
+    border-color: var(--border-tag-back);
+    background: var(--surface-tag-back);
+    box-shadow: var(--shadow-tag-back);
 }
 
 .dark .aside-body .message-card:hover {
-    border-color: rgb(var(--rgb-accent-cyan) / 30%);
-    box-shadow:
-        0 4px 12px rgb(var(--rgb-black) / 45%);
+    border-color: var(--border-tag-hover);
+    box-shadow: var(--shadow-tag-hover);
 }
 
 .dark .aside-body .message-card:first-child:active {
-    border-color: rgb(var(--rgb-accent-cyan) / 22%);
-    box-shadow: 0 2px 8px rgb(var(--rgb-black) / 40%);
+    border-color: var(--border-tag-front);
+    box-shadow: var(--shadow-tag-middle);
 }
 
 html.dark[data-input-mode="keyboard"] .aside-body .message-card:focus-visible,
@@ -749,12 +814,15 @@ html.dark[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-
 }
 
 .dark .aside-body .msg-count {
-    background: var(--color-accent-cyan);
-    color: var(--surface-dark-panel);
+    background: var(--surface-tag-count);
+    color: var(--text-tag-count);
+    box-shadow: inset 0 1px 0 rgb(var(--rgb-white) / 8%);
 }
 
 .dark .aside-body .stack-footer {
-    color: rgb(var(--rgb-accent-cyan) / 35%);
+    color: var(--text-tag-footer);
+    font-size: .625rem;
+    font-variant-numeric: tabular-nums;
 }
 
 @media screen and (max-width: 560px), screen and (max-height: 680px) {
@@ -793,7 +861,7 @@ html.dark[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-
 
     .aside-body .aside-tags-card {
         width: 100%;
-        padding: .58rem .62rem .52rem;
+        padding: .58rem .62rem .38rem;
         overflow: visible;
     }
 
@@ -803,7 +871,7 @@ html.dark[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-
 
     .aside-body .card-stack {
         width: 100%;
-        height: 62px;
+        height: 52px;
     }
 
     .aside-body .message-card {
@@ -812,7 +880,7 @@ html.dark[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-
     }
 
     .aside-body .stack-footer {
-        padding-top: .32rem;
+        padding-top: .46rem;
     }
 
     .aside-body .aside-copyright-card {
@@ -824,6 +892,11 @@ html.dark[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-
 }
 
 @media (hover: none) {
+    .aside-toggle-btn:hover::before {
+        opacity: .8;
+        transform: translate(-50%, -50%);
+    }
+
     .aside-body .aside-author-card:hover,
     .aside-body .aside-links-card:hover,
     .aside-body .aside-share-card:hover,
@@ -839,6 +912,11 @@ html.dark[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-
 }
 
 @media (prefers-reduced-motion: reduce) {
+    .aside-toggle-btn,
+    .aside-toggle-btn::before {
+        transition: none;
+    }
+
     .aside-body .tag-dissolve-layer {
         display: none;
     }

@@ -28,10 +28,6 @@
     --article-heading-marker: var(--color-accent-cyan);
 }
 
-.dark .article-container {
-    box-shadow: rgb(var(--rgb-accent-cyan) / 40%) 0px 0px 8px;
-}
-
 .doc .article-search-meta {
     position: absolute;
     width: 1px;

@@ -107,6 +107,7 @@ main {
     margin-top: 3.4vh;
     margin-bottom: 3.4vh;
     padding: clamp(1rem, 1.4vw, 1.25rem);
+    background-color: var(--surface-article);
     box-shadow: var(--shadow-shell);
 }
 
