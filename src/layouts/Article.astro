@@ -83,7 +83,7 @@ const relatedArticles = isDocsArticle
     : [];
 
 const formatDate = (date: string) => {
-    const [year, month, day] = date.split("-").map(Number);
+    const [year, month, day] = date.slice(0, 10).split("-").map(Number);
     return `${year}年${month}月${day}日`;
 };
 ---

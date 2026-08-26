@@ -8,6 +8,10 @@
     --article-heading-primary: var(--text-primary);
     --article-heading-strong: var(--text-strong);
     --article-heading-marker: var(--color-accent-pink);
+    --article-reading-measure: 72ch;
+    --article-body-leading: 1.72;
+    --article-paragraph-gap: .55rem;
+    --article-block-gap: .8rem;
 
     margin-top: 2vh;
     margin-bottom: 2vh;
@@ -423,8 +427,8 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
 .article-content h5,
 .article-content h6 {
     position: relative;
-    margin-right: 0;
-    margin-left: 0;
+    margin-block: var(--article-heading-gap);
+    margin-inline: 0;
     padding-left: .72rem;
     overflow-wrap: break-word;
     line-height: 1.45;
@@ -455,72 +459,66 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
 }
 
 .article-content h1 {
+    --article-heading-gap: 1.1rem;
     --article-heading-marker-width: .26rem;
     --article-heading-marker-height: 1.08em;
     --article-heading-marker-opacity: 1;
 
-    margin-top: 2rem;
-    margin-bottom: .8rem;
     color: var(--article-heading-primary);
     font-size: clamp(1.32rem, 2.1vw, 1.5rem);
     font-weight: 700;
 }
 
 .article-content h2 {
+    --article-heading-gap: 1rem;
     --article-heading-marker-width: .24rem;
     --article-heading-marker-height: .94em;
     --article-heading-marker-opacity: .9;
 
-    margin-top: 1.9rem;
-    margin-bottom: .72rem;
     color: var(--article-heading-primary);
     font-size: clamp(1.18rem, 1.8vw, 1.3rem);
     font-weight: 700;
 }
 
 .article-content h3 {
+    --article-heading-gap: .8rem;
     --article-heading-marker-width: .22rem;
     --article-heading-marker-height: .8em;
     --article-heading-marker-opacity: .8;
 
-    margin-top: 1.5rem;
-    margin-bottom: .6rem;
     color: var(--article-heading-strong);
     font-size: clamp(1.06rem, 1.45vw, 1.12rem);
     font-weight: 650;
 }
 
 .article-content h4 {
+    --article-heading-gap: .7rem;
     --article-heading-marker-width: .2rem;
     --article-heading-marker-height: .66em;
     --article-heading-marker-opacity: .7;
 
-    margin-top: 1.28rem;
-    margin-bottom: .54rem;
     color: var(--article-heading-strong);
     font-size: 1rem;
     font-weight: 700;
 }
 
 .article-content h5 {
+    --article-heading-gap: .65rem;
     --article-heading-marker-width: .18rem;
     --article-heading-marker-height: .5em;
     --article-heading-marker-opacity: .6;
 
-    margin-top: 1.12rem;
-    margin-bottom: .48rem;
     color: var(--article-heading-strong);
     font-size: 1rem;
     font-weight: 650;
 }
 
 .article-content h6 {
+    --article-heading-gap: .6rem;
     --article-heading-marker-width: .18rem;
     --article-heading-marker-height: .3em;
     --article-heading-marker-opacity: .5;
 
-    margin-top: 1.02rem;
-    margin-bottom: .44rem;
     color: var(--article-heading-strong);
     font-size: 1rem;
     font-weight: 600;
@@ -529,9 +527,9 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
 /* 段落 */
 .doc p,
 .doc blockquote p {
-    margin: .8rem 0;
+    margin: var(--article-paragraph-gap) 0;
     overflow-wrap: break-word;
-    line-height: 1.72;
+    line-height: var(--article-body-leading);
     text-wrap: pretty;
 }
 
@@ -539,7 +537,7 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
 .article-content > blockquote,
 .article-content > ul,
 .article-content > ol {
-    max-width: 72ch;
+    max-width: var(--article-reading-measure);
 }
 
 .dark .article-container p {
@@ -547,6 +545,10 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
 }
 
 /* 引用块 */
+.doc blockquote {
+    margin: .75rem 0;
+}
+
 .doc blockquote p::before {
     content: "\eb89";
     display: inline-block;
@@ -565,12 +567,12 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
     max-width: 100%;
     padding: 2.4rem .6rem .6rem .6rem;
     border-radius: var(--radius-md);
-    font-size: 1rem;
+    font-size: .9rem;
     background-color: var(--surface-code) !important;
     border: 1px solid var(--border-code);
     box-shadow: 0 2px 8px rgb(var(--rgb-black) / 8%);
     position: relative;
-    margin: .8rem 0;
+    margin: var(--article-block-gap) 0;
     overflow: hidden;
 }
 
@@ -652,12 +654,17 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
 }
 
 .doc pre code {
-    max-width: calc(100% - 2rem);
+    display: block;
+    max-width: 100%;
     padding: 0;
-    overflow-wrap: break-word;
     overflow-x: auto;
+    overflow-wrap: normal;
     background-color: transparent;
     color: var(--text-strong) !important;
+    font-size: .9rem;
+    font-weight: 500;
+    line-height: 1.6;
+    white-space: pre;
 }
 
 .dark .doc pre code {
@@ -675,12 +682,12 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
 }
 
 /* 行内代码：浅色基础用浅色 token，深色追加覆盖（覆盖表格/列表内的行内代码） */
-.doc code {
+.doc :not(pre) > code {
     max-width: 100%;
     white-space: pre-wrap;
     padding: 0 .3rem;
-    font-size: 1rem;
-    line-height: 1rem;
+    font-size: .92em;
+    line-height: inherit;
     font-weight: bold;
     border-radius: .2rem;
     border: 1px solid transparent;
@@ -688,7 +695,7 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
     color: var(--text-strong);
 }
 
-.dark .doc code {
+.dark .doc :not(pre) > code {
     color: var(--text-on-dark);
     background-color: var(--surface-dark-control);
     border-color: var(--border-dark-code);
@@ -697,13 +704,22 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
 /* 列表 */
 .doc ul,
 .doc ol {
-    margin-left: 1.2rem;
-    line-height: 1.6;
+    margin: .6rem 0;
+    padding-inline-start: 1.45rem;
+    line-height: 1.65;
 }
 
 .doc li {
-    margin-top: .4rem;
-    margin-bottom: .2rem;
+    margin: 0;
+}
+
+.doc li + li {
+    margin-top: .24rem;
+}
+
+.doc li > :is(ul, ol) {
+    margin: .3rem 0;
+    padding-inline-start: 1.2rem;
 }
 
 .dark .article-container ul,
@@ -715,7 +731,7 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
 .doc table {
     width: 100%;
     border-collapse: collapse;
-    margin: .8rem 0;
+    margin: .85rem 0;
     overflow-x: auto;
 }
 
@@ -755,7 +771,7 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
 
 /* 分隔线 */
 .doc hr {
-    margin: .8rem 0;
+    margin: 1.15rem 0;
 }
 
 .dark .article-container hr {
@@ -767,13 +783,12 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
     max-width: 100%;
     height: auto;
     display: block;
-    margin: .8rem auto;
+    margin: .9rem auto;
     border-radius: .3rem;
     background-color: transparent;
 }
 
-/* 正文直属段落缩进 */
-.article-container.doc > p,
+/* 正文段落统一保留中文首行缩进，章节起始段也不例外。 */
 .article-container.doc .article-content > p {
     text-indent: 2em;
 }
@@ -853,6 +868,10 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
 
     .doc .article-neighbor-next {
         grid-column: 1;
+    }
+
+    .article-container.doc .article-content > p {
+        text-indent: 1.5em;
     }
 }
 
