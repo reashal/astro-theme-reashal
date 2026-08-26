@@ -240,7 +240,7 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
     right: 0;
 }
 
-.doc .article-neighbor:hover {
+.doc :is(.article-neighbor, .article-related-item):hover {
     border-color: rgb(var(--rgb-brand) / 28%);
     background: var(--article-nav-surface-hover);
     color: var(--color-brand);
@@ -300,7 +300,7 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
     background: var(--color-accent-cyan);
 }
 
-.dark .doc .article-neighbor:hover {
+.dark .doc :is(.article-neighbor, .article-related-item):hover {
     border-color: rgb(var(--rgb-accent-cyan) / 32%);
     color: var(--color-accent-cyan);
 }
@@ -402,12 +402,6 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
         transform .2s ease;
 }
 
-.doc .article-related-item:hover {
-    border-color: rgb(var(--rgb-brand) / 28%);
-    background: var(--article-nav-surface-hover);
-    color: var(--color-brand);
-}
-
 .doc .article-related-item:hover > svg {
     stroke: var(--color-brand);
     transform: translateX(2px);
@@ -415,11 +409,6 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
 
 .dark .doc .article-related-item {
     color: var(--text-on-dark);
-}
-
-.dark .doc .article-related-item:hover {
-    border-color: rgb(var(--rgb-accent-cyan) / 32%);
-    color: var(--color-accent-cyan);
 }
 
 .dark .doc .article-related-item:hover > svg {
@@ -738,7 +727,7 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
     border: 1px solid var(--border-light);
 }
 
-.dark .doc th {
+.dark .doc :is(th, td) {
     color: var(--text-on-dark);
     border-color: var(--border-dark-soft);
 }
@@ -762,11 +751,6 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
 .doc td {
     padding: .6rem 1rem;
     border: 1px solid var(--border-light);
-}
-
-.dark .doc td {
-    border-color: var(--border-dark-soft);
-    color: var(--text-on-dark);
 }
 
 /* 分隔线 */

@@ -173,15 +173,6 @@ main {
     font-weight: normal;
 }
 
-.fireworks {
-    position: fixed;
-    inset: 0;
-    z-index: 1100;
-    width: 100vw;
-    height: 100dvh;
-    pointer-events: none;
-}
-
 /* ============================================ */
 /* === 响应式设计 === */
 /* ============================================ */

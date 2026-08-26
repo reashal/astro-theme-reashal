@@ -343,8 +343,10 @@ html[data-input-mode="keyboard"] .docs-search-pagination button:focus-visible {
         transform .18s cubic-bezier(.2, .7, .2, 1);
 }
 
-.docs-search-discovery button:hover,
-html[data-input-mode="keyboard"] .docs-search-discovery button:focus-visible {
+:is(.docs-search-discovery, .time-explore-heading) button:hover,
+html[data-input-mode="keyboard"]
+    :is(.docs-search-discovery, .time-explore-heading)
+    button:focus-visible {
     color: var(--color-accent-cyan);
     outline: none;
 }
@@ -377,12 +379,6 @@ html[data-input-mode="keyboard"] .docs-search-discovery button:focus-visible {
     transition:
         color .18s cubic-bezier(.2, .7, .2, 1),
         transform .18s cubic-bezier(.2, .7, .2, 1);
-}
-
-.time-explore-heading button:hover,
-html[data-input-mode="keyboard"] .time-explore-heading button:focus-visible {
-    color: var(--color-accent-cyan);
-    outline: none;
 }
 
 .time-explore-heading button:active {

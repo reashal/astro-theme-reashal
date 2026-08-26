@@ -31,9 +31,6 @@
     text-wrap: pretty;
 }
 
-/* ============================================ */
-/* === 顶部导航 - 简约文字式 === */
-/* ============================================ */
 .showcase-nav {
     display: flex;
     flex-wrap: wrap;
@@ -53,10 +50,10 @@
     font-size: 0.85rem;
     font-weight: 400;
     transition:
-        color .2s ease,
-        border-color .2s ease,
-        background-color .2s ease,
-        transform .2s ease;
+        color .2s cubic-bezier(.22, 1, .36, 1),
+        border-color .2s cubic-bezier(.22, 1, .36, 1),
+        background-color .2s cubic-bezier(.22, 1, .36, 1),
+        transform .2s cubic-bezier(.22, 1, .36, 1);
     position: relative;
     border-bottom: 2px solid transparent;
     margin-bottom: -1px;
@@ -80,9 +77,6 @@
     opacity: 0.7;
 }
 
-/* ============================================ */
-/* === 卡片网格 === */
-/* ============================================ */
 .showcase-body {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -96,19 +90,73 @@
     }
 }
 
-/* ============================================ */
-/* === 简洁模式 (icon-simple) === */
-/* ============================================ */
-.showcase-icon-simple {
+.showcase-icon-simple,
+.showcase-app-card,
+.showcase-text-only {
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center;
+    text-decoration: none;
+}
+
+.showcase-app-card,
+.showcase-text-only {
+    background: var(--surface-soft);
+    box-shadow: rgb(var(--rgb-black) / 10%) 0 2px 8px;
+    transition:
+        background-color .2s cubic-bezier(.22, 1, .36, 1),
+        box-shadow .2s cubic-bezier(.22, 1, .36, 1),
+        transform .2s cubic-bezier(.22, 1, .36, 1);
+}
+
+.showcase-app-card:hover,
+.showcase-text-only:hover {
+    background: var(--color-white);
+    box-shadow: rgb(var(--rgb-black) / 15%) 0 4px 12px;
+    transform: translateY(-2px);
+}
+
+:is(.showcase-icon-simple, .showcase-app-card) .showcase-avatar {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    color: var(--color-white);
+    font-weight: 600;
+}
+
+:is(.showcase-icon-simple, .showcase-app-card) .showcase-avatar img {
+    display: block;
+    object-fit: cover;
+}
+
+:is(.showcase-icon-simple, .showcase-app-card) .showcase-avatar::after {
+    display: none;
+    content: attr(data-initial);
+}
+
+:is(.showcase-icon-simple, .showcase-app-card) .showcase-avatar.no-image {
+    background: var(--color-accent-pink);
+}
+
+:is(.showcase-icon-simple, .showcase-app-card)
+    .showcase-avatar.no-image::after {
+    display: block;
+}
+
+:is(.showcase-icon-simple, .showcase-app-card) .showcase-info {
+    width: 100%;
+}
+
+.showcase-icon-simple {
     gap: 12px;
     padding: 20px 16px;
-    text-decoration: none;
     border-radius: 12px;
-    transition: background-color 0.2s ease;
-    text-align: center;
+    color: var(--text-strong);
+    transition: background-color .2s cubic-bezier(.22, 1, .36, 1);
 }
 
 .showcase-icon-simple:hover {
@@ -118,51 +166,17 @@
 .showcase-icon-simple .showcase-avatar {
     width: 56px;
     height: 56px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     border-radius: 12px;
     font-size: 24px;
-    color: var(--color-white);
-    font-weight: 600;
-    overflow: hidden;
-    position: relative;
 }
 
 .showcase-icon-simple .showcase-avatar img {
     width: 56px;
     height: 56px;
     border-radius: 12px;
-    object-fit: cover;
-    display: block;
-}
-
-.showcase-icon-simple .showcase-avatar::after {
-    content: attr(data-initial);
-    display: none;
-}
-
-/* 无图片时的背景色和首字母 */
-.showcase-icon-simple .showcase-avatar.no-image {
-    background: var(--color-accent-pink) !important;
-}
-
-.showcase-icon-simple .showcase-avatar.no-image::after {
-    display: block !important;
-}
-
-/* 有图片时隐藏首字母 */
-.showcase-icon-simple .showcase-avatar:not(.no-image)::after {
-    display: none;
-}
-
-.showcase-icon-simple .showcase-info {
-    width: 100%;
 }
 
 .showcase-icon-simple .showcase-info h3 {
-    color: var(--text-strong);
     font-size: 0.95rem;
     font-weight: 500;
     margin: 0;
@@ -175,77 +189,27 @@
     display: none;
 }
 
-/* ============================================ */
-/* === 应用卡片模式 (app-card) === */
-/* ============================================ */
 .showcase-app-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     gap: 12px;
     padding: 24px 16px;
-    background: var(--surface-soft);
     border-radius: 16px;
-    text-decoration: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-    text-align: center;
-    box-shadow: rgb(var(--rgb-black) / 10%) 0px 2px 8px;
-}
-
-.showcase-app-card:hover {
-    transform: translateY(-2px);
-    box-shadow: rgb(var(--rgb-black) / 15%) 0px 4px 12px;
-    background: var(--color-white);
+    color: var(--text-primary);
 }
 
 .showcase-app-card .showcase-avatar {
     width: 64px;
     height: 64px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     border-radius: 16px;
     font-size: 28px;
-    color: var(--color-white);
-    font-weight: 600;
-    overflow: hidden;
-    position: relative;
 }
 
 .showcase-app-card .showcase-avatar img {
     width: 64px;
     height: 64px;
     border-radius: 16px;
-    object-fit: cover;
-    display: block;
-}
-
-.showcase-app-card .showcase-avatar::after {
-    content: attr(data-initial);
-    display: none;
-}
-
-/* 无图片时的背景色和首字母 */
-.showcase-app-card .showcase-avatar.no-image {
-    background: var(--color-accent-pink) !important;
-}
-
-.showcase-app-card .showcase-avatar.no-image::after {
-    display: block !important;
-}
-
-/* 有图片时隐藏首字母 */
-.showcase-app-card .showcase-avatar:not(.no-image)::after {
-    display: none;
-}
-
-.showcase-app-card .showcase-info {
-    width: 100%;
 }
 
 .showcase-app-card .showcase-info h3 {
-    color: var(--text-primary);
     font-size: 1rem;
     font-weight: 600;
     margin: 0 0 8px 0;
@@ -262,9 +226,6 @@
     overflow: hidden;
 }
 
-/* ============================================ */
-/* === 好物卡片模式 (product-card) === */
-/* ============================================ */
 .showcase-product-card {
     --showcase-card-surface: var(--surface-soft);
     --showcase-card-hover-surface: var(--color-white);
@@ -277,11 +238,12 @@
     background: var(--showcase-card-surface);
     border-radius: 16px;
     overflow: hidden;
+    color: var(--text-primary);
     text-decoration: none;
     transition:
         transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-        box-shadow 0.3s ease,
-        background-color 0.3s ease;
+        box-shadow .3s cubic-bezier(.22, 1, .36, 1),
+        background-color .3s cubic-bezier(.22, 1, .36, 1);
     height: 100%;
     box-shadow: rgb(var(--rgb-black) / 10%) 0px 2px 8px;
 }
@@ -348,7 +310,6 @@
 }
 
 .showcase-product-card .showcase-info h3 {
-    color: var(--text-primary);
     font-size: 1rem;
     font-weight: 600;
     margin: 0 0 10px 0;
@@ -393,7 +354,7 @@
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
-    transition: opacity 0.28s ease 0.05s;
+    transition: opacity .28s cubic-bezier(.22, 1, .36, 1) .05s;
 }
 
 .showcase-product-card .showcase-description-full {
@@ -415,7 +376,7 @@
     transform: translateY(7px);
     pointer-events: none;
     transition:
-        opacity 0.32s ease,
+        opacity .32s cubic-bezier(.22, 1, .36, 1),
         transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -444,29 +405,13 @@ html[data-input-mode="keyboard"]
     transition-delay: 0.05s;
 }
 
-/* ============================================ */
-/* === 无图片卡片模式 (text-only) === */
-/* ============================================ */
 .showcase-text-only {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
     gap: 4px;
     padding: 12px 10px;
-    background: var(--surface-soft);
     border-radius: 12px;
-    text-decoration: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-    text-align: center;
+    color: var(--color-accent-pink);
     min-height: 60px;
-    box-shadow: rgb(var(--rgb-black) / 10%) 0px 2px 8px;
-}
-
-.showcase-text-only:hover {
-    transform: translateY(-2px);
-    box-shadow: rgb(var(--rgb-black) / 15%) 0px 4px 12px;
-    background: var(--color-white);
 }
 
 html[data-input-mode="keyboard"] .showcase-nav a:focus-visible,
@@ -485,12 +430,7 @@ a.showcase-text-only:active {
     transform: translateY(1px) scale(.99);
 }
 
-.showcase-text-only .showcase-info {
-    width: 100%;
-}
-
 .showcase-text-only .showcase-info h3 {
-    color: var(--color-accent-pink);
     font-size: 0.95rem;
     font-weight: 600;
     margin: 0;
@@ -510,9 +450,6 @@ a.showcase-text-only:active {
     overflow: hidden;
 }
 
-/* ============================================ */
-/* === 响应式 === */
-/* ============================================ */
 @media (max-width: 767px) {
     .showcase-nav {
         padding: 12px;
@@ -573,9 +510,6 @@ a.showcase-text-only:active {
     }
 }
 
-/* ============================================ */
-/* === 暗黑模式 === */
-/* ============================================ */
 .dark .showcase-h {
     color: var(--text-on-dark-strong);
 }
@@ -601,12 +535,12 @@ a.showcase-text-only:active {
     border-bottom-color: var(--color-accent-pink);
 }
 
-.dark .showcase-icon-simple:hover {
-    background-color: rgb(var(--rgb-white) / 5%);
+.dark .showcase-icon-simple {
+    color: var(--text-on-dark);
 }
 
-.dark .showcase-icon-simple .showcase-info h3 {
-    color: var(--text-on-dark);
+.dark .showcase-icon-simple:hover {
+    background-color: rgb(var(--rgb-white) / 5%);
 }
 
 .dark .showcase-icon-simple .showcase-avatar.no-image {
@@ -616,6 +550,7 @@ a.showcase-text-only:active {
 .dark .showcase-app-card,
 .dark .showcase-product-card {
     background: var(--surface-dark-card);
+    color: var(--text-on-dark);
     box-shadow: rgb(var(--rgb-accent-cyan) / 20%) 0px 2px 8px;
 }
 
@@ -629,11 +564,6 @@ a.showcase-text-only:active {
 .dark .showcase-product-card:hover {
     box-shadow: rgb(var(--rgb-accent-cyan) / 30%) 0px 4px 12px;
     background: var(--surface-dark-card-hover);
-}
-
-.dark .showcase-app-card .showcase-info h3,
-.dark .showcase-product-card .showcase-info h3 {
-    color: var(--text-on-dark);
 }
 
 .dark .showcase-app-card .showcase-info p,
@@ -663,6 +593,7 @@ a.showcase-text-only:active {
 
 .dark .showcase-text-only {
     background: var(--surface-dark-card);
+    color: var(--color-accent-pink);
     box-shadow: var(--shadow-card);
 }
 
@@ -679,15 +610,10 @@ html.dark[data-input-mode="keyboard"] a.showcase-text-only:focus-visible {
     outline-color: var(--color-accent-cyan);
 }
 
-.dark .showcase-text-only .showcase-info h3 {
-    color: var(--color-accent-pink);
-}
-
 .dark .showcase-text-only .showcase-info p {
     color: var(--text-on-dark-secondary);
 }
 
-/* Giscus 评论区间距 */
 .showcase .giscus {
     margin-top: 32px;
 }

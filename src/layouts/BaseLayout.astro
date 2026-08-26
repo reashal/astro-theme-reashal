@@ -199,9 +199,9 @@ const structuredDataJson = structuredData
         {enableMediaViewer && <ImageViewer />}
         <canvas
             class="fireworks"
-            aria-hidden="true"
+            style="position:fixed;left:0;top:0;z-index:99999999;pointer-events:none;"
         ></canvas>
         <script src="../scripts/focus-modality.ts"></script>
-        <script src="../scripts/fireworks.ts"></script>
+        <script is:inline src="/static/scripts/cursor.js"></script>
     </body>
 </html>
