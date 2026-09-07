@@ -414,6 +414,199 @@ html[data-input-mode="keyboard"]
     min-height: 60px;
 }
 
+.showcase-links-panel {
+    --showcase-link-control: rgb(var(--rgb-black) / 4%);
+    --showcase-link-text: var(--text-primary);
+    --showcase-link-body: var(--text-secondary);
+    --showcase-link-accent: var(--color-brand);
+    --showcase-link-surface: rgb(var(--rgb-white) / 62%);
+    --showcase-link-wash: rgb(var(--rgb-brand) / 6%);
+    --showcase-link-shadow:
+        0 1px 3px rgb(var(--rgb-black) / 10%),
+        0 8px 18px rgb(var(--rgb-shadow-neutral) / 12%),
+        inset 0 1px 0 var(--card-gloss);
+    --showcase-link-shadow-hover:
+        0 1px 2px rgb(var(--rgb-black) / 7%),
+        0 4px 10px rgb(var(--rgb-shadow-neutral) / 8%),
+        inset 0 1px 0 var(--card-gloss-hover);
+}
+
+.showcase-body.showcase-link-grid {
+    align-items: start;
+    justify-content: start;
+    gap: .55rem clamp(.6rem, 1vw, .8rem);
+}
+
+.showcase-body.showcase-link-grid--mirrors {
+    grid-template-columns: repeat(auto-fill, minmax(10.25rem, 10.9rem));
+}
+
+.showcase-body.showcase-link-grid--friends {
+    grid-template-columns: repeat(auto-fill, minmax(12.5rem, 13.5rem));
+}
+
+.showcase-link-card {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    color: var(--showcase-link-text);
+    background: var(--showcase-link-surface);
+    box-shadow: var(--showcase-link-shadow);
+    font-weight: normal;
+    text-decoration: none;
+    transition:
+        box-shadow .3s cubic-bezier(.22, 1, .36, 1),
+        transform .3s cubic-bezier(.22, 1, .36, 1);
+}
+
+.showcase-link-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--showcase-link-wash);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s cubic-bezier(.22, 1, .36, 1);
+}
+
+.showcase-link-card:hover::after,
+.showcase-link-card:focus-visible::after,
+.showcase-link-card:active::after {
+    opacity: 1;
+}
+
+.showcase-link-card:hover {
+    box-shadow: var(--showcase-link-shadow-hover);
+    transform: translateY(2px) scale(.99);
+}
+
+.showcase-link-card:active {
+    box-shadow: var(--showcase-link-shadow);
+    transform: translateY(1px) scale(.985);
+    transition-duration: .1s;
+}
+
+html[data-input-mode="keyboard"] .showcase-link-card:focus-visible {
+    outline: 2px solid var(--showcase-link-accent);
+    outline-offset: 3px;
+}
+
+.showcase-link-card--mirror {
+    display: grid;
+    min-height: 3.25rem;
+    align-items: center;
+    padding: .45rem .6rem;
+}
+
+.showcase-link-card--friend {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: .55rem;
+    min-height: 3.4rem;
+    padding: .42rem .48rem;
+}
+
+.showcase-link-avatar {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    width: 2.25rem;
+    height: 2.25rem;
+    overflow: hidden;
+    place-items: center;
+    border-radius: calc(var(--radius-md) - .1rem);
+    color: var(--showcase-link-accent);
+    background: var(--showcase-link-control);
+    font-size: .85rem;
+    font-weight: 650;
+}
+
+.showcase-link-avatar::after {
+    content: attr(data-initial);
+}
+
+.showcase-link-avatar img {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.showcase-link-copy {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    min-width: 0;
+    gap: .18rem;
+}
+
+.showcase-link-copy strong {
+    overflow: hidden;
+    color: var(--showcase-link-text);
+    font-size: clamp(.82rem, 1vw, .9rem);
+    font-weight: 600;
+    letter-spacing: -.02em;
+    line-height: 1.15;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.showcase-link-copy small,
+.showcase-link-description-viewport {
+    overflow: hidden;
+    color: var(--showcase-link-body);
+    font-size: .62rem;
+    line-height: 1.35;
+    white-space: nowrap;
+}
+
+.showcase-link-copy small {
+    display: block;
+    font-variant-numeric: tabular-nums;
+    text-overflow: ellipsis;
+}
+
+.showcase-link-description-viewport {
+    display: block;
+}
+
+.showcase-link-description-viewport > span {
+    display: block;
+    width: max-content;
+}
+
+.showcase-link-card--friend.is-description-truncated:hover
+    .showcase-link-description-viewport > span,
+html[data-input-mode="keyboard"]
+    .showcase-link-card--friend.is-description-truncated:focus-visible
+    .showcase-link-description-viewport > span {
+    animation: showcase-link-description-scroll
+        var(--showcase-link-description-duration, 1.1s)
+        cubic-bezier(.45, 0, .55, 1) .14s infinite alternate both;
+    will-change: transform;
+}
+
+@keyframes showcase-link-description-scroll {
+    0%,
+    10% {
+        transform: translate3d(0, 0, 0);
+    }
+
+    90%,
+    100% {
+        transform: translate3d(
+            calc(-1 * var(--showcase-link-description-distance)),
+            0,
+            0
+        );
+    }
+}
+
 html[data-input-mode="keyboard"] .showcase-nav a:focus-visible,
 html[data-input-mode="keyboard"] a.showcase-icon-simple:focus-visible,
 html[data-input-mode="keyboard"] a.showcase-app-card:focus-visible,
@@ -580,7 +773,7 @@ a.showcase-text-only:active {
 }
 
 .dark .showcase-product-card .showcase-large-image {
-    background: var(--surface-dark-card);
+    background: var(--surface-dark-panel);
 }
 
 .dark .showcase-product-card .showcase-large-image.no-image {
@@ -612,6 +805,69 @@ html.dark[data-input-mode="keyboard"] a.showcase-text-only:focus-visible {
 
 .dark .showcase-text-only .showcase-info p {
     color: var(--text-on-dark-secondary);
+}
+
+.dark .showcase-links-panel {
+    --showcase-link-control: rgb(var(--rgb-white) / 4%);
+    --showcase-link-text: var(--text-on-dark-strong);
+    --showcase-link-body: var(--text-on-dark-body);
+    --showcase-link-accent: var(--color-accent-cyan);
+    --showcase-link-surface: var(--surface-aside-card);
+    --showcase-link-wash: var(--surface-aside-card-hover);
+    --showcase-link-shadow: var(--shadow-aside-card);
+    --showcase-link-shadow-hover: var(--shadow-aside-card-hover);
+}
+
+@media (hover: none) {
+    .showcase-link-card:hover {
+        box-shadow: var(--showcase-link-shadow);
+        transform: none;
+    }
+
+    .showcase-link-card:hover::after {
+        opacity: 0;
+    }
+
+    .showcase-link-card--friend.is-description-truncated:hover
+        .showcase-link-description-viewport > span {
+        animation: none;
+    }
+
+    .showcase-link-card:active {
+        box-shadow: var(--showcase-link-shadow);
+        transform: translateY(1px) scale(.985);
+    }
+
+    .showcase-link-card:active::after {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 767px) {
+    .showcase-body.showcase-link-grid--mirrors,
+    .showcase-body.showcase-link-grid--friends {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .55rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .showcase-link-card,
+    .showcase-link-card::after {
+        transition-duration: .12s;
+    }
+
+    .showcase-link-card:hover {
+        transform: none;
+    }
+
+    .showcase-link-card--friend.is-description-truncated:hover
+        .showcase-link-description-viewport > span,
+    html[data-input-mode="keyboard"]
+        .showcase-link-card--friend.is-description-truncated:focus-visible
+        .showcase-link-description-viewport > span {
+        animation: none;
+    }
 }
 
 .showcase .giscus {

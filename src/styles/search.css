@@ -18,8 +18,9 @@
     cursor: pointer;
     user-select: none;
     transition:
-        color .2s cubic-bezier(.2, .7, .2, 1),
-        transform .2s cubic-bezier(.2, .7, .2, 1);
+        color .2s cubic-bezier(.16, 1, .3, 1),
+        opacity .2s cubic-bezier(.16, 1, .3, 1),
+        transform .28s cubic-bezier(.16, 1, .3, 1);
 }
 
 .docs-search-toggle:hover {
@@ -29,6 +30,20 @@
 
 .docs-search-toggle:active {
     transform: translateY(1px) scale(.94);
+}
+
+.docs-search-toggle[aria-expanded="true"] {
+    opacity: .64;
+    transform: translateY(1px) rotate(-10deg) scale(.9);
+}
+
+.docs-search-toggle[aria-expanded="true"]:hover {
+    opacity: .84;
+    transform: translateY(1px) rotate(-6deg) scale(.95);
+}
+
+.docs-search-toggle[aria-expanded="true"]:active {
+    transform: translateY(1px) rotate(-4deg) scale(.88);
 }
 
 html[data-input-mode="keyboard"] .docs-search-toggle:focus-visible {
@@ -58,8 +73,21 @@ html[data-input-mode="keyboard"] .docs-search-toggle:focus-visible {
     box-shadow:
         inset 0 0 0 1px rgb(var(--rgb-white) / 12%),
         0 .8rem 2.4rem rgb(var(--rgb-black) / 22%);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(.38rem, -.42rem, 0) scale(.94);
     transform-origin: top right;
-    animation: docs-search-in .2s cubic-bezier(.2, .75, .2, 1);
+    transition:
+        opacity .2s cubic-bezier(.4, 0, 1, 1),
+        transform .2s cubic-bezier(.4, 0, 1, 1);
+}
+
+.docs-search-panel.is-open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate3d(0, 0, 0) scale(1);
+    transition-duration: .32s;
+    transition-timing-function: cubic-bezier(.16, 1, .3, 1);
 }
 
 .docs-search-panel[hidden],
@@ -530,22 +558,16 @@ html[data-input-mode="keyboard"] .time-explore-result:focus-visible {
     color: var(--color-white);
 }
 
-@keyframes docs-search-in {
-    from {
-        opacity: 0;
-        transform: translateY(-.25rem) scale(.985);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
 @media (hover: none) {
     .docs-search-toggle:hover,
     .docs-search-result:hover,
     .time-explore-result:hover {
         transform: none;
+    }
+
+    .docs-search-toggle[aria-expanded="true"]:hover {
+        opacity: .64;
+        transform: translateY(1px) rotate(-10deg) scale(.9);
     }
 }
 
@@ -572,7 +594,8 @@ html[data-input-mode="keyboard"] .time-explore-result:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
     .docs-search-panel {
-        animation: none;
+        transform: none;
+        transition: opacity .12s cubic-bezier(.16, 1, .3, 1);
     }
 
     .docs-search-toggle,

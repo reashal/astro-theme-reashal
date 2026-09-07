@@ -21,6 +21,7 @@ const avatarUrl = new URL(AUTHOR_INFO.avatar, siteOrigin);
 
 const getInitial = (title: string) => title.charAt(0).toUpperCase();
 const hasValidImage = (image: string | undefined): boolean => !!image && image.trim() !== "";
+const friendLinkSections = new Set(["互链朋友", "单向推荐"]);
 ---
 
 <BaseLayout
@@ -44,7 +45,11 @@ const hasValidImage = (image: string | undefined): boolean => !!image && image.t
         </nav>
 
         {showcases.map(({ id, config }, index) => (
-            <div data-showcase-panel={id} hidden={index !== 0}>
+            <div
+                class={id === "links" ? "showcase-links-panel" : undefined}
+                data-showcase-panel={id}
+                hidden={index !== 0}
+            >
                 {config.intro && config.intro.length > 0 && (
                     <>
                         <h2 class="showcase-h showcase-intro">写在前面</h2>
@@ -54,10 +59,22 @@ const hasValidImage = (image: string | undefined): boolean => !!image && image.t
                     </>
                 )}
 
-                {config.sections.map((section) => (
+                {config.sections.map((section) => {
+                    const isLinksPanel = id === "links";
+                    const isFriendLinkSection = isLinksPanel && friendLinkSections.has(section.title);
+
+                    return (
                     <>
                         <h2 class="showcase-h">{section.title}</h2>
-                        <div class="showcase-body">
+                        <div
+                            class:list={[
+                                "showcase-body",
+                                isLinksPanel && "showcase-link-grid",
+                                isFriendLinkSection
+                                    ? "showcase-link-grid--friends"
+                                    : isLinksPanel && "showcase-link-grid--mirrors",
+                            ]}
+                        >
                             {section.cards.map((card) => {
                                 const hasImage = hasValidImage(card.image);
                                 const hasLink = card.link && card.link.trim() !== "";
@@ -69,6 +86,49 @@ const hasValidImage = (image: string | undefined): boolean => !!image && image.t
                                         rel: "noopener noreferrer",
                                     }
                                     : {};
+
+                                if (isLinksPanel) {
+                                    return (
+                                        <CardWrapper
+                                            {...linkProps}
+                                            class:list={[
+                                                "showcase-link-card",
+                                                isFriendLinkSection
+                                                    ? "showcase-link-card--friend"
+                                                    : "showcase-link-card--mirror",
+                                            ]}
+                                            aria-label={hasLink
+                                                ? `${isFriendLinkSection ? "访问" : "打开"} ${card.title}：${card.description}`
+                                                : undefined}
+                                        >
+                                            {isFriendLinkSection && (
+                                                <span
+                                                    class={`showcase-link-avatar ${!hasImage ? "no-image" : ""}`}
+                                                    data-initial={getInitial(card.title)}
+                                                >
+                                                    {hasImage && (
+                                                        <img
+                                                            src={card.image}
+                                                            alt={`${card.title}头像`}
+                                                            loading="lazy"
+                                                            decoding="async"
+                                                        />
+                                                    )}
+                                                </span>
+                                            )}
+                                            <span class="showcase-link-copy">
+                                                <strong>{card.title}</strong>
+                                                {isFriendLinkSection ? (
+                                                    <span class="showcase-link-description-viewport">
+                                                        <span data-link-description>{card.description}</span>
+                                                    </span>
+                                                ) : (
+                                                    <small>{card.description}</small>
+                                                )}
+                                            </span>
+                                        </CardWrapper>
+                                    );
+                                }
 
                                 return (
                                     <CardWrapper {...linkProps} class={`showcase-${card.imageMode}`}>
@@ -131,7 +191,8 @@ const hasValidImage = (image: string | undefined): boolean => !!image && image.t
                             })}
                         </div>
                     </>
-                ))}
+                    );
+                })}
 
                 {config.showFooter === true && (
                     <section class="article-copy">

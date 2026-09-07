@@ -333,7 +333,7 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
     flex: 0 0 auto;
     width: .18rem;
     height: .82rem;
-    border-radius: 999px;
+    border-radius: .08rem;
     background: var(--color-brand);
     content: "";
     opacity: .8;
@@ -451,7 +451,7 @@ html.dark[data-input-mode="keyboard"] .doc .code-copy-button:focus-visible {
     left: 0;
     width: var(--article-heading-marker-width);
     height: var(--article-heading-marker-height);
-    border-radius: 999px;
+    border-radius: .08rem;
     background: var(--article-heading-marker);
     content: "";
     opacity: var(--article-heading-marker-opacity);

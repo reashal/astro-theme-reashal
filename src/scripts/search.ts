@@ -76,6 +76,8 @@ let pagefindPromise: Promise<PagefindModule> | null = null;
 let searchSequence = 0;
 let currentPage = 1;
 let currentPagefindResults: PagefindResult[] = [];
+let isSearchOpen = panel?.hidden === false;
+let closePanelTimer: number | undefined;
 
 const normalize = (value: string) =>
     value.normalize("NFKC").toLocaleLowerCase("zh-CN").trim();
@@ -466,17 +468,33 @@ const restoreTimeFromUrl = () => {
 
 const setOpen = (open: boolean) => {
     if (!toggle || !panel) return;
-    panel.hidden = !open;
+    isSearchOpen = open;
     toggle.setAttribute("aria-expanded", String(open));
     toggle.setAttribute("aria-label", open ? `关闭${contentLabel}查找` : `打开${contentLabel}查找`);
 
+    if (closePanelTimer !== undefined) {
+        window.clearTimeout(closePanelTimer);
+        closePanelTimer = undefined;
+    }
+
     if (open) {
+        panel.hidden = false;
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                if (isSearchOpen) panel.classList.add("is-open");
+            });
+        });
         if (searchMode === "time") requestAnimationFrame(() => timeGranularity?.focus());
         else {
             requestAnimationFrame(() => input?.focus());
             void prepareSearch();
         }
     } else {
+        panel.classList.remove("is-open");
+        closePanelTimer = window.setTimeout(() => {
+            if (!isSearchOpen) panel.hidden = true;
+            closePanelTimer = undefined;
+        }, 220);
         if (input) {
             input.disabled = false;
             input.value = "";
@@ -485,7 +503,7 @@ const setOpen = (open: boolean) => {
     }
 };
 
-toggle?.addEventListener("click", () => setOpen(panel ? panel.hidden !== false : true));
+toggle?.addEventListener("click", () => setOpen(!isSearchOpen));
 input?.addEventListener("input", renderResults);
 input?.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
@@ -528,7 +546,7 @@ randomExplore?.addEventListener("click", () => {
 document.addEventListener("click", (event) => {
     if (
         panel &&
-        !panel.hidden &&
+        isSearchOpen &&
         event.target instanceof Node &&
         !panel.contains(event.target) &&
         !toggle?.contains(event.target)
@@ -538,7 +556,7 @@ document.addEventListener("click", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !panel?.hidden) {
+    if (event.key === "Escape" && isSearchOpen) {
         setOpen(false);
         toggle?.focus();
     }

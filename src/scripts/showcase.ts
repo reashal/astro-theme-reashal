@@ -10,6 +10,9 @@ if (showcase) {
     const descriptions = Array.from(
         showcase.querySelectorAll<HTMLElement>(".showcase-description"),
     );
+    const linkDescriptionCards = Array.from(
+        showcase.querySelectorAll<HTMLElement>(".showcase-link-card--friend"),
+    );
     let descriptionSyncFrame = 0;
 
     const syncDescriptionOverflow = () => {
@@ -19,6 +22,38 @@ if (showcase) {
                 ? summary.scrollHeight - summary.clientHeight > 1
                 : false;
             description.classList.toggle("is-truncated", isTruncated);
+        }
+
+        for (const card of linkDescriptionCards) {
+            const viewport = card.querySelector<HTMLElement>(
+                ".showcase-link-description-viewport",
+            );
+            const summary = card.querySelector<HTMLElement>(
+                "[data-link-description]",
+            );
+            if (!viewport || !summary) continue;
+
+            const scrollDistance = Math.max(
+                0,
+                summary.scrollWidth - viewport.clientWidth,
+            );
+            const scrollDuration = Math.min(
+                2.8,
+                Math.max(1.1, scrollDistance / 36.8),
+            );
+
+            summary.style.setProperty(
+                "--showcase-link-description-distance",
+                `${scrollDistance}px`,
+            );
+            summary.style.setProperty(
+                "--showcase-link-description-duration",
+                `${scrollDuration}s`,
+            );
+            card.classList.toggle(
+                "is-description-truncated",
+                scrollDistance > 1,
+            );
         }
     };
 
@@ -62,11 +97,12 @@ if (showcase) {
         activateShowcase(location.hash.slice(1), false);
     });
     window.addEventListener("resize", scheduleDescriptionSync);
+    document.fonts.ready.then(scheduleDescriptionSync);
 
     activateShowcase(location.hash.slice(1), false);
 
     const images = showcase.querySelectorAll<HTMLImageElement>(
-        ".showcase-avatar img, .showcase-large-image img",
+        ".showcase-avatar img, .showcase-large-image img, .showcase-link-avatar img",
     );
     for (const image of images) {
         const setLoaded = (loaded: boolean) => {

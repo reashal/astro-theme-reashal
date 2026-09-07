@@ -9,7 +9,7 @@
       ],
       "sections": [
         {
-          "title": "电子产品",
+          "title": "电子设备",
           "cards": [
             {
               "title": "HUAWEI Mate 70 RS",
@@ -85,19 +85,12 @@
       ],
       "sections": [
         {
-          "title": "国内备份",
+          "title": "国内托管",
           "cards": [
             {
               "title": "Tencent",
               "description": "www.reashal.com",
               "link": "https://www.reashal.com",
-              "image": "",
-              "imageMode": "text-only"
-            },
-            {
-              "title": "Ucloud",
-              "description": "bak.reashal.com",
-              "link": "https://bak.reashal.com",
               "image": "",
               "imageMode": "text-only"
             }
