@@ -133,70 +133,85 @@
 }
 
 .dark {
+    /* 蓝炭色承托近墨黑卡片；文章区、侧栏与标签内层保持同色。 */
+    --surface-page-dark: #101116;
+    --surface-aside-dark: #1a1e27;
+    --surface-article-dark: var(--surface-aside-dark);
+    --surface-dark-card: var(--surface-page-dark);
+    --surface-dark-card-hover: #0d0e12;
+    --surface-product-image: #242932;
+    --rgb-dark-card: 16 17 22;
+
     --color-flight-wing: var(--color-accent-cyan);
     --color-flight-wing-hover: var(--color-accent-cyan-hover);
     --color-flight-wing-far: #4d969b;
     --color-flight-fold: #ddf5f6;
     --surface-raised: var(--surface-dark-card);
     --surface-tint: rgb(var(--rgb-accent-cyan) / 5%);
+    /* 上轻下重：顶部只留弱高光，负扩展将白色环境投影集中在卡片下方。 */
     --shadow-shell:
-        0 8px 24px rgb(var(--rgb-white) / 4%),
-        inset 0 1px 0 rgb(var(--rgb-white) / 8%);
+        0 7px 29px rgb(var(--rgb-white) / 1%),
+        inset 0 1px 0 var(--panel-edge);
     --shadow-card:
-        0 2px 5px rgb(var(--rgb-white) / 5%),
-        0 12px 24px rgb(var(--rgb-white) / 3%);
+        0 2px 4px -2px rgb(var(--rgb-white) / 1.5%),
+        0 9px 12px -3px rgb(var(--rgb-white) / 4%);
     --shadow-card-hover:
-        0 1px 3px rgb(var(--rgb-white) / 4%),
-        0 5px 11px rgb(var(--rgb-white) / 3%);
+        0 1px 2px -1px rgb(var(--rgb-white) / 1%),
+        0 3px 5px -2px rgb(var(--rgb-white) / 1.5%);
+    --card-recess-edge: color-mix(in srgb, var(--surface-dark-card), var(--color-black) 40%);
+    --shadow-card-recess:
+        inset 0 2px 4px var(--card-recess-edge),
+        inset 0 -1px 0 rgb(var(--rgb-white) / 4%);
+    /* 展示类卡片在悬停时向上浮起，投影随高度增大。 */
+    --shadow-card-raised:
+        0 4px 6px -2px rgb(var(--rgb-white) / 2%),
+        0 14px 18px -4px rgb(var(--rgb-white) / 4%);
     --shadow-aside:
-        0 8px 24px rgb(var(--rgb-white) / 4%);
+        0 5px 15px rgb(var(--rgb-white) / 1%);
     --shadow-pop:
-        0 .2rem .6rem rgb(var(--rgb-white) / 6%),
-        0 1.2rem 3rem rgb(var(--rgb-white) / 4%),
-        0 0 0 1px rgb(var(--rgb-white) / 6%);
+        0 .2rem .6rem rgb(var(--rgb-white) / 3%),
+        0 1.2rem 3rem rgb(var(--rgb-white) / 2%),
+        0 0 0 1px var(--card-hairline);
 
-    --card-gloss: rgb(var(--rgb-white) / 10%);
-    --card-gloss-hover: rgb(var(--rgb-white) / 7%);
-    --card-hairline: rgb(var(--rgb-white) / 6%);
-    --panel-edge: rgb(var(--rgb-white) / 6%);
+    --card-gloss: rgb(var(--rgb-white) / 2%);
+    --card-gloss-hover: rgb(var(--rgb-white) / 1.5%);
+    --card-hairline: rgb(var(--rgb-white) / 2%);
+    --panel-edge: rgb(var(--rgb-white) / 2%);
 
-    --surface-aside-card: #1d2433;
-    --surface-aside-card-hover: #242c3d;
+    --surface-aside-card: var(--surface-dark-card);
+    --surface-aside-card-hover: var(--surface-dark-card-hover);
     --shadow-aside-card:
-        0 1px 2px rgb(var(--rgb-white) / 5%),
-        0 8px 18px rgb(var(--rgb-white) / 3%),
-        inset 0 1px 0 rgb(var(--rgb-white) / 8%);
+        var(--shadow-card),
+        inset 0 1px 0 var(--card-gloss);
     --shadow-aside-card-hover:
-        0 1px 2px rgb(var(--rgb-white) / 4%),
-        0 4px 10px rgb(var(--rgb-white) / 3%),
-        inset 0 1px 0 rgb(var(--rgb-white) / 6%);
+        var(--shadow-card-hover),
+        var(--shadow-card-recess);
 
-    --surface-tag-front: #242b3a;
-    --surface-tag-middle: #202635;
-    --surface-tag-back: #1f2532;
-    --border-tag-front: rgb(var(--rgb-white) / 7%);
-    --border-tag-middle: rgb(var(--rgb-white) / 5%);
-    --border-tag-back: rgb(var(--rgb-white) / 6%);
+    --surface-tag-front: var(--surface-aside-dark);
+    --surface-tag-middle: var(--surface-aside-dark);
+    --surface-tag-back: var(--surface-aside-dark);
+    --border-tag-front: rgb(var(--rgb-white) / 3%);
+    --border-tag-middle: rgb(var(--rgb-white) / 2%);
+    --border-tag-back: rgb(var(--rgb-white) / 2%);
     --border-tag-hover: rgb(var(--rgb-accent-cyan) / 20%);
     --surface-tag-count: rgb(var(--rgb-accent-cyan) / 14%);
     --text-tag-count: var(--color-accent-cyan);
     --text-tag-footer: var(--text-on-dark-muted);
     --shadow-tag-front:
-        0 1px 2px rgb(var(--rgb-white) / 5%),
-        0 6px 14px rgb(var(--rgb-white) / 3%),
-        inset 0 1px 0 rgb(var(--rgb-white) / 7%);
+        0 1px 3px -1px rgb(var(--rgb-white) / 1%),
+        0 5px 8px -2px rgb(var(--rgb-white) / 3%),
+        inset 0 1px 0 var(--card-gloss);
     --shadow-tag-middle:
-        0 1px 2px rgb(var(--rgb-white) / 4%),
-        0 4px 10px rgb(var(--rgb-white) / 3%),
-        inset 0 1px 0 rgb(var(--rgb-white) / 5%);
+        0 1px 2px rgb(var(--rgb-white) / 2%),
+        0 4px 10px rgb(var(--rgb-white) / 1%),
+        inset 0 1px 0 var(--card-gloss);
     --shadow-tag-back:
-        0 1px 2px rgb(var(--rgb-white) / 3%),
-        0 3px 8px rgb(var(--rgb-white) / 2%),
-        inset 0 1px 0 rgb(var(--rgb-white) / 5%);
+        0 1px 2px rgb(var(--rgb-white) / 1.5%),
+        0 3px 8px rgb(var(--rgb-white) / 0.7%),
+        inset 0 1px 0 var(--card-gloss);
     --shadow-tag-hover:
-        0 2px 5px rgb(var(--rgb-white) / 5%),
-        0 7px 16px rgb(var(--rgb-white) / 3%),
-        inset 0 1px 0 rgb(var(--rgb-white) / 8%);
+        0 4px 8px -2px rgb(var(--rgb-white) / 3%),
+        inset 0 1px 0 var(--card-gloss-hover);
 
     --surface-article: var(--surface-article-dark);
     --surface-aside: var(--surface-aside-dark);

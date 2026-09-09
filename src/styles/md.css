@@ -23,8 +23,8 @@
     --article-meta-color: var(--text-on-dark-soft);
     --article-summary-color: var(--text-on-dark-secondary);
     --article-tag-surface: rgb(var(--rgb-accent-cyan) / 8%);
-    --article-nav-surface: rgb(var(--rgb-accent-cyan) / 4%);
-    --article-nav-surface-hover: rgb(var(--rgb-accent-cyan) / 9%);
+    --article-nav-surface: var(--surface-dark-card);
+    --article-nav-surface-hover: var(--surface-dark-card-hover);
     --article-heading-primary: var(--text-on-dark-strong);
     --article-heading-strong: var(--text-on-dark);
     --article-heading-marker: var(--color-accent-cyan);

@@ -499,7 +499,22 @@ html.dark[data-input-mode="keyboard"]
 ):active,
 .dark .aside-body .aside-share-card:has(.share-link:active),
 .dark .aside-body .aside-copyright-card:has(a:active) {
-    box-shadow: var(--shadow-aside-card);
+    background-color: var(--surface-aside-card-hover);
+    box-shadow: var(--shadow-aside-card-hover);
+    transform: translateY(5px) scale(.97);
+}
+
+/* 静止时略离开底面，悬停仍沿用下压位移，形成清楚的高度落差。 */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .dark .aside-body :is(
+        .aside-author-card,
+        .aside-links-card,
+        .aside-share-card,
+        .aside-tags-card,
+        .aside-copyright-card
+    ):not(:hover):not(:active) {
+        transform: translateY(-2px);
+    }
 }
 
 .dark .aside-body .aside-author-card[aria-current="page"] {
@@ -891,6 +906,17 @@ html.dark[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-
         .aside-copyright-card
     ):hover {
         transform: none;
+    }
+
+    /* 触屏取消悬停位移后，仍需保留深色卡片的按压反馈。 */
+    .dark .aside-body :is(
+        .aside-author-card,
+        .aside-links-card,
+        .aside-share-card,
+        .aside-tags-card,
+        .aside-copyright-card
+    ):active {
+        transform: translateY(1px) scale(.985);
     }
 }
 

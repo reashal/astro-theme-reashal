@@ -94,6 +94,10 @@ main {
     scroll-behavior: smooth;
 }
 
+.dark .main {
+    background-color: var(--surface-dark-card);
+}
+
 /* === 文章容器 === */
 
 .article-container {

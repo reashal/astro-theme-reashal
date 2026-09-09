@@ -162,7 +162,7 @@
 }
 
 .dark .sf-tile {
-    background-color: rgb(var(--rgb-dark-panel) / 72%);
+    background-color: var(--surface-dark-card);
     box-shadow:
         var(--shadow-card-hover),
         inset 0 1px 0 var(--card-gloss),

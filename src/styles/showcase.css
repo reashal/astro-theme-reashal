@@ -744,7 +744,10 @@ a.showcase-text-only:active {
 .dark .showcase-product-card {
     background: var(--surface-dark-card);
     color: var(--text-on-dark);
-    box-shadow: rgb(var(--rgb-accent-cyan) / 20%) 0px 2px 8px;
+    box-shadow:
+        var(--shadow-card),
+        inset 0 1px 0 var(--card-gloss),
+        inset 0 0 0 1px var(--card-hairline);
 }
 
 .dark .showcase-product-card {
@@ -755,7 +758,10 @@ a.showcase-text-only:active {
 
 .dark .showcase-app-card:hover,
 .dark .showcase-product-card:hover {
-    box-shadow: rgb(var(--rgb-accent-cyan) / 30%) 0px 4px 12px;
+    box-shadow:
+        var(--shadow-card-raised),
+        inset 0 1px 0 var(--card-gloss-hover),
+        inset 0 0 0 1px var(--card-hairline);
     background: var(--surface-dark-card-hover);
 }
 
@@ -773,7 +779,7 @@ a.showcase-text-only:active {
 }
 
 .dark .showcase-product-card .showcase-large-image {
-    background: var(--surface-dark-panel);
+    background: var(--surface-product-image);
 }
 
 .dark .showcase-product-card .showcase-large-image.no-image {
@@ -787,12 +793,25 @@ a.showcase-text-only:active {
 .dark .showcase-text-only {
     background: var(--surface-dark-card);
     color: var(--color-accent-pink);
-    box-shadow: var(--shadow-card);
+    box-shadow:
+        var(--shadow-card),
+        inset 0 1px 0 var(--card-gloss),
+        inset 0 0 0 1px var(--card-hairline);
 }
 
 .dark .showcase-text-only:hover {
     background: var(--surface-dark-card-hover);
-    box-shadow: var(--shadow-card-hover);
+    box-shadow:
+        var(--shadow-card-raised),
+        inset 0 1px 0 var(--card-gloss-hover),
+        inset 0 0 0 1px var(--card-hairline);
+}
+
+.dark a:is(.showcase-app-card, .showcase-product-card, .showcase-text-only):active {
+    box-shadow:
+        var(--shadow-card-hover),
+        inset 0 1px 0 var(--card-gloss-hover),
+        inset 0 0 0 1px var(--card-hairline);
 }
 
 html.dark[data-input-mode="keyboard"] .showcase-nav a:focus-visible,
@@ -816,6 +835,22 @@ html.dark[data-input-mode="keyboard"] a.showcase-text-only:focus-visible {
     --showcase-link-wash: var(--surface-aside-card-hover);
     --showcase-link-shadow: var(--shadow-aside-card);
     --showcase-link-shadow-hover: var(--shadow-aside-card-hover);
+}
+
+/* 实色悬停层会盖住卡片内阴影，因此凹面边缘跟随该层显示。 */
+.dark .showcase-link-card::after {
+    box-shadow: var(--shadow-card-recess);
+}
+
+.dark .showcase-link-card:active {
+    box-shadow: var(--showcase-link-shadow-hover);
+    transform: translateY(3px) scale(.98);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .dark .showcase-link-card:not(:hover):not(:active) {
+        transform: translateY(-2px);
+    }
 }
 
 @media (hover: none) {
