@@ -17,11 +17,14 @@
     --color-black: #000;
     --color-indigo: #202e78;
 
-    /* 阅读航迹：同一青绿色系的纸面、背折面与折痕层级 */
-    --color-flight-wing: var(--color-brand);
-    --color-flight-wing-hover: var(--color-brand-hover);
-    --color-flight-wing-far: #4d999c;
-    --color-flight-fold: #d7edec;
+    /* 微青银灰纸面：同色背折压暗，品牌色只留在前灯。 */
+    --color-flight-wing: #667b7f;
+    --color-flight-wing-hover: #5c7175;
+    --color-flight-wing-far: #566a6e;
+    --color-flight-fold: #a4b7ba;
+    --color-flight-light: #c3dedd;
+    --rgb-flight: 102 123 127;
+    --rgb-flight-light: var(--rgb-brand);
 
     /* 浅色模式文字层级 */
     --text-primary: #1a1a1a;
@@ -142,10 +145,13 @@
     --surface-product-image: #242932;
     --rgb-dark-card: 16 17 22;
 
-    --color-flight-wing: var(--color-accent-cyan);
-    --color-flight-wing-hover: var(--color-accent-cyan-hover);
-    --color-flight-wing-far: #4d969b;
-    --color-flight-fold: #ddf5f6;
+    --color-flight-wing: #96a7ab;
+    --color-flight-wing-hover: #a0b1b5;
+    --color-flight-wing-far: #78898d;
+    --color-flight-fold: #b2bfc1;
+    --color-flight-light: #cce7e5;
+    --rgb-flight: 150 167 171;
+    --rgb-flight-light: var(--rgb-accent-cyan);
     --surface-raised: var(--surface-dark-card);
     --surface-tint: rgb(var(--rgb-accent-cyan) / 5%);
     /* 上轻下重：顶部只留弱高光，负扩展将白色环境投影集中在卡片下方。 */

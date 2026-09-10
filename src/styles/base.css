@@ -156,11 +156,13 @@ main {
 
 .article-copy {
     display: block;
+    min-width: 0;
     margin: 1rem 0;
     padding: .6rem;
     background-color: var(--color-brand);
     border-radius: var(--radius-md);
     color: var(--color-white);
+    overflow-wrap: anywhere;
 }
 
 .article-container section.article-copy a {
