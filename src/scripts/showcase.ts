@@ -62,13 +62,26 @@ if (showcase) {
         descriptionSyncFrame = requestAnimationFrame(syncDescriptionOverflow);
     };
 
-    const activateShowcase = (requestedId: string, updateUrl: boolean) => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let selectedId: string | undefined;
+    let panelAnimation: Animation | undefined;
+    let switchRevision = 0;
+
+    const activateShowcase = async (requestedId: string, updateUrl: boolean) => {
         const id = panels.some(
             (panel) => panel.dataset.showcasePanel === requestedId,
         )
             ? requestedId
             : panels[0]?.dataset.showcasePanel;
-        if (!id) return;
+        if (!id || id === selectedId) return;
+        const animate = selectedId !== undefined;
+        selectedId = id;
+        const revision = ++switchRevision;
+        const previous = panels.find((panel) => !panel.hidden);
+        const next = panels.find((panel) => panel.dataset.showcasePanel === id)!;
+        // 连续点击时从当前透明度接续，不闪回上一帧，也不排队播放。
+        const previousOpacity = previous ? getComputedStyle(previous).opacity : "1";
+        panelAnimation?.cancel();
 
         for (const tab of tabs) {
             const active = tab.dataset.showcaseTab === id;
@@ -76,13 +89,38 @@ if (showcase) {
             if (active) tab.setAttribute("aria-current", "page");
             else tab.removeAttribute("aria-current");
         }
-        for (const panel of panels) {
-            panel.hidden = panel.dataset.showcasePanel !== id;
-        }
-
-        scheduleDescriptionSync();
         if (updateUrl && location.hash !== `#${id}`) {
             history.pushState(null, "", `/show#${id}`);
+        }
+
+        if (animate && previous && previous !== next) {
+            panelAnimation = previous.animate(
+                [{ opacity: previousOpacity }, { opacity: 0 }],
+                { duration: reducedMotion.matches ? 50 : 80,
+                    easing: "cubic-bezier(.4, 0, 1, 1)", fill: "forwards" },
+            );
+            await panelAnimation.finished.catch(() => {});
+            if (revision !== switchRevision) return;
+            panelAnimation.cancel();
+        }
+
+        for (const panel of panels) panel.hidden = panel !== next;
+        scheduleDescriptionSync();
+
+        if (animate) {
+            panelAnimation = next.animate(
+                [
+                    { opacity: previous === next ? previousOpacity : 0,
+                        transform: reducedMotion.matches || previous === next
+                            ? "none" : "translateY(5px)" },
+                    { opacity: 1, transform: "none" },
+                ],
+                { duration: reducedMotion.matches ? 100 : 180,
+                    easing: "cubic-bezier(.22, 1, .36, 1)" },
+            );
+            await panelAnimation.finished.catch(() => {});
+            if (revision !== switchRevision) return;
+            panelAnimation = undefined;
         }
     };
 

@@ -30,10 +30,14 @@ interface PagefindModule {
 }
 
 const searchRoot = document.querySelector<HTMLElement>(".docs-search");
+const articleTools = searchRoot?.closest<HTMLElement>("[data-article-toc]");
+const articleDirectory = articleTools?.querySelector<HTMLElement>("[data-toc-viewport]");
+const articleLevels = articleTools?.querySelector<HTMLElement>(".article-toc-level-switcher");
+const articleSearchBack = articleTools?.querySelector<HTMLButtonElement>("[data-toc-search-back]");
 const searchScope: ContentKind = searchRoot?.dataset.contentScope === "moment" ? "moment" : "essay";
 const contentLabel = searchScope === "moment" ? "动态" : "随笔";
 const contentUnit = searchScope === "moment" ? "条" : "篇";
-const defaultPrompt = searchScope === "moment" ? "输入一句话，找回一则动态" : "输入只言片语，找回一篇随笔";
+const defaultPrompt = "输入只言片语，寻找一则内容";
 
 const toggle = document.getElementById("docsSearchToggle");
 const panel = document.getElementById("docsSearchPanel");
@@ -67,7 +71,14 @@ const randomExplore = document.getElementById("randomExplore");
 const randomExploreData = document.getElementById("randomExploreData");
 const isDevelopment = import.meta.env.DEV;
 const usesLocalSearch = isDevelopment || searchScope === "moment";
-const PAGE_SIZE = 4;
+const getPageSize = () => {
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const height = window.visualViewport?.height ?? window.innerHeight;
+    // 为搜索框、翻页、探索入口和面板工具预留空间；每条结果含间距占 3.75rem。
+    const panelBudget = Math.min(height * .72, 36 * rem);
+    return Math.max(1, Math.min(4, Math.floor((panelBudget - 20 * rem) / (3.75 * rem))));
+};
+let pageSize = getPageSize();
 const localResults = usesLocalSearch
     ? Array.from(document.querySelectorAll<HTMLAnchorElement>("#docsSearchResults > .docs-search-result"))
     : [];
@@ -78,6 +89,19 @@ let currentPage = 1;
 let currentPagefindResults: PagefindResult[] = [];
 let isSearchOpen = panel?.hidden === false;
 let closePanelTimer: number | undefined;
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+let modeAnimations: Animation[] = [];
+let modeRevision = 0;
+let resultsAnimation: Animation | undefined;
+
+const revealResultsPage = () => {
+    resultsAnimation?.cancel();
+    resultsAnimation = resultsContainer?.animate(
+        [{ opacity: .35 }, { opacity: 1 }],
+        { duration: reducedMotion.matches ? 100 : 280,
+            easing: "cubic-bezier(.25, .65, .3, 1)" },
+    );
+};
 
 const normalize = (value: string) =>
     value.normalize("NFKC").toLocaleLowerCase("zh-CN").trim();
@@ -97,7 +121,8 @@ type LocalIndexEntry = (typeof localIndex)[number];
 let currentLocalResults: LocalIndexEntry[] = [];
 
 const updatePagination = (matches: number) => {
-    const totalPages = Math.ceil(matches / PAGE_SIZE);
+    const totalPages = Math.ceil(matches / pageSize);
+    resultsContainer?.style.setProperty("--search-result-rows", String(Math.min(pageSize, matches)));
     if (pagination) pagination.hidden = totalPages <= 1;
     if (previousPage) previousPage.disabled = currentPage <= 1;
     if (nextPage) nextPage.disabled = currentPage >= totalPages;
@@ -124,6 +149,8 @@ const showCount = (matches: number) => {
 };
 
 const resetResults = () => {
+    resultsContainer?.style.setProperty("--search-result-rows", "0");
+    resultsAnimation?.cancel();
     searchSequence += 1;
     currentPage = 1;
     currentLocalResults = [];
@@ -169,8 +196,8 @@ const loadPagefind = () => {
 };
 
 const renderLocalPage = (keywords: string[]) => {
-    const start = (currentPage - 1) * PAGE_SIZE;
-    const visibleResults = new Set(currentLocalResults.slice(start, start + PAGE_SIZE));
+    const start = (currentPage - 1) * pageSize;
+    const visibleResults = new Set(currentLocalResults.slice(start, start + pageSize));
     localIndex.forEach((entry) => {
         entry.result.hidden = !visibleResults.has(entry);
 
@@ -218,17 +245,18 @@ const createResult = (result: PagefindResultData) => {
     return link;
 };
 
-const renderPagefindPage = async (sequence: number) => {
+const renderPagefindPage = async (sequence: number, animate = false) => {
     const pageToRender = currentPage;
-    const start = (pageToRender - 1) * PAGE_SIZE;
+    const start = (pageToRender - 1) * pageSize;
     const resultData = await Promise.all(
-        currentPagefindResults.slice(start, start + PAGE_SIZE).map((result) => result.data()),
+        currentPagefindResults.slice(start, start + pageSize).map((result) => result.data()),
     );
     if (sequence !== searchSequence || pageToRender !== currentPage) return;
 
     resultsContainer?.replaceChildren(...resultData.map(createResult));
     showCount(currentPagefindResults.length);
     updatePagination(currentPagefindResults.length);
+    if (animate) revealResultsPage();
 };
 
 const renderPagefindResults = async (query: string) => {
@@ -258,7 +286,7 @@ const renderPagefindResults = async (query: string) => {
 
 const changePage = (offset: number) => {
     const matches = usesLocalSearch ? currentLocalResults.length : currentPagefindResults.length;
-    const totalPages = Math.ceil(matches / PAGE_SIZE);
+    const totalPages = Math.ceil(matches / pageSize);
     const nextPageNumber = Math.min(Math.max(currentPage + offset, 1), totalPages);
     if (nextPageNumber === currentPage) return;
 
@@ -266,13 +294,37 @@ const changePage = (offset: number) => {
     if (usesLocalSearch) {
         const query = normalize(input?.value ?? "");
         renderLocalPage(query.split(/\s+/).filter(Boolean));
+        revealResultsPage();
     } else {
         const currentRender = ++searchSequence;
-        void renderPagefindPage(currentRender);
+        void renderPagefindPage(currentRender, true).catch((error) => {
+            if (currentRender !== searchSequence) return;
+            console.error("随笔搜索翻页失败", error);
+            showPrompt("搜索暂时不可用，请稍后重试");
+        });
     }
 };
 
+let resizeFrame = 0;
+const resizeResults = () => {
+    cancelAnimationFrame(resizeFrame);
+    resizeFrame = requestAnimationFrame(() => {
+        const nextSize = getPageSize();
+        if (nextSize === pageSize) return;
+        const firstResult = (currentPage - 1) * pageSize;
+        pageSize = nextSize;
+        currentPage = Math.floor(firstResult / pageSize) + 1;
+        if (usesLocalSearch && currentLocalResults.length) renderLocalPage(normalize(input?.value ?? "").split(/\s+/).filter(Boolean));
+        else if (currentPagefindResults.length) {
+            void renderPagefindPage(++searchSequence).catch(() => showPrompt("搜索暂时不可用，请稍后重试"));
+        }
+    });
+};
+window.addEventListener("resize", resizeResults);
+window.visualViewport?.addEventListener("resize", resizeResults);
+
 const renderResults = () => {
+    resultsAnimation?.cancel();
     const query = normalize(input?.value ?? "");
     if (!query) {
         resetResults();
@@ -433,10 +485,52 @@ const renderTimeResults = (updateUrl = true) => {
     if (updateUrl) syncTimeUrl(range);
 };
 
+const settleSearchMode = () => {
+    modeAnimations.forEach((animation) => animation.cancel());
+    modeAnimations = [];
+    for (const [element, mode] of [[searchMain, "search"], [timePanel, "time"]] as const) {
+        if (!element) continue;
+        element.hidden = mode !== searchMode;
+        element.inert = false;
+    }
+};
+
 const setSearchMode = (mode: SearchMode, updateUrl = true) => {
+    const changed = searchMode !== mode;
+    const previous = searchMode === "time" ? timePanel : searchMain;
+    const previousOpacity = previous ? getComputedStyle(previous).opacity : "1";
+    settleSearchMode();
+    const revision = ++modeRevision;
     searchMode = mode;
-    if (searchMain) searchMain.hidden = mode !== "search";
-    if (timePanel) timePanel.hidden = mode !== "time";
+    const target = mode === "time" ? timePanel : searchMain;
+    // 两个页面共享过渡区域，旧页退出时不可交互，结束后按当前内容自然收拢。
+    if (changed && isSearchOpen && target && previous) {
+        target.hidden = false;
+        previous.inert = true;
+        const direction = mode === "time" ? 1 : -1;
+        const distance = reducedMotion.matches ? 0 : 22 * direction;
+        const outgoing = previous.animate(
+            [{ opacity: previousOpacity, transform: "none" },
+                { opacity: 0, transform: `translateX(${-distance / 2}px)` }],
+            { duration: reducedMotion.matches ? 100 : 180,
+                easing: "cubic-bezier(.4, 0, .65, 1)", fill: "forwards" },
+        );
+        const incoming = target.animate(
+            [
+                { opacity: 0, transform: `translateX(${distance}px)` },
+                { opacity: 1, transform: "none" },
+            ],
+            { duration: reducedMotion.matches ? 120 : 440,
+                delay: reducedMotion.matches ? 0 : 60,
+                easing: "cubic-bezier(.25, .65, .3, 1)", fill: "both" },
+        );
+        modeAnimations = [outgoing, incoming];
+        void incoming.finished.then(() => {
+            if (revision === modeRevision) settleSearchMode();
+        }).catch(() => {});
+    } else {
+        settleSearchMode();
+    }
     if (mode === "time") {
         renderTimeResults(updateUrl);
         requestAnimationFrame(() => timeGranularity?.focus());
@@ -466,7 +560,56 @@ const restoreTimeFromUrl = () => {
     return true;
 };
 
-const setOpen = (open: boolean) => {
+let toolAnimations: Animation[] = [];
+let toolRevision = 0;
+
+const switchArticleTool = (open: boolean, animate: boolean) => {
+    if (!panel) return;
+    if (!articleDirectory) {
+        panel.hidden = !open;
+        panel.classList.toggle("is-open", open);
+        return;
+    }
+    const outgoing = open ? articleDirectory : panel;
+    const incoming = open ? panel : articleDirectory;
+    const startOpacity = incoming.hidden ? "0" : getComputedStyle(incoming).opacity;
+    const outgoingOpacity = getComputedStyle(outgoing).opacity;
+    const revision = ++toolRevision;
+    toolAnimations.forEach((animation) => animation.cancel());
+    toolAnimations = [];
+    if (articleLevels) articleLevels.hidden = open;
+    if (articleSearchBack) articleSearchBack.hidden = !open;
+    const articlePanelTitle = articleTools?.querySelector<HTMLElement>("[data-toc-panel-title]");
+    if (articlePanelTitle) articlePanelTitle.hidden = open;
+    panel.classList.toggle("is-open", open);
+    incoming.hidden = false;
+    incoming.inert = false;
+    outgoing.inert = true;
+    const settle = () => {
+        if (revision !== toolRevision) return;
+        outgoing.hidden = true;
+        outgoing.inert = false;
+        toolAnimations.forEach((animation) => animation.cancel());
+        toolAnimations = [];
+    };
+    if (!animate || outgoing.hidden) {
+        settle();
+        return;
+    }
+    const distance = reducedMotion.matches ? 0 : (open ? 14 : -14);
+    toolAnimations.push(outgoing.animate(
+        [{ opacity: outgoingOpacity, transform: "none" }, { opacity: 0, transform: `translateX(${-distance}px)` }],
+        { duration: reducedMotion.matches ? 80 : 180, easing: "cubic-bezier(.4, 0, .65, 1)", fill: "forwards" },
+    ));
+    const entrance = incoming.animate(
+        [{ opacity: startOpacity, transform: `translateX(${distance}px)` }, { opacity: 1, transform: "none" }],
+        { duration: reducedMotion.matches ? 120 : 420, easing: "cubic-bezier(.25, .65, .3, 1)", fill: "both" },
+    );
+    toolAnimations.push(entrance);
+    void entrance.finished.then(settle).catch(() => {});
+};
+
+const setOpen = (open: boolean, animate = true) => {
     if (!toggle || !panel) return;
     isSearchOpen = open;
     toggle.setAttribute("aria-expanded", String(open));
@@ -478,23 +621,34 @@ const setOpen = (open: boolean) => {
     }
 
     if (open) {
-        panel.hidden = false;
-        requestAnimationFrame(() => {
+        if (articleTools) {
+            articleTools.dispatchEvent(new Event("article-tools:open"));
+            switchArticleTool(true, animate);
+        } else {
+            panel.hidden = false;
             requestAnimationFrame(() => {
-                if (isSearchOpen) panel.classList.add("is-open");
+                requestAnimationFrame(() => {
+                    if (isSearchOpen) panel.classList.add("is-open");
+                });
             });
-        });
-        if (searchMode === "time") requestAnimationFrame(() => timeGranularity?.focus());
+        }
+        if (searchMode === "time") requestAnimationFrame(() => timeGranularity?.focus({ preventScroll: true }));
         else {
-            requestAnimationFrame(() => input?.focus());
+            requestAnimationFrame(() => input?.focus({ preventScroll: true }));
             void prepareSearch();
         }
     } else {
-        panel.classList.remove("is-open");
-        closePanelTimer = window.setTimeout(() => {
-            if (!isSearchOpen) panel.hidden = true;
-            closePanelTimer = undefined;
-        }, 220);
+        ++modeRevision;
+        settleSearchMode();
+        if (articleTools) {
+            switchArticleTool(false, animate);
+        } else {
+            panel.classList.remove("is-open");
+            closePanelTimer = window.setTimeout(() => {
+                if (!isSearchOpen) panel.hidden = true;
+                closePanelTimer = undefined;
+            }, 220);
+        }
         if (input) {
             input.disabled = false;
             input.value = "";
@@ -503,9 +657,20 @@ const setOpen = (open: boolean) => {
     }
 };
 
-toggle?.addEventListener("click", () => setOpen(!isSearchOpen));
+toggle?.addEventListener("click", () => {
+    if (articleTools && !articleDirectory && isSearchOpen) {
+        articleTools.dispatchEvent(new Event("article-tools:close"));
+    } else setOpen(!isSearchOpen);
+});
+articleSearchBack?.addEventListener("click", () => {
+    setOpen(false);
+    toggle?.focus({ preventScroll: true });
+});
+articleTools?.addEventListener("article-tools:closed", () => setOpen(false, false));
 input?.addEventListener("input", renderResults);
 input?.addEventListener("keydown", (event) => {
+    // Safari 确认输入法候选词时可能已清除 isComposing，229 保留这次 Enter 的输入语义。
+    if (event.isComposing || event.keyCode === 229) return;
     if (event.key === "Enter") {
         const firstMatch = resultsContainer?.querySelector<HTMLAnchorElement>(
             ".docs-search-result:not([hidden])",
@@ -546,6 +711,7 @@ randomExplore?.addEventListener("click", () => {
 document.addEventListener("click", (event) => {
     if (
         panel &&
+        !articleTools &&
         isSearchOpen &&
         event.target instanceof Node &&
         !panel.contains(event.target) &&
@@ -557,6 +723,12 @@ document.addEventListener("click", (event) => {
 
 document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && isSearchOpen) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        if (articleTools && !articleDirectory) {
+            articleTools.dispatchEvent(new Event("article-tools:close"));
+            return;
+        }
         setOpen(false);
         toggle?.focus();
     }

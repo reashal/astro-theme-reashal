@@ -1,17 +1,24 @@
 ---
 import type { MarkdownHeading } from "astro";
 import "../styles/article-toc.css";
+import Search from "./Search.astro";
+import Dark from "./Dark.astro";
+import ReadingProgress from "./ReadingProgress.astro";
 
 interface Props {
-    headings: MarkdownHeading[];
+    headings?: MarkdownHeading[];
+    pageName?: string;
+    readingProgress?: boolean;
 }
 
-const { headings } = Astro.props as Props;
+const { headings = [], pageName = "", readingProgress = false } = Astro.props as Props;
 ---
 
 <section
     class="article-toc"
     data-article-toc
+    data-page-name={pageName}
+    data-has-directory={headings.length > 0 ? "true" : "false"}
     data-pagefind-ignore="all"
 >
     <button
@@ -21,16 +28,27 @@ const { headings } = Astro.props as Props;
         aria-controls="articleTocPanel"
         data-article-toc-toggle
     >
+        {headings.length > 0 ? <span class="article-tools-minimap" aria-hidden="true">
+            {headings.map((heading, index) => <i data-toc-tick={heading.slug} data-depth={heading.depth} class:list={{"is-current": index === 0}} hidden={index >= 9} />)}
+        </span> : <svg class="article-tools-symbol" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 17h14M9 4v6m6 4v6" /></svg>}
         <span data-toc-summary-current>
-            {headings[0]?.text || "标题"}
+            {headings[0]?.text || pageName}
         </span>
     </button>
     <nav
         id="articleTocPanel"
-        aria-label="文章层级标题"
+        aria-label={headings.length > 0 ? "文章目录与阅读工具" : `${pageName}页面工具`}
         hidden
     >
-        <div
+        {headings.length > 0 ? <a class="article-toc-panel-title" data-toc-panel-title href="#article-start">目录</a> :
+            <span class="article-toc-panel-title" data-toc-panel-title>{pageName}</span>}
+        {headings.length > 0 && <button class="article-toc-search-back" type="button" data-toc-search-back hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6" /></svg>
+            返回目录
+        </button>}
+        <Search />
+        <Dark />
+        {headings.length > 0 && <><div
             class="article-toc-viewport"
             data-toc-viewport
             tabindex="0"
@@ -56,7 +74,8 @@ const { headings } = Astro.props as Props;
                 下一层
                 <i aria-hidden="true" />
             </button>
-        </div>
+        </div></>}
+        <ReadingProgress article={readingProgress} />
     </nav>
     <div class="article-toc-data" hidden>
         {

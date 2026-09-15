@@ -63,6 +63,15 @@
     --surface-dark-card: #202632;
     --surface-dark-card-hover: #272e3b;
     --surface-dark-control: #242b36;
+    --search-edge: rgb(var(--rgb-white) / 8%);
+    --search-focus: rgb(var(--rgb-accent-cyan) / 48%);
+    /* 标题导航保持深色实体表面，避免封面透色影响阅读。 */
+    --surface-toc-shell: var(--surface-aside-dark);
+    --surface-toc-core: var(--surface-dark-panel);
+    --border-toc: rgb(var(--rgb-white) / 6%);
+    --gloss-toc: rgb(var(--rgb-white) / 3%);
+    --surface-toc-selected: rgb(var(--rgb-accent-cyan) / 5%);
+    --shadow-toc-dark: 0 .4rem 1.2rem rgb(var(--rgb-white) / 1.5%);
     --surface-dark-code: #11161d;
     --surface-dark-row: #1d242e;
     --surface-dark-input: #232a36;

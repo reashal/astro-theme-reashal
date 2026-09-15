@@ -12,7 +12,7 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
 const contentScope = currentPath === "/" ? "moment" : "essay";
 const contentLabel = contentScope === "moment" ? "动态" : "随笔";
 const searchPlaceholder = contentScope === "moment" ? "搜索动态正文" : "搜索标题、摘要或标签";
-const searchPrompt = contentScope === "moment" ? "输入一句话，找回一则动态" : "输入只言片语，找回一篇随笔";
+const searchPrompt = "输入只言片语，寻找一则内容";
 const searchEmpty = contentScope === "moment" ? "没有找到相关动态" : "没有找到相关随笔";
 
 let developmentEntries: DevelopmentSearchEntry[] = [];
@@ -86,7 +86,7 @@ if (import.meta.env.DEV && contentScope === "essay") {
         aria-label={`寻找站内${contentLabel}`}
         hidden
     >
-        <div class="docs-search-panel-core">
+        <div class="docs-search-panel-content">
             <div id="docsSearchMain">
                 <label class="docs-search-field" for="docsSearchInput">
                     <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -194,8 +194,7 @@ if (import.meta.env.DEV && contentScope === "essay") {
                     <span>锚定时光，穿梭过往</span>
                     <span class="docs-search-discovery-links">
                         <button id="timeExploreOpen" type="button">时间范围</button>
-                        <i aria-hidden="true">·</i>
-                        <button id="randomExplore" type="button">随即跳转</button>
+                        <button id="randomExplore" type="button">随机跳转</button>
                     </span>
                 </footer>
             </div>

@@ -3,7 +3,6 @@ import type { MarkdownHeading } from "astro";
 import "../styles/md.css";
 import ArticleToc from "../components/ArticleToc.astro";
 import Giscus from "../components/Giscus.astro";
-import ReadingProgress from "../components/ReadingProgress.astro";
 import SiteFootprints from "../components/SiteFootprints.astro";
 import type { ArticleFrontmatter } from "../types";
 import {
@@ -96,8 +95,8 @@ const formatDate = (date: string) => {
     modifiedTime={isDocsArticle ? updatedDate : undefined}
     pageTags={isDocsArticle ? tags : []}
     enableMediaViewer
+    articleTools={hasArticleToc}
 >
-    <ReadingProgress />
     <article
         class="article-container doc"
         data-pagefind-body
@@ -167,7 +166,7 @@ const formatDate = (date: string) => {
                 </h1>
             )
         }
-        {hasArticleToc && <ArticleToc headings={tocHeadings} />}
+        {hasArticleToc && <ArticleToc headings={tocHeadings} readingProgress />}
         <span
             class="article-search-meta"
             data-pagefind-meta="description"

@@ -1,430 +1,228 @@
-<button
-    type="button"
-    class="reading-flight"
-    aria-label="阅读进度 0%，点击飞回篇首"
-    title="飞回篇首"
-    data-reading-flight
-    tabindex="-1"
->
-    <span class="reading-flight-route" aria-hidden="true">
-        <span class="reading-flight-trail" data-reading-flight-trail></span>
-    </span>
-    <span
-        class="reading-flight-aircraft"
-        aria-hidden="true"
-    >
-        <span class="reading-flight-aircraft-body">
-            <span class="reading-flight-exhaust">
-                <i></i>
-                <i></i>
-                <i></i>
-            </span>
-            <svg
-                class="reading-flight-plane"
-                viewBox="0 0 36 40"
-                focusable="false"
-            >
-                <path
-                    class="reading-flight-plane-wing"
-                    d="M17.58 36.84c-.25.48-.94.43-1.12-.08L2.74 6.22c-.4-.9.14-1.48 1.08-1.18l13.3 3.38c.52.13.88.6.88 1.14v25.88c0 .49-.14.97-.42 1.4Z"
-                ></path>
-                <path
-                    class="reading-flight-plane-wing reading-flight-plane-wing-far"
-                    d="M18.42 36.84c.25.48.94.43 1.12-.08L33.26 6.22c.4-.9-.14-1.48-1.08-1.18l-13.3 3.38c-.52.13-.88.6-.88 1.14v25.88c0 .49-.14.97-.42 1.4Z"
-                ></path>
-                <path
-                    class="reading-flight-plane-flap"
-                    d="M18 9.18 11.92 23.56 18 20.88Z"
-                ></path>
-                <path
-                    class="reading-flight-plane-flap reading-flight-plane-flap-far"
-                    d="M18 9.18 24.08 23.56 18 20.88Z"
-                ></path>
-                <path
-                    class="reading-flight-plane-fold"
-                    d="M18 9.28v25.86"
-                ></path>
-                <path
-                    class="reading-flight-plane-edge"
-                    d="m3.82 5.58 13.3 3.46M32.18 5.58l-13.3 3.46"
-                ></path>
-            </svg>
-            <span class="reading-flight-headlights">
-                <i></i>
-                <i></i>
-            </span>
-        </span>
-    </span>
-</button>
+---
+interface Props { article?: boolean; }
+const { article = false } = Astro.props;
+const progressLabel = article ? "阅读进度" : "页面进度";
+const topLabel = article ? "回到篇首" : "回到顶部";
+---
+<div class="reading-position" data-reading-position>
+    <div class="reading-position-caption">
+        <label for="readingPosition">{progressLabel}</label>
+        <output for="readingPosition" data-reading-percent>0%</output>
+    </div>
+    <div class="reading-position-controls">
+        <div class="reading-position-meter" role="progressbar" aria-label={progressLabel} aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden><span></span></div>
+        <input id="readingPosition" type="range" min="0" max="100" step="0.1" value="0" aria-label={`${progressLabel}，拖动定位`} />
+        <button type="button" data-reading-top aria-label={topLabel} title={topLabel}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6v12M19 12H9m4-4-4 4 4 4" /></svg>
+        </button>
+    </div>
+</div>
 
 <style>
-    .reading-flight {
-        --reading-progress: 0;
-        --flight-rgb: var(--rgb-flight);
-
-        position: fixed;
-        top: 50%;
-        right: .18rem;
-        z-index: 998;
-        width: 2.9rem;
-        height: var(--edge-control-length);
+    .reading-position { grid-area: 4 / 1 / 5 / 4; min-width: 0; padding: .35rem .6rem 0; }
+    .reading-position-caption { display: flex; justify-content: space-between; align-items: center; color: var(--toc-island-muted); font-size: .68rem; font-variant-numeric: tabular-nums; }
+    .reading-position-controls { display: flex; align-items: center; gap: .6rem; }
+    input {
+        --read-fill: 0%;
+        --read-ink: color-mix(in srgb, var(--toc-island-active) 65%, var(--toc-island-muted));
+        appearance: none;
+        -webkit-appearance: none;
+        min-width: 0;
+        flex: 1;
+        height: 44px;
+        margin: 0;
         padding: 0;
-        border: 0;
         background: transparent;
-        color: var(--color-flight-wing);
         cursor: pointer;
-        opacity: 0;
-        pointer-events: none;
-        transform: translate(.65rem, -50%);
-        transition:
-            opacity .25s cubic-bezier(.22, 1, .36, 1),
-            transform .25s cubic-bezier(.22, 1, .36, 1),
-            color .42s cubic-bezier(.4, 0, .2, 1);
+        touch-action: none;
     }
-
-    .reading-flight.is-visible {
-        opacity: .92;
-        pointer-events: auto;
-        transform: translate(0, -50%);
+    input::-webkit-slider-runnable-track { height: 2px; border-radius: 2px; background: linear-gradient(to right, var(--read-ink) var(--read-fill), var(--border-toc) var(--read-fill)); }
+    input::-moz-range-track { height: 2px; border-radius: 2px; background: var(--border-toc); }
+    input::-moz-range-progress { height: 2px; border-radius: 2px; background: var(--read-ink); }
+    input::-webkit-slider-thumb {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 16px;
+        height: 8px;
+        margin-top: -3px;
+        border-radius: 3px;
+        background: var(--toc-island-text);
+        border: 0;
+        box-shadow: 0 0 0 3px var(--toc-island-panel), inset 0 -2px 0 var(--gloss-toc);
+        cursor: grab;
+        transition: transform .24s cubic-bezier(.22,1,.36,1);
     }
-
-    .reading-flight:hover,
-    .reading-flight.is-returning {
-        color: var(--color-flight-wing-hover);
-        opacity: 1;
+    input::-moz-range-thumb {
+        width: 16px;
+        height: 8px;
+        border-radius: 3px;
+        background: var(--toc-island-text);
+        border: 0;
+        box-shadow: 0 0 0 3px var(--toc-island-panel), inset 0 -2px 0 var(--gloss-toc);
+        cursor: grab;
+        transition: transform .24s cubic-bezier(.22,1,.36,1);
     }
-
-    .reading-flight:active {
-        transform: translate(0, -50%) scale(.97);
-    }
-
-    :global(html[data-input-mode="keyboard"])
-        .reading-flight:focus-visible {
-        outline: 1px solid currentColor;
-        outline-offset: 1px;
-        border-radius: 1.1rem;
-        opacity: 1;
-    }
-
-    .reading-flight-route {
-        position: absolute;
-        top: .5rem;
-        left: 50%;
-        width: 1px;
-        height: calc(100% - 1rem);
-        overflow: hidden;
-        border-radius: .3rem;
-        background: rgb(var(--flight-rgb) / 40%);
-        transform: translateX(-50%);
-    }
-
-    .reading-flight-trail {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        z-index: 1;
-        width: 100%;
-        height: 100%;
-        background: rgb(var(--flight-rgb) / 60%);
-        border-radius: 1px;
-        transform: translateX(-50%) scaleY(var(--reading-progress));
-        transform-origin: top;
-        transition: transform .08s cubic-bezier(.22, 1, .36, 1);
-    }
-
-    .reading-flight-aircraft {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        display: block;
-        width: 2.08rem;
-        height: 2.3rem;
-        pointer-events: none;
-        transform: translate(-50%, -50%) translateY(var(--reading-plane-y, .55rem));
-        transform-origin: center;
-        transition: transform .08s cubic-bezier(.22, 1, .36, 1);
-    }
-
-    .reading-flight-aircraft-body {
-        position: relative;
-        display: block;
-        width: 100%;
-        height: 100%;
-        transform-origin: center;
-        transition: transform .42s cubic-bezier(.4, 0, .2, 1);
-    }
-
-    .reading-flight-plane {
-        position: relative;
-        z-index: 1;
-        display: block;
-        width: 100%;
-        height: 100%;
-        overflow: visible;
-        fill: currentColor;
-    }
-
-    .reading-flight-plane-wing-far {
-        fill: var(--color-flight-wing-far);
-    }
-
-    .reading-flight-plane-flap {
-        fill: var(--color-flight-fold);
-        opacity: .18;
-    }
-
-    .reading-flight-plane-flap-far {
-        opacity: .1;
-    }
-
-    .reading-flight-plane-fold,
-    .reading-flight-plane-edge {
-        fill: none;
-        stroke: var(--color-flight-fold);
-        stroke-opacity: .7;
-        stroke-linecap: round;
-        stroke-width: .72;
-    }
-
-    .reading-flight-plane-edge {
-        opacity: .48;
-        stroke-width: .56;
-    }
-
-    .reading-flight-exhaust {
-        position: absolute;
-        bottom: calc(100% - .35rem);
-        left: 50%;
-        height: .94rem;
-        display: grid;
-        grid-template-columns: repeat(3, 1.5px);
-        gap: 3px;
-        transform: translateX(-50%);
-        transform-origin: bottom;
-        transition: transform .25s cubic-bezier(.22, 1, .36, 1);
-    }
-
-    .reading-flight-exhaust i {
-        display: block;
-        height: 100%;
-        border-radius: 1px;
-        background: rgb(var(--flight-rgb) / 66%);
-        -webkit-mask-image: linear-gradient(
-            to bottom,
-            transparent,
-            rgb(0 0 0 / 70%) 30%,
-            #000 65%
-        );
-        mask-image: linear-gradient(
-            to bottom,
-            transparent,
-            rgb(0 0 0 / 70%) 30%,
-            #000 65%
-        );
-    }
-
-    .reading-flight-exhaust i:nth-child(2) {
-        background: rgb(var(--flight-rgb) / 90%);
-        transform: scaleY(1.08);
-        transform-origin: bottom;
-    }
-
-    .reading-flight-headlights {
-        --flight-rgb: var(--rgb-flight-light);
-        position: absolute;
-        top: calc(100% - .26rem);
-        left: 50%;
-        height: .34rem;
-        display: grid;
-        grid-template-columns: repeat(2, 1.5px);
-        gap: 5.75px;
-        filter:
-            drop-shadow(0 0 1px rgb(var(--rgb-white) / 36%))
-            drop-shadow(0 1px 2px rgb(var(--flight-rgb) / 30%));
-        transform: translateX(-50%);
-    }
-
-    .reading-flight-headlights i {
-        position: relative;
-        display: block;
-        height: 100%;
-        border-radius: 1px;
-        background: linear-gradient(
-            to bottom,
-            rgb(var(--flight-rgb) / 96%),
-            rgb(var(--flight-rgb) / 72%) 42%,
-            transparent
-        );
-    }
-
-    .reading-flight-headlights i::before {
-        position: absolute;
-        top: -1.5px;
-        left: 50%;
-        width: 2.75px;
-        height: 2.75px;
-        border-radius: 50%;
-        background: var(--color-flight-light);
-        box-shadow:
-            0 0 0 1px rgb(var(--flight-rgb) / 20%),
-            0 0 3px rgb(var(--flight-rgb) / 42%);
-        content: "";
-        transform: translateX(-50%);
-    }
-
-    @media (hover: hover) {
-        .reading-flight:hover .reading-flight-aircraft-body {
-            transform: rotate(180deg);
-        }
-
-        .reading-flight:hover .reading-flight-exhaust {
-            transform: translateX(-50%) scaleY(1.08);
-        }
-    }
-
-    .reading-flight.is-returning .reading-flight-aircraft-body {
-        transform: rotate(180deg);
-    }
-
-    :global(html[data-input-mode="keyboard"])
-        .reading-flight:focus-visible .reading-flight-aircraft-body {
-        transform: rotate(180deg);
-    }
-
-    .reading-flight.is-returning .reading-flight-aircraft,
-    .reading-flight.is-returning .reading-flight-trail {
-        transition: none;
-    }
-
-    @media (hover: none) {
-        .reading-flight:active .reading-flight-aircraft-body {
-            transform: rotate(180deg);
-        }
-
-        .reading-flight:active .reading-flight-exhaust {
-            transform: translateX(-50%) scaleY(1.08);
-        }
-    }
-
-    @media screen and (max-width: 487px) {
-        .reading-flight {
-            right: 0;
-            width: 2.75rem;
-            height: var(--edge-control-length);
-        }
-
-        .reading-flight-plane {
-            width: 100%;
-            height: 100%;
-        }
-
-        .reading-flight-aircraft {
-            width: 1.82rem;
-            height: 2.02rem;
-        }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .reading-flight,
-        .reading-flight-trail,
-        .reading-flight-aircraft,
-        .reading-flight-aircraft-body,
-        .reading-flight-exhaust {
-            transition: none;
-        }
-    }
+    input:active { cursor: grabbing; }
+    input:active::-webkit-slider-thumb { cursor: grabbing; transform: scale(.94); }
+    input:active::-moz-range-thumb { cursor: grabbing; transform: scale(.94); }
+    input:disabled { cursor: default; opacity: .5; }
+    input:disabled::-webkit-slider-thumb { cursor: default; }
+    input:disabled::-moz-range-thumb { cursor: default; }
+    .reading-position-meter { position: relative; flex: 1; min-width: 0; height: 44px; cursor: default; touch-action: pan-y; user-select: none; }
+    .reading-position-meter::before, .reading-position-meter > span { position: absolute; inset: 21px 0 auto; height: 2px; border-radius: 2px; pointer-events: none; }
+    .reading-position-meter::before { content: ""; background: var(--border-toc); }
+    .reading-position-meter > span { background: color-mix(in srgb, var(--toc-island-active) 65%, var(--toc-island-muted)); transform: scaleX(var(--read-progress, 0)); transform-origin: left center; }
+    .reading-position-meter[hidden], input[hidden] { display: none; }
+    button { display: grid; place-items: center; flex: 0 0 44px; height: 44px; padding: 0; border: 0; border-radius: .5rem; background: transparent; color: var(--toc-island-muted); cursor: pointer; transition: transform .2s cubic-bezier(.22,1,.36,1); }
+    button svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    button:active { transform: translateY(1px) scale(.96); }
+    @media (hover: hover) { button:hover { color: var(--toc-island-text); background: var(--surface-toc-selected); } }
+    @media (hover: none) { button:active { background: var(--surface-toc-selected); } }
+    input:focus-visible, button:focus-visible { outline: 2px solid var(--toc-island-active); outline-offset: 2px; border-radius: .5rem; }
+    @media (prefers-reduced-motion: reduce) { button, input::-webkit-slider-thumb { transition: none; } input::-moz-range-thumb { transition: none; } }
 </style>
 
 <script>
-    const readingFlight = document.querySelector<HTMLButtonElement>("[data-reading-flight]");
-    const flightRoute = readingFlight?.querySelector<HTMLElement>(".reading-flight-route");
-    const aircraftBody = readingFlight?.querySelector<HTMLElement>(".reading-flight-aircraft-body");
-    const scrollContainer = document.querySelector<HTMLElement>(".main");
-    const articleContent = document.querySelector<HTMLElement>(".article-container.doc .article-content");
-
-    if (readingFlight && flightRoute && aircraftBody && scrollContainer && articleContent) {
-        let animationFrame = 0;
+    const position = document.querySelector<HTMLElement>("[data-reading-position]");
+    const range = position?.querySelector<HTMLInputElement>("input");
+    const meter = position?.querySelector<HTMLElement>(".reading-position-meter");
+    const percent = position?.querySelector<HTMLOutputElement>("output");
+    const topButton = position?.querySelector<HTMLButtonElement>("[data-reading-top]");
+    const container = document.querySelector<HTMLElement>(".main");
+    const content = document.querySelector<HTMLElement>(".article-container.doc .article-content");
+    if (position && range && meter && percent && topButton && container) {
+        let frame = 0;
         let returnFrame = 0;
-        let returnRun = 0;
-        let returnProgress: number | null = null;
-        let currentProgress = 0;
-
-        const updateReadingFlight = () => {
-            animationFrame = 0;
-            const containerRect = scrollContainer.getBoundingClientRect();
-            const contentRect = articleContent.getBoundingClientRect();
-            const contentStart = scrollContainer.scrollTop + contentRect.top - containerRect.top;
-            const readingDistance = Math.max(1, articleContent.offsetHeight - scrollContainer.clientHeight);
-            currentProgress = returnProgress ?? Math.min(1, Math.max(0,
-                (scrollContainer.scrollTop - contentStart) / readingDistance,
-            ));
-            readingFlight.style.setProperty("--reading-progress", String(currentProgress));
-            readingFlight.style.setProperty("--reading-plane-y",
-                `${flightRoute.offsetTop + currentProgress * flightRoute.offsetHeight}px`,
-            );
-            const visible = scrollContainer.scrollHeight > scrollContainer.clientHeight &&
-                (scrollContainer.scrollTop > 48 || returnProgress !== null);
-            readingFlight.classList.toggle("is-visible", visible);
-            readingFlight.tabIndex = visible ? 0 : -1;
-            readingFlight.setAttribute("aria-label", `阅读进度 ${Math.round(currentProgress * 100)}%，点击飞回篇首`);
+        let revision = 0;
+        let dragging = false;
+        let progressFrame = 0;
+        let displayedProgress = 0;
+        let initialized = false;
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+        const articleTools = position.closest<HTMLElement>("[data-article-toc]");
+        const searchToggle = articleTools?.querySelector<HTMLButtonElement>("#docsSearchToggle");
+        const progressLabel = range.getAttribute("aria-label")?.split("，")[0] || "页面进度";
+        const isReadOnly = () => articleTools?.dataset.hasDirectory === "false" || searchToggle?.getAttribute("aria-expanded") === "true";
+        const bounds = () => {
+            if (!content) return { start: 0, distance: Math.max(0, container.scrollHeight - container.clientHeight) };
+            const start = container.scrollTop + content.getBoundingClientRect().top - container.getBoundingClientRect().top;
+            const end = Math.min(container.scrollHeight - container.clientHeight, start + content.offsetHeight - container.clientHeight);
+            return { start: Math.max(0, start), distance: Math.max(0, end - start) };
         };
-
-        const requestFlightUpdate = () => {
-            if (!animationFrame) animationFrame = requestAnimationFrame(updateReadingFlight);
+        const paint = (value: number) => {
+            displayedProgress = value;
+            range.value = String(value);
+            range.style.setProperty("--read-fill", value + "%");
+            percent.textContent = Math.round(value) + "%";
+            range.setAttribute("aria-valuetext", Math.round(value) + "%");
+            meter.style.setProperty("--read-progress", String(value / 100));
+            meter.setAttribute("aria-valuenow", String(Math.round(value)));
         };
-
-        const cancelReturn = () => {
-            returnRun++;
-            cancelAnimationFrame(returnFrame);
-            returnFrame = 0;
-            returnProgress = null;
-            readingFlight.classList.remove("is-returning");
-            requestFlightUpdate();
+        const stopProgress = () => {
+            cancelAnimationFrame(progressFrame);
+            progressFrame = 0;
         };
-
-        readingFlight.addEventListener("click", async () => {
-            if (returnProgress !== null) return;
-            if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-                scrollContainer.scrollTo({ top: 0, behavior: "instant" });
-                requestFlightUpdate();
+        const followProgress = (value: number) => {
+            stopProgress();
+            // 拖拽与回顶已有实时位移，不叠加缓动，避免滑块落后于手势。
+            if (!initialized || reducedMotion.matches || returnFrame || Math.abs(value - displayedProgress) < .1) {
+                initialized = true;
+                paint(value);
                 return;
             }
-            const startScroll = scrollContainer.scrollTop;
-            const startProgress = currentProgress;
-            const run = ++returnRun;
-            returnProgress = startProgress;
-            readingFlight.classList.add("is-returning");
-
-            // 接续尚未完成的悬停转向；已朝上时直接返航，避免固定等待造成停顿。
-            await Promise.all(aircraftBody.getAnimations().map(animation =>
-                animation.finished.catch(() => undefined),
-            ));
-            if (run !== returnRun) return;
-            const startedAt = performance.now();
-            const flyHome = (now: number) => {
-                const fraction = Math.min(1, Math.max(0, (now - startedAt) / 680));
-                const eased = fraction ** 3 * (10 - 15 * fraction + 6 * fraction ** 2);
-                const remaining = 1 - eased;
-                returnProgress = startProgress * remaining;
-                scrollContainer.scrollTo({ top: startScroll * remaining, behavior: "instant" });
-                requestFlightUpdate();
-                if (fraction < 1) returnFrame = requestAnimationFrame(flyHome);
-                else cancelReturn();
+            const from = displayedProgress;
+            const started = performance.now();
+            const tick = (now: number) => {
+                const t = Math.min(1, (now - started) / 300);
+                paint(from + (value - from) * (1 - (1 - t) ** 3));
+                progressFrame = t < 1 ? requestAnimationFrame(tick) : 0;
             };
-            returnFrame = requestAnimationFrame(flyHome);
+            progressFrame = requestAnimationFrame(tick);
+        };
+        const sync = () => {
+            frame = 0;
+            if (dragging) return;
+            const { start, distance } = bounds();
+            const readOnly = isReadOnly();
+            position.toggleAttribute("data-readonly", readOnly);
+            range.hidden = readOnly;
+            meter.hidden = !readOnly;
+            range.disabled = readOnly || distance === 0;
+            range.setAttribute("aria-label", readOnly ? progressLabel : `${progressLabel}，拖动定位`);
+            followProgress(distance ? Math.min(100, Math.max(0, (container.scrollTop - start) / distance * 100)) : 100);
+        };
+        const schedule = () => { if (!frame) frame = requestAnimationFrame(sync); };
+        const release = () => {
+            const run = ++revision;
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                if (run !== revision || dragging) return;
+                delete position.dataset.readingSeeking;
+                schedule();
+            }));
+        };
+        const stopReturn = () => { cancelAnimationFrame(returnFrame); returnFrame = 0; };
+        meter.addEventListener("wheel", (event) => {
+            if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) event.preventDefault();
+        }, { passive: false });
+        range.addEventListener("pointerdown", () => {
+            if (isReadOnly()) return;
+            stopReturn();
+            stopProgress();
+            dragging = true;
+            revision++;
+            position.dataset.readingSeeking = "true";
         });
-
-        scrollContainer.addEventListener("scroll", requestFlightUpdate, { passive: true });
-        scrollContainer.addEventListener("wheel", cancelReturn, { passive: true });
-        scrollContainer.addEventListener("touchstart", cancelReturn, { passive: true });
-        document.addEventListener("keydown", (event) => {
-            if (["Escape", "ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " "].includes(event.key)) cancelReturn();
+        range.addEventListener("input", () => {
+            if (isReadOnly()) { sync(); return; }
+            stopReturn();
+            stopProgress();
+            position.dataset.readingSeeking = "true";
+            const value = Number(range.value);
+            const { start, distance } = bounds();
+            paint(value);
+            container.scrollTo({ top: start + distance * value / 100, behavior: "instant" });
+            if (!dragging) release();
         });
-        window.addEventListener("resize", requestFlightUpdate);
-        window.addEventListener("load", requestFlightUpdate);
-        const resizeObserver = new ResizeObserver(requestFlightUpdate);
-        resizeObserver.observe(scrollContainer);
-        resizeObserver.observe(articleContent);
-        updateReadingFlight();
+        const finishDrag = () => { if (dragging) { dragging = false; release(); } };
+        window.addEventListener("pointerup", finishDrag);
+        window.addEventListener("pointercancel", finishDrag);
+        window.addEventListener("blur", finishDrag);
+        topButton.addEventListener("click", () => {
+            stopReturn();
+            const run = ++revision;
+            position.dataset.readingSeeking = "true";
+            const start = container.scrollTop;
+            const started = performance.now();
+            const reduced = reducedMotion.matches;
+            const tick = (now: number) => {
+                if (run !== revision) return;
+                const t = reduced ? 1 : Math.min(1, (now - started) / 420);
+                container.scrollTo({ top: start * (1 - t) ** 3, behavior: "instant" });
+                schedule();
+                if (t < 1) returnFrame = requestAnimationFrame(tick);
+                else { returnFrame = 0; release(); }
+            };
+            returnFrame = requestAnimationFrame(tick);
+        });
+        const interrupt = () => { stopReturn(); dragging = false; release(); };
+        container.addEventListener("wheel", interrupt, { passive: true });
+        container.addEventListener("touchstart", (event) => {
+            if (event.target instanceof Node && !position.contains(event.target)) interrupt();
+        }, { passive: true });
+        container.addEventListener("scroll", schedule, { passive: true });
+        position.closest("[data-article-toc]")?.addEventListener("article-tools:closed", interrupt);
+        window.addEventListener("resize", schedule);
+        const observer = new ResizeObserver(schedule);
+        // 观察实际内容盒，动态追加和图片加载后重新计算可滚动范围。
+        for (const child of container.children) observer.observe(child);
+        if (content) observer.observe(content);
+        observer.observe(container);
+        if (searchToggle) {
+            new MutationObserver(() => {
+                dragging = false;
+                sync();
+            }).observe(searchToggle, { attributes: true, attributeFilter: ["aria-expanded"] });
+        }
+        sync();
     }
 </script>

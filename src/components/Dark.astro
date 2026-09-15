@@ -36,14 +36,54 @@
     fill: var(--color-accent-cyan);
   }
   .moon {
-    fill: transparent;
+    fill: var(--text-on-dark);
+    opacity: 0;
+    transform: rotate(-35deg) scale(.75);
+  }
+  .sun,
+  .moon {
+    transform-origin: 12px 12px;
+    transition: opacity .4s cubic-bezier(.22, 1, .36, 1),
+      transform .55s cubic-bezier(.22, 1, .36, 1);
   }
 
   :global(.dark) .sun {
-    fill: transparent;
+    opacity: 0;
+    transform: rotate(35deg) scale(.75);
   }
   :global(.dark) .moon {
-    fill: var(--text-on-dark);
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+
+  /* 仅主题切换使用快照淡化，不影响其他页面过渡或现有交互。 */
+  :global(html.is-theme-transition::view-transition-group(root)) {
+    animation: none;
+  }
+  :global(html.is-theme-transition::view-transition-old(root)) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+  :global(html.is-theme-transition::view-transition-new(root)) {
+    animation: theme-light-arrives .55s cubic-bezier(.4, 0, .2, 1) both;
+    mix-blend-mode: normal;
+  }
+  :global(html.is-theme-transition::view-transition) {
+    pointer-events: none;
+  }
+  @keyframes theme-light-arrives {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sun,
+    .moon {
+      transition: opacity .12s cubic-bezier(.22, 1, .36, 1);
+      transform: none !important;
+    }
+    :global(html.is-theme-transition::view-transition-new(root)) {
+      animation-duration: .12s;
+    }
   }
 </style>
 
@@ -58,7 +98,7 @@
   };
   syncThemeButtonLabel();
 
-  const handleToggleClick = () => {
+  const applyTheme = () => {
     const element = document.documentElement;
     element.classList.toggle("dark");
     const isDark = element.classList.contains("dark");
@@ -71,6 +111,25 @@
       // 存储不可用时仍允许在当前页面切换主题。
     }
     syncThemeButtonLabel();
+  };
+
+  let isSwitching = false;
+  const handleToggleClick = async () => {
+    if (isSwitching) return;
+    if (!document.startViewTransition) {
+      applyTheme();
+      return;
+    }
+    isSwitching = true;
+    document.documentElement.classList.add("is-theme-transition");
+    try {
+      const transition = document.startViewTransition(applyTheme);
+      // 即使快照被浏览器跳过，主题更新仍会执行。
+      await transition.finished;
+    } finally {
+      document.documentElement.classList.remove("is-theme-transition");
+      isSwitching = false;
+    }
   };
 
   if (themeButton) {

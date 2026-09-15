@@ -2,6 +2,7 @@
 import "../styles/base.css";
 import "../styles/iconfont.css";
 import Head from "../components/Head.astro";
+import ArticleToc from "../components/ArticleToc.astro";
 import Aside from "../components/Aside.astro";
 import Share from "../components/Share.astro";
 import ImageViewer from "../components/ImageViewer.astro";
@@ -15,6 +16,7 @@ interface Props {
     modifiedTime?: string;
     pageTags?: string[];
     enableMediaViewer?: boolean;
+    articleTools?: boolean;
 }
 
 const {
@@ -25,6 +27,7 @@ const {
     modifiedTime,
     pageTags = [],
     enableMediaViewer = false,
+    articleTools = false,
 } = Astro.props as Props;
 
 const currentPath = Astro.url.pathname;
@@ -192,6 +195,7 @@ const structuredDataJson = structuredData
             <Aside />
             <section class="main">
                 <Head />
+                {!articleTools && <ArticleToc pageName={pageTitle} readingProgress={pageType === "article"} />}
                 <slot />
             </section>
         </main>

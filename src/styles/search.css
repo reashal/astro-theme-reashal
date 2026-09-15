@@ -5,6 +5,12 @@
     z-index: 3;
 }
 
+/* 弹层可以超出封面，背景仍由 header 自身的圆角裁切。 */
+.main > header:has(.docs-search-panel:not([hidden])) {
+    overflow: visible;
+    z-index: 3;
+}
+
 .docs-search-toggle {
     position: relative;
     top: .6rem;
@@ -66,12 +72,12 @@ html[data-input-mode="keyboard"] .docs-search-toggle:focus-visible {
     top: 3.35rem;
     right: .8rem;
     width: min(21.5rem, calc(100vw - 2rem));
-    padding: .32rem;
+    padding: .35rem;
     border-radius: var(--radius-xl);
     color: var(--text-on-dark);
-    background: var(--surface-dark-panel);
+    background: var(--surface-dark-card);
     box-shadow:
-        inset 0 0 0 1px rgb(var(--rgb-white) / 12%),
+        inset 0 0 0 1px var(--search-edge),
         0 .8rem 2.4rem rgb(var(--rgb-black) / 22%);
     opacity: 0;
     pointer-events: none;
@@ -86,8 +92,8 @@ html[data-input-mode="keyboard"] .docs-search-toggle:focus-visible {
     opacity: 1;
     pointer-events: auto;
     transform: translate3d(0, 0, 0) scale(1);
-    transition-duration: .32s;
-    transition-timing-function: cubic-bezier(.16, 1, .3, 1);
+    transition-duration: .42s;
+    transition-timing-function: cubic-bezier(.25, .65, .3, 1);
 }
 
 .dark .docs-search-panel {
@@ -100,34 +106,49 @@ html[data-input-mode="keyboard"] .docs-search-toggle:focus-visible {
     display: none;
 }
 
-.docs-search-panel-core {
-    padding: .58rem;
-    border-radius: calc(var(--radius-xl) - .24rem);
-    background: var(--surface-dark-card);
-    box-shadow:
-        inset 0 1px 0 rgb(var(--rgb-white) / 11%),
-        inset 0 0 0 1px rgb(var(--rgb-white) / 5%);
+.docs-search-panel-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    max-height: calc(100dvh - 7rem);
+    overflow: hidden;
+    padding: .65rem;
+    color-scheme: dark;
+}
+
+#docsSearchMain,
+.time-explore {
+    grid-area: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+    max-height: calc(100dvh - 8.5rem);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--text-on-dark-soft) transparent;
+}
+
+:is(#docsSearchMain, .time-explore) > :not(.docs-search-results, .time-explore-results) {
+    flex-shrink: 0;
 }
 
 .docs-search-field {
     display: flex;
     align-items: center;
     gap: .55rem;
-    min-height: 2.6rem;
+    min-height: 2.85rem;
     padding: 0 .7rem;
     border-radius: var(--radius-md);
-    background: rgb(var(--rgb-white) / 8%);
-    box-shadow: inset 0 0 0 1px rgb(var(--rgb-white) / 15%);
+    background: var(--surface-dark-input);
+    box-shadow: inset 0 0 0 1px var(--search-edge);
     transition:
         background-color .2s cubic-bezier(.2, .7, .2, 1),
         box-shadow .2s cubic-bezier(.2, .7, .2, 1);
 }
 
 .docs-search-field:focus-within {
-    background: rgb(var(--rgb-white) / 11%);
-    box-shadow:
-        inset 0 0 0 1px rgb(var(--rgb-accent-cyan) / 68%),
-        0 0 0 3px rgb(var(--rgb-accent-cyan) / 8%);
+    background: var(--surface-dark-control);
+    box-shadow: inset 0 0 0 1px var(--search-focus);
 }
 
 .docs-search-field svg {
@@ -148,7 +169,7 @@ html[data-input-mode="keyboard"] .docs-search-toggle:focus-visible {
     color: var(--color-white);
     background: transparent;
     font: inherit;
-    font-size: .9rem;
+    font-size: 1rem;
 }
 
 .docs-search-field input::placeholder {
@@ -172,23 +193,31 @@ html[data-input-mode="keyboard"] .docs-search-toggle:focus-visible {
 
 .docs-search-status {
     min-height: 1.55rem;
-    padding: .44rem .2rem .24rem;
-    color: var(--text-on-dark-muted);
-    font-size: .68rem;
+    padding: .55rem .2rem .4rem;
+    color: var(--text-on-dark-secondary);
+    font-size: .75rem;
 }
 
 .docs-search-results {
     display: grid;
-    max-height: 7.2rem;
-    overflow-y: auto;
-    gap: .15rem;
+    flex: 0 0 auto;
+    height: max(0px, calc(var(--search-result-rows, 0) * 3.75rem - .25rem));
+    grid-auto-rows: 3.5rem;
+    min-height: 0;
+    align-content: start;
+    overflow: hidden;
+    gap: .25rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--text-on-dark-soft) transparent;
+    overscroll-behavior: contain;
 }
 
 .docs-search-result {
     display: flex;
+    min-height: 0;
     align-items: center;
     gap: .7rem;
-    padding: .46rem .55rem;
+    padding: .4rem .5rem;
     border-radius: var(--radius-md);
     color: var(--text-on-dark);
     font-weight: normal;
@@ -227,6 +256,7 @@ html[data-input-mode="keyboard"] .docs-search-result:focus-visible {
 }
 
 .docs-search-result strong {
+    line-height: 1.4;
     color: var(--text-on-dark-strong);
     font-size: .88rem;
 }
@@ -234,7 +264,8 @@ html[data-input-mode="keyboard"] .docs-search-result:focus-visible {
 .docs-search-result small {
     margin-top: .16rem;
     color: var(--text-on-dark-secondary);
-    font-size: .7rem;
+    font-size: .75rem;
+    line-height: 1.6;
 }
 
 .docs-search-result small mark {
@@ -288,12 +319,12 @@ html[data-input-mode="keyboard"] .docs-search-result:focus-visible > svg {
 
 .docs-search-pagination button {
     display: grid;
-    width: 1.65rem;
-    height: 1.65rem;
+    width: 2.75rem;
+    height: 2.75rem;
     padding: 0;
     place-items: center;
     border: 0;
-    border-radius: 50%;
+    border-radius: .8rem;
     color: var(--text-on-dark-secondary);
     background: rgb(var(--rgb-white) / 6%);
     box-shadow: inset 0 0 0 1px rgb(var(--rgb-white) / 13%);
@@ -340,33 +371,32 @@ html[data-input-mode="keyboard"] .docs-search-pagination button:focus-visible {
 
 .docs-search-discovery {
     display: flex;
-    align-items: baseline;
+    align-items: stretch;
+    flex-direction: column;
     justify-content: space-between;
-    gap: .65rem;
-    margin-top: .42rem;
-    padding: .48rem .2rem .02rem;
-    border-top: .12rem solid rgb(var(--rgb-accent-cyan) / 16%);
-    color: var(--text-on-dark-muted);
-    font-size: .68rem;
+    gap: .3rem;
+    margin-top: .4rem;
+    padding: .45rem .2rem .02rem;
+    border-top: 1px solid var(--search-edge);
+    color: var(--text-on-dark-secondary);
+    font-size: .75rem;
 }
 
 .docs-search-discovery-links {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: .42rem;
+    gap: .5rem;
     white-space: nowrap;
 }
 
-.docs-search-discovery i {
-    color: rgb(var(--rgb-white) / 28%);
-    font-style: normal;
-}
-
 .docs-search-discovery button {
-    padding: 0;
+    flex: 1;
+    min-height: 2.75rem;
+    padding: .4rem .6rem;
     border: 0;
-    color: var(--text-blue-dark);
-    background: transparent;
+    color: var(--text-on-dark);
+    background: var(--surface-dark-control);
+    border-radius: .75rem;
     font: inherit;
     font-weight: 600;
     cursor: pointer;
@@ -389,21 +419,21 @@ html[data-input-mode="keyboard"]
 
 .time-explore-heading {
     display: grid;
-    grid-template-columns: 1.75rem minmax(0, 1fr);
-    gap: .55rem;
-    align-items: start;
-    padding: .04rem .08rem .5rem;
-    border-bottom: .12rem solid rgb(var(--rgb-accent-cyan) / 16%);
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    gap: .7rem;
+    align-items: center;
+    padding: .04rem .08rem .6rem;
+    border-bottom: 1px solid var(--search-edge);
 }
 
 .time-explore-heading button {
     display: grid;
-    width: 1.75rem;
-    height: 1.75rem;
+    width: 2.75rem;
+    height: 2.75rem;
     padding: 0;
     place-items: center;
     border: 0;
-    border-radius: 50%;
+    border-radius: .8rem;
     color: var(--text-on-dark-secondary);
     background: rgb(var(--rgb-white) / 6%);
     box-shadow: inset 0 0 0 1px rgb(var(--rgb-white) / 12%);
@@ -420,28 +450,28 @@ html[data-input-mode="keyboard"]
 .time-explore-heading strong {
     display: block;
     color: var(--text-on-dark-strong);
-    font-size: .88rem;
+    font-size: 1rem;
 }
 
 .time-explore-heading p {
     margin-top: .16rem;
-    color: var(--text-on-dark-muted);
-    font-size: .68rem;
+    color: var(--text-on-dark-secondary);
+    font-size: .75rem;
     line-height: 1.5;
 }
 
 .time-explore-fields {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: .42rem;
-    margin-top: .5rem;
+    grid-template-columns: repeat(auto-fit, minmax(5.5rem, 1fr));
+    gap: .55rem;
+    margin-top: .6rem;
 }
 
 .time-explore-custom {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: .42rem;
-    margin-top: .42rem;
+    gap: .55rem;
+    margin-top: .6rem;
 }
 
 .time-explore-fields > [hidden],
@@ -454,23 +484,23 @@ html[data-input-mode="keyboard"]
     display: grid;
     gap: .25rem;
     min-width: 0;
-    color: var(--text-on-dark-muted);
-    font-size: .64rem;
+    color: var(--text-on-dark-secondary);
+    font-size: .75rem;
 }
 
 .time-explore select,
 .time-explore input {
     width: 100%;
     min-width: 0;
-    min-height: 1.95rem;
-    padding: .3rem .42rem;
+    min-height: 2.75rem;
+    padding: .45rem .5rem;
     border: 0;
-    border-radius: var(--radius-sm);
+    border-radius: .65rem;
     color: var(--text-on-dark);
-    background: rgb(var(--rgb-white) / 7%);
-    box-shadow: inset 0 0 0 1px rgb(var(--rgb-white) / 13%);
+    background: var(--surface-dark-control);
+    box-shadow: inset 0 0 0 1px var(--search-edge);
     font: inherit;
-    font-size: .72rem;
+    font-size: .85rem;
     transition:
         background-color .18s cubic-bezier(.2, .7, .2, 1),
         box-shadow .18s cubic-bezier(.2, .7, .2, 1);
@@ -479,37 +509,37 @@ html[data-input-mode="keyboard"]
 .time-explore select:focus-visible,
 .time-explore input:focus-visible {
     outline: none;
-    background: rgb(var(--rgb-white) / 10%);
-    box-shadow:
-        inset 0 0 0 1px rgb(var(--rgb-accent-cyan) / 62%),
-        0 0 0 3px rgb(var(--rgb-accent-cyan) / 8%);
+    background: var(--surface-dark-control);
+    box-shadow: inset 0 0 0 1px var(--search-focus);
 }
 
 .time-explore-status {
     min-height: 1.4rem;
-    padding: .42rem .08rem .2rem;
-    color: var(--text-on-dark-muted);
-    font-size: .66rem;
+    padding: .55rem .08rem .3rem;
+    color: var(--text-on-dark-secondary);
+    font-size: .75rem;
 }
 
 .time-explore-results {
     display: grid;
-    max-height: 5.4rem;
+    flex: 0 1 auto;
+    max-height: min(9rem, 26dvh);
+    min-height: 0;
+    align-content: start;
     overflow-y: auto;
-    scrollbar-width: none;
-}
-
-.time-explore-results::-webkit-scrollbar {
-    display: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--text-on-dark-soft) transparent;
+    overscroll-behavior: contain;
 }
 
 .time-explore-result {
     display: grid;
-    grid-template-columns: 5.3rem minmax(0, 1fr);
+    grid-template-columns: 5.6rem minmax(0, 1fr);
     gap: .55rem;
-    align-items: baseline;
-    padding: .4rem .16rem;
-    border-bottom: .1rem solid rgb(var(--rgb-accent-cyan) / 13%);
+    align-items: center;
+    min-height: 2.75rem;
+    padding: .6rem .3rem;
+    border-bottom: 1px solid var(--search-edge);
     color: inherit;
     font-weight: normal;
     transition:
@@ -533,8 +563,8 @@ html[data-input-mode="keyboard"] .time-explore-result:focus-visible {
 }
 
 .time-explore-result time {
-    color: var(--text-on-dark-muted);
-    font-size: .65rem;
+    color: var(--text-on-dark-secondary);
+    font-size: .72rem;
     font-variant-numeric: tabular-nums;
 }
 
@@ -542,7 +572,7 @@ html[data-input-mode="keyboard"] .time-explore-result:focus-visible {
     overflow: hidden;
     min-width: 0;
     color: var(--text-on-dark);
-    font-size: .75rem;
+    font-size: .82rem;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -573,26 +603,31 @@ html[data-input-mode="keyboard"] .time-explore-result:focus-visible {
         opacity: .64;
         transform: translateY(1px) rotate(-10deg) scale(.9);
     }
+
+    .docs-search-result:active,
+    .time-explore-result:active {
+        background: var(--surface-dark-card-hover);
+        transform: translateY(1px) scale(.98);
+    }
 }
 
 @media screen and (max-width: 487px) {
     .docs-search-panel {
-        right: .6rem;
-        width: calc(100vw - 1.2rem);
+        right: .75rem;
+        width: min(21.5rem, calc(100vw - 1.5rem));
     }
 
-    .docs-search-discovery {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: .3rem;
+    .time-explore select,
+    .time-explore input {
+        font-size: 1rem;
     }
+}
 
-    .docs-search-results {
-        max-height: 6.35rem;
-    }
-
+/* 短横屏下允许内部整体滚动，避免筛选控件挤掉结果列表。 */
+@media (max-height: 480px) {
     .time-explore-results {
-        max-height: 4.75rem;
+        flex-shrink: 0;
+        max-height: 6rem;
     }
 }
 
