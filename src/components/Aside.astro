@@ -31,7 +31,7 @@ const currentPath = Astro.url.pathname;
 ---
 
 <aside aria-label="站点侧边栏">
-    <section class="aside-body" aria-hidden="true" inert>
+    <section id="aside-content" class="aside-body" aria-hidden="true" inert>
         <a
             class="aside-author-card"
             href="/about"
@@ -122,7 +122,10 @@ const currentPath = Astro.url.pathname;
         class="aside-toggle-btn"
         aria-label="展开侧边栏"
         aria-expanded="false"
-    ></button>
+        aria-controls="aside-content"
+    >
+        <span class="aside-toggle-mark" aria-hidden="true"><i></i><i></i></span>
+    </button>
 </aside>
 
 <script>
@@ -132,6 +135,58 @@ const currentPath = Astro.url.pathname;
     const asideToggle =
         document.querySelector<HTMLButtonElement>(".aside-toggle-btn");
     const asideShareBtn = document.getElementById("aside-share-btn");
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+    const sidebar = asideBody?.closest("aside");
+    let motionFrame = 0;
+    let motion: { from: number; velocity: number; target: number; started: number; frequency: number } | null = null;
+    let afterMotion: (() => void) | null = null;
+
+    // Move the scroll viewport itself so its clipping edge stays with the sidebar.
+    // Fixed reading tools live outside these surfaces in BaseLayout.
+    const surfaces = [sidebar, mainContent].filter((element): element is HTMLElement => !!element);
+
+    function sampleMotion(now: number) {
+        if (!motion) return { position: sidebar?.getBoundingClientRect().left ?? 0, velocity: 0 };
+        const t = Math.max(0, (now - motion.started) / 1000);
+        const displacement = motion.from - motion.target;
+        const coefficient = motion.velocity + motion.frequency * displacement;
+        const decay = Math.exp(-motion.frequency * t);
+        return {
+            position: motion.target + (displacement + coefficient * t) * decay,
+            velocity: (motion.velocity - motion.frequency * coefficient * t) * decay,
+        };
+    }
+
+    function finishMotion() {
+        cancelAnimationFrame(motionFrame);
+        motionFrame = 0;
+        motion = null;
+        surfaces.forEach(element => {
+            element.style.removeProperty("transform");
+            element.style.removeProperty("will-change");
+        });
+        const completion = afterMotion;
+        afterMotion = null;
+        completion?.();
+    }
+
+    function renderMotion(now: number) {
+        if (!motion) return;
+        const current = sampleMotion(now);
+        const offset = current.position - motion.target;
+        if (Math.abs(offset) < .1 && Math.abs(current.velocity) < 1) {
+            finishMotion();
+            return;
+        }
+        // A critically damped spring preserves velocity when the target reverses.
+        // Both surfaces receive exactly the same offset in the same frame.
+        surfaces.forEach(element => { element.style.transform = `translateX(${offset}px)`; });
+        motionFrame = requestAnimationFrame(renderMotion);
+    }
+
+    window.addEventListener("resize", finishMotion);
+    window.addEventListener("pagehide", finishMotion);
+    reducedMotion.addEventListener("change", finishMotion);
 
     function syncAsideAccessibility(isOpen: boolean) {
         if (!asideBody) return;
@@ -141,17 +196,33 @@ const currentPath = Astro.url.pathname;
 
     function setAsideOpen(isOpen: boolean) {
         if (!layout) return;
+        if (layout.classList.contains("aside-show") === isOpen) return;
+
+        const now = performance.now();
+        const current = sampleMotion(now);
+        cancelAnimationFrame(motionFrame);
 
         layout.classList.remove("aside-init", "aside-show", "aside-hide");
         layout.classList.add(isOpen ? "aside-show" : "aside-hide");
         syncAsideAccessibility(isOpen);
 
+        if (!reducedMotion.matches) {
+            motion = { from: current.position, velocity: current.velocity,
+                target: isOpen ? 0 : -(sidebar?.offsetWidth ?? 0), started: now,
+                frequency: isOpen ? 7.5 : 9 };
+            surfaces.forEach(element => { element.style.willChange = "transform"; });
+            renderMotion(now);
+        } else finishMotion();
+
         if (asideToggle) {
             asideToggle.setAttribute("aria-expanded", String(isOpen));
-            asideToggle.setAttribute(
-                "aria-label",
-                isOpen ? "收起侧边栏" : "展开侧边栏",
-            );
+            asideToggle.tabIndex = isOpen ? -1 : 0;
+            asideToggle.setAttribute("aria-hidden", String(isOpen));
+            if (isOpen && document.activeElement === asideToggle) {
+                asideBody?.querySelector<HTMLAnchorElement>(".aside-author-card")?.focus({ preventScroll: true });
+            } else if (!isOpen && asideBody?.contains(document.activeElement)) {
+                asideToggle.focus({ preventScroll: true });
+            }
         }
     }
 
@@ -234,9 +305,9 @@ const currentPath = Astro.url.pathname;
             const wasOpen = layout?.classList.contains("aside-show") ?? false;
             if (wasOpen) setAsideOpen(false);
 
-            setTimeout(() => {
-                document.getElementById("share-btn")?.click();
-            }, wasOpen ? 300 : 0);
+            const share = () => { document.getElementById("share-btn")?.click(); };
+            if (motion) afterMotion = share;
+            else share();
         });
     }
 </script>

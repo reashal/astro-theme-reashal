@@ -397,16 +397,16 @@ html[data-input-mode="keyboard"] .doc .article-toc a:focus-visible {
     align-items: flex-end;
     justify-content: center;
     gap: 3px;
-    width: 20px;
+    width: var(--edge-control-face-width);
     min-width: 0;
-    height: 100%;
+    height: var(--edge-control-face-height);
     margin: 0;
     transition: opacity .2s cubic-bezier(.22, 1, .36, 1);
 }
 .article-tools-minimap i {
     display: block;
     width: 14px;
-    height: 1.5px;
+    height: var(--edge-control-stroke);
     flex-shrink: 0;
     border-radius: 2px;
     background: currentColor;
@@ -428,7 +428,7 @@ html[data-input-mode="keyboard"] .doc .article-toc a:focus-visible {
     height: 16px;
     fill: none;
     stroke: currentColor;
-    stroke-width: 1.4;
+    stroke-width: var(--edge-control-stroke);
     stroke-linecap: round;
     stroke-linejoin: round;
     transition: transform .38s cubic-bezier(.22, 1, .36, 1), opacity .3s cubic-bezier(.22, 1, .36, 1);

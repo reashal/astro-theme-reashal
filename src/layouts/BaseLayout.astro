@@ -195,10 +195,13 @@ const structuredDataJson = structuredData
             <Aside />
             <section class="main">
                 <Head />
-                {!articleTools && <ArticleToc pageName={pageTitle} readingProgress={pageType === "article"} />}
                 <slot />
             </section>
         </main>
+        <div class:list={{ doc: articleTools }}>
+            {!articleTools && <ArticleToc pageName={pageTitle} readingProgress={pageType === "article"} />}
+            <slot name="article-tools" />
+        </div>
         <Share />
         {enableMediaViewer && <ImageViewer />}
         <canvas

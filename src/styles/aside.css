@@ -16,6 +16,16 @@ aside {
     width: var(--aside-width);
     height: 100dvh;
     padding: 1rem;
+    transform: translateX(-12px) scale(.965);
+    transform-origin: left center;
+    opacity: .55;
+    transition: transform 1.1s cubic-bezier(.2, .65, .25, 1), opacity .6s cubic-bezier(.22, 1, .36, 1);
+}
+
+.aside-show .aside-body {
+    transform: none;
+    opacity: 1;
+    transition-delay: .075s;
 }
 
 @media screen and (min-width: 488px) {
@@ -29,77 +39,96 @@ aside {
     }
 }
 
+/* 44px 点击区包住窄拉片；表面从侧栏边缘延伸，不侵占正文布局。 */
 .aside-toggle-btn {
-    --toggle-edge-shadow:
-        inset -1px 0 0 var(--border-light),
-        inset 0 1px 0 var(--border-light-subtle),
-        inset 0 -1px 0 var(--border-light-subtle);
     position: absolute;
-    right: -28px;
+    right: -44px;
     top: calc(50% - var(--edge-control-length) / 2);
-    width: 28px;
+    width: 44px;
     height: var(--edge-control-length);
-    border-radius: 0 .4rem .4rem 0;
+    border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
     background: transparent;
     border: 0;
     padding: 0;
-    color: rgb(var(--rgb-toggle));
+    color: var(--text-aside-pull);
     cursor: pointer;
     touch-action: manipulation;
     z-index: 2;
-    transition: transform .18s cubic-bezier(.22, 1, .36, 1);
+    transition: transform .25s cubic-bezier(.22, 1, .36, 1), opacity .18s cubic-bezier(.22, 1, .36, 1);
 }
 
-.aside-toggle-btn::after {
+.aside-show .aside-toggle-btn {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-8px);
+}
+
+.aside-toggle-btn::before {
     content: "";
     position: absolute;
-    inset: 0 auto 0 -1px;
-    width: 17px;
-    border-radius: 0 .4rem .4rem 0;
-    background-color: var(--surface-aside);
-    box-shadow: var(--toggle-edge-shadow);
+    pointer-events: none;
+    top: calc(50% - 18px);
+    left: -1px;
+    width: 19px;
+    height: 36px;
+    border-radius: 0 10px 10px 0;
+    background: var(--surface-aside-pull);
+    box-shadow: inset -1px 0 0 var(--panel-edge);
 }
 
 .aside-toggle-btn:active {
     transform: translateX(-1px) scale(.97);
 }
 
-.aside-toggle-btn::before {
-    content: "";
+.aside-toggle-mark {
     position: absolute;
-    left: 8px;
+    left: 9px;
     top: 50%;
-    width: 2px;
+    width: 16px;
     height: 16px;
-    border-radius: var(--radius-pill);
-    background-color: currentColor;
-    opacity: .8;
     transform: translate(-50%, -50%);
-    transform-origin: center;
-    z-index: 1;
-    transition:
-        opacity .18s cubic-bezier(.22, 1, .36, 1),
-        transform .18s cubic-bezier(.22, 1, .36, 1);
+    z-index: 2;
+    transition: transform .4s cubic-bezier(.22, .8, .22, 1);
 }
 
-.aside-toggle-btn:hover::before {
-    opacity: .98;
-    transform: translate(-50%, -50%) scaleY(1.125);
+.aside-toggle-mark i {
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    width: 5px;
+    height: var(--edge-control-stroke);
+    border-radius: var(--radius-pill);
+    background: currentColor;
+    transform-origin: right center;
+    transform: rotate(40deg);
+}
+
+.aside-toggle-mark i + i {
+    transform: rotate(-40deg);
+}
+
+@media (hover: hover) {
+    .aside-toggle-btn:hover .aside-toggle-mark {
+        transform: translate(calc(-50% + 2px), -50%);
+    }
+
+}
+
+@media (hover: none) {
+    .aside-toggle-btn:active .aside-toggle-mark {
+        transform: translate(calc(-50% + 2px), -50%);
+    }
+
 }
 
 html[data-input-mode="keyboard"] .aside-toggle-btn:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: -2px;
+}
+
+.aside-toggle-btn.is-escape-focus:focus,
+.aside-toggle-btn.is-escape-focus:focus-visible {
     outline: none;
-}
-
-html[data-input-mode="keyboard"] .aside-toggle-btn:focus-visible::after {
-    box-shadow:
-        var(--toggle-edge-shadow),
-        0 0 0 2px rgb(var(--rgb-brand) / 45%);
-}
-
-.aside-toggle-btn.is-escape-focus:focus::after,
-.aside-toggle-btn.is-escape-focus:focus-visible::after {
-    box-shadow: var(--toggle-edge-shadow);
 }
 
 .aside-body :is(
@@ -447,24 +476,9 @@ html[data-input-mode="keyboard"] .aside-toggle-btn:focus-visible::after {
     border-bottom-color: var(--color-brand);
 }
 
-.dark .aside-toggle-btn {
-    --toggle-edge-shadow:
-        inset -1px 0 0 var(--border-dark),
-        inset 0 1px 0 var(--border-dark-soft),
-        inset 0 -1px 0 var(--border-dark-soft);
-    color: rgb(var(--rgb-white) / 76%);
-}
-
 html.dark[data-input-mode="keyboard"]
-    .aside-toggle-btn:focus-visible::after {
-    box-shadow:
-        var(--toggle-edge-shadow),
-        0 0 0 2px rgb(var(--rgb-accent-cyan) / 45%);
-}
-
-.dark .aside-toggle-btn.is-escape-focus:focus::after,
-.dark .aside-toggle-btn.is-escape-focus:focus-visible::after {
-    box-shadow: var(--toggle-edge-shadow);
+    .aside-toggle-btn:focus-visible {
+    outline-color: var(--color-accent-cyan);
 }
 
 .dark .aside-body :is(
@@ -886,11 +900,6 @@ html.dark[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-
 }
 
 @media (hover: none) {
-    .aside-toggle-btn:hover::before {
-        opacity: .8;
-        transform: translate(-50%, -50%);
-    }
-
     .aside-body :is(
         .aside-author-card,
         .aside-links-card,
@@ -922,9 +931,13 @@ html.dark[data-input-mode="keyboard"] .aside-body .aside-copyright-card a:focus-
 
 @media (prefers-reduced-motion: reduce) {
     .aside-toggle-btn,
-    .aside-toggle-btn::before {
+    .aside-toggle-mark,
+    .aside-toggle-mark i,
+    .aside-body {
         transition: none;
     }
+
+    .aside-body { transform: none; }
 
     .aside-body .tag-dissolve-layer {
         display: none;

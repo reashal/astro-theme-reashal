@@ -97,6 +97,9 @@ const formatDate = (date: string) => {
     enableMediaViewer
     articleTools={hasArticleToc}
 >
+    <Fragment slot="article-tools">
+        {hasArticleToc && <ArticleToc headings={tocHeadings} readingProgress />}
+    </Fragment>
     <article
         class="article-container doc"
         data-pagefind-body
@@ -166,7 +169,6 @@ const formatDate = (date: string) => {
                 </h1>
             )
         }
-        {hasArticleToc && <ArticleToc headings={tocHeadings} readingProgress />}
         <span
             class="article-search-meta"
             data-pagefind-meta="description"

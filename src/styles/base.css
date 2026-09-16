@@ -3,6 +3,9 @@
 :root {
     --aside-width: 15rem;
     --edge-control-length: 3.75rem;
+    --edge-control-face-height: 2.75rem;
+    --edge-control-face-width: 20px;
+    --edge-control-stroke: 1.4px;
 }
 
 * {
@@ -119,7 +122,6 @@ main {
 /* 侧边栏显示状态 */
 .aside-show {
     left: 0;
-    animation: show-aside .3s;
 }
 
 .aside-show aside {
@@ -129,27 +131,6 @@ main {
 /* 侧边栏隐藏状态 */
 .aside-hide {
     left: calc(-1 * var(--aside-width));
-    animation: hide-aside .3s;
-}
-
-/* 侧边栏显示动画 */
-@keyframes show-aside {
-    0% {
-        left: calc(-1 * var(--aside-width));
-    }
-    100% {
-        left: 0;
-    }
-}
-
-/* 侧边栏隐藏动画 */
-@keyframes hide-aside {
-    0% {
-        left: 0;
-    }
-    100% {
-        left: calc(-1 * var(--aside-width));
-    }
 }
 
 /* === 文章版权信息 === */
@@ -233,10 +214,6 @@ main {
         scroll-behavior: auto;
     }
 
-    .aside-show,
-    .aside-hide {
-        animation: none;
-    }
 }
 
 /* === 大屏设备（≥ 688px）=== */

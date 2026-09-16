@@ -54,6 +54,9 @@
     --surface-article: var(--surface-page);
     --surface-article-dark: #151a26;
     --surface-aside: var(--surface-article);
+    --surface-aside-pull: color-mix(in srgb, var(--surface-aside), var(--color-aside-pull-ink) 6%);
+    --color-aside-pull-ink: #66717d;
+    --text-aside-pull: #606c78;
     --surface-aside-dark: #111826;
     --surface-soft: #f8f9fa;
     --surface-muted: #f0f0f0;
@@ -230,6 +233,8 @@
 
     --surface-article: var(--surface-article-dark);
     --surface-aside: var(--surface-aside-dark);
+    --surface-aside-pull: color-mix(in srgb, var(--surface-aside), var(--text-on-dark) 5%);
+    --text-aside-pull: var(--text-on-dark-secondary);
     --media-placeholder-a: var(--surface-dark-panel);
     --media-placeholder-b: var(--surface-dark-card);
 }
