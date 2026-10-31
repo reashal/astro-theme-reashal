@@ -1,15 +1,29 @@
 /* 随笔以连续列表呈现，条目本身不再添加卡片容器。 */
+.main:has(> .docs-editorial) {
+    display: flex;
+    flex-direction: column;
+}
+
+.main:has(> .docs-editorial) > header {
+    flex-shrink: 0;
+}
+
 .article-container.docs-editorial {
     display: grid;
+    flex: 1 0 auto;
+    min-height: 0;
 }
 
 .docs-editorial .docs-content {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     container-type: inline-size;
 }
 
 .docs-editorial .docs-list {
     display: grid;
+    flex-shrink: 0;
     grid-template-columns: minmax(0, 1fr);
 }
 
@@ -106,7 +120,7 @@ html[data-input-mode="keyboard"] .docs-editorial :is(.docs-a, .page-btn):focus-v
 .docs-editorial .docs-a:active { transform: translateY(1px) scale(.995); }
 .docs-editorial:has(.docs-a:hover) .docs-a:not(:hover),
 .dark .docs-editorial:has(.docs-a:hover) .docs-a:not(:hover) { opacity: 1; }
-.docs-editorial .docs-footer { margin: 1rem 0 0; }
+.docs-editorial .docs-footer { margin: auto 0 0; }
 .docs-editorial .docs-footer .end-tip[hidden] { display: none; }
 .docs-editorial .page-btn {
     min-width: 44px;

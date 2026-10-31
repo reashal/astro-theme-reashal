@@ -163,13 +163,13 @@
     --docs-rule: var(--border-dark-divider);
     --docs-control: color-mix(in srgb, var(--docs-feature) 7%, var(--docs-surface));
     /* 蓝炭色承托近墨黑卡片；主内容向页面底色收敛，减轻外轮廓反差。 */
-    --surface-page-dark: #101116;
-    --surface-aside-dark: #1a1e27;
+    --surface-page-dark: #0f1219;
+    --surface-aside-dark: #1c2430;
     --surface-article-dark: var(--surface-aside-dark);
     --surface-dark-card: var(--surface-page-dark);
     --surface-dark-card-hover: #0d0e12;
     --surface-product-image: #242932;
-    --rgb-dark-card: 16 17 22;
+    --rgb-dark-card: 15 18 25;
 
     --color-flight-wing: #96a7ab;
     --color-flight-wing-hover: #a0b1b5;

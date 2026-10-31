@@ -115,6 +115,10 @@ const { articles, editorial = false } = Astro.props as Props;
             function hasRoomForEndTip(): boolean {
                 const footerEl = document.getElementById("docs-footer") as HTMLElement | null;
                 if (!footerEl) return false;
+                if (isEditorial) {
+                    return footerEl.getBoundingClientRect().top -
+                        list.getBoundingClientRect().bottom > MIN_END_TIP_SPACE;
+                }
                 const articleStyle = getComputedStyle(container);
                 const contentStyle = getComputedStyle(content);
                 // 使用实际边界，兼容标题与摘要换行后的行高。
@@ -196,11 +200,6 @@ const { articles, editorial = false } = Astro.props as Props;
             function scrollToPageStart(top: number): void {
                 if (!mainEl) return;
                 if (isEditorial) {
-                    // 只补足维持阅读位置所需的高度，末页无需保留整页空白。
-                    const missingHeight = top - Math.max(0, mainEl.scrollHeight - mainEl.clientHeight);
-                    if (missingHeight > 0) {
-                        content.style.minHeight = `${content.getBoundingClientRect().height + missingHeight}px`;
-                    }
                     mainEl.scrollTo({ top, behavior: "instant" });
                 } else {
                     mainEl.scrollTo({ top: 0, behavior: reduceMotion.matches ? "instant" : "smooth" });
@@ -221,7 +220,6 @@ const { articles, editorial = false } = Astro.props as Props;
             ): void {
                 currentPage = Math.max(0, Math.min(page, totalPages() - 1));
                 requestedPage = currentPage;
-                content.style.minHeight = "";
                 const start = currentPage * perPage;
                 const end = start + perPage;
                 const lastVisibleIndex = Math.min(end, allItems.length) - 1;
