@@ -5,6 +5,14 @@
  * RGB 通道变量用于带透明度的阴影、遮罩和玻璃效果，需与对应颜色同步。
  */
 :root {
+    /* 随笔沿用站点表面与文字层级：浅色洋红、深色青色强调置顶。 */
+    --docs-surface: var(--surface-article);
+    --docs-title: var(--text-primary);
+    --docs-feature: color-mix(in srgb, var(--color-accent-pink) 77%, var(--color-black));
+    --docs-copy: var(--text-secondary);
+    --docs-date: color-mix(in srgb, var(--text-secondary) 60%, var(--text-tertiary));
+    --docs-control: color-mix(in srgb, var(--docs-feature) 7%, var(--docs-surface));
+    --docs-rule: var(--border-light-soft);
     /* 品牌与强调色 */
     --color-brand: #007175;
     --color-brand-hover: #005a5e;
@@ -148,7 +156,13 @@
 }
 
 .dark {
-    /* 蓝炭色承托近墨黑卡片；文章区、侧栏与标签内层保持同色。 */
+    --docs-title: var(--text-on-dark-strong);
+    --docs-feature: var(--color-accent-cyan);
+    --docs-copy: var(--text-on-dark-body);
+    --docs-date: var(--text-on-dark-secondary);
+    --docs-rule: var(--border-dark-divider);
+    --docs-control: color-mix(in srgb, var(--docs-feature) 7%, var(--docs-surface));
+    /* 蓝炭色承托近墨黑卡片；主内容向页面底色收敛，减轻外轮廓反差。 */
     --surface-page-dark: #101116;
     --surface-aside-dark: #1a1e27;
     --surface-article-dark: var(--surface-aside-dark);
@@ -166,10 +180,8 @@
     --rgb-flight-light: var(--rgb-accent-cyan);
     --surface-raised: var(--surface-dark-card);
     --surface-tint: rgb(var(--rgb-accent-cyan) / 5%);
-    /* 上轻下重：顶部只留弱高光，负扩展将白色环境投影集中在卡片下方。 */
-    --shadow-shell:
-        0 7px 29px rgb(var(--rgb-white) / 1%),
-        inset 0 1px 0 var(--panel-edge);
+    /* 主内容依靠底色分层，只保留内沿，避免外投影形成模糊轮廓。 */
+    --shadow-shell: inset 0 .5px 0 var(--card-gloss);
     --shadow-card:
         0 2px 4px -2px rgb(var(--rgb-white) / 1.5%),
         0 9px 12px -3px rgb(var(--rgb-white) / 4%);
@@ -184,8 +196,9 @@
     --shadow-card-raised:
         0 4px 6px -2px rgb(var(--rgb-white) / 2%),
         0 14px 18px -4px rgb(var(--rgb-white) / 4%);
+    /* 抽屉接缝使用页面底色的接触阴影，避免白色外投影形成光带。 */
     --shadow-aside:
-        0 5px 15px rgb(var(--rgb-white) / 1%);
+        1px 0 4px -1px color-mix(in srgb, var(--surface-page-dark) 60%, transparent);
     --shadow-pop:
         0 .2rem .6rem rgb(var(--rgb-white) / 3%),
         0 1.2rem 3rem rgb(var(--rgb-white) / 2%),
@@ -231,7 +244,7 @@
         0 4px 8px -2px rgb(var(--rgb-white) / 3%),
         inset 0 1px 0 var(--card-gloss-hover);
 
-    --surface-article: var(--surface-article-dark);
+    --surface-article: color-mix(in srgb, var(--surface-article-dark) 75%, var(--surface-page-dark));
     --surface-aside: var(--surface-aside-dark);
     --surface-aside-pull: color-mix(in srgb, var(--surface-aside), var(--text-on-dark) 5%);
     --text-aside-pull: var(--text-on-dark-secondary);

@@ -1,6 +1,8 @@
 aside {
     display: flex;
     position: relative;
+    /* Keep the edge shadow above the main scroll surface, including while it moves. */
+    z-index: 1;
     width: var(--aside-width);
     height: 100dvh;
     background-color: var(--surface-aside);

@@ -3,11 +3,12 @@ import ArticleList from "../components/ArticleList.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getDocsArticles, processArticles } from "../utils/articles";
 import { getPageConfig } from "../utils/pages";
+import "../styles/docs-editorial.css";
 
 const config = getPageConfig("/docs");
 const displayArticles = processArticles(getDocsArticles());
 ---
 
 <BaseLayout pageTitle={config.title} pageDescription={config.description}>
-    <ArticleList articles={displayArticles} />
+    <ArticleList articles={displayArticles} editorial />
 </BaseLayout>

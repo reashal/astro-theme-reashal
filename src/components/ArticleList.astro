@@ -5,20 +5,34 @@ import "../styles/docs.css";
 
 interface Props {
     articles: ArticleModule[];
+    editorial?: boolean;
 }
 
-const { articles } = Astro.props as Props;
+const { articles, editorial = false } = Astro.props as Props;
 ---
 
-<article class="article-container docs" id="docs-container">
+<article class:list={["article-container docs", { "docs-editorial": editorial }]} id="docs-container">
+    <div class="docs-content">
+    <div class="docs-list">
     {articles.map((post) => {
         const isPinned = post.frontmatter.pinned === true;
         return (
             <a
                 href={post.url}
-                class={`docs-body docs-a ${isPinned ? "docs-fixed" : ""}`}
+                class:list={["docs-body docs-a", { "docs-fixed": isPinned }]}
             >
-                <h2 class="docs-h">{post.frontmatter.title}</h2>
+                <h2 class="docs-h">
+                    {post.frontmatter.title}
+                    {editorial && isPinned && (
+                        <svg class="docs-pin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="置顶文章">
+                            <title>置顶文章</title>
+                            <g transform="rotate(32 12 12)">
+                                <path d="M8 4h8v2l-1 1v4l3 3v2H6v-2l3-3V7L8 6Z" fill="currentColor" fill-opacity=".12" />
+                                <path d="M12 16v5M9 7h6" />
+                            </g>
+                        </svg>
+                    )}
+                </h2>
                 <p class="docs-p">{post.frontmatter.desc}</p>
                 <time
                     class="docs-t"
@@ -29,6 +43,7 @@ const { articles } = Astro.props as Props;
             </a>
         );
     })}
+    </div>
     
     {articles.length === 0 && (
         <div class="docs-body docs-empty">
@@ -41,11 +56,16 @@ const { articles } = Astro.props as Props;
         </nav>
         <p class="end-tip" id="docs-end-tip">{SITE_INFO.endTip}</p>
     </footer>
+    </div>
     <script>
         (function () {
             const container = document.getElementById("docs-container")!;
             const pagination = document.getElementById("docs-pagination")!;
             const endTip = document.getElementById("docs-end-tip")!;
+            const list = container.querySelector<HTMLElement>(".docs-list")!;
+            const content = container.querySelector<HTMLElement>(".docs-content")!;
+            const mainEl = document.querySelector<HTMLElement>(".main");
+            const isEditorial = container.classList.contains("docs-editorial");
             const allItems = Array.from(
                 container.querySelectorAll<HTMLElement>(".docs-a"),
             );
@@ -57,6 +77,10 @@ const { articles } = Astro.props as Props;
             );
             let currentPage = 0;
             let perPage = 1;
+            let hasEntered = false;
+            let requestedPage = 0;
+            let transitionVersion = 0;
+            let pageAnimation: Animation | null = null;
             type HistoryMode = "none" | "push" | "replace";
 
             function calcPerPage(): number {
@@ -91,23 +115,104 @@ const { articles } = Astro.props as Props;
             function hasRoomForEndTip(): boolean {
                 const footerEl = document.getElementById("docs-footer") as HTMLElement | null;
                 if (!footerEl) return false;
-                const availableHeight = container.clientHeight;
-                const footerH = footerEl.offsetHeight;
                 const articleStyle = getComputedStyle(container);
-                const articlePaddingV =
-                    parseFloat(articleStyle.paddingTop) +
-                    parseFloat(articleStyle.paddingBottom);
-                
-                let usedHeight = articlePaddingV;
-                allItems.forEach(item => {
-                    const itemStyle = getComputedStyle(item);
-                    usedHeight += item.offsetHeight +
-                        parseFloat(itemStyle.marginTop) +
-                        parseFloat(itemStyle.marginBottom);
-                });
-                
-                const available = availableHeight - usedHeight - footerH;
+                const contentStyle = getComputedStyle(content);
+                // 使用实际边界，兼容标题与摘要换行后的行高。
+                const available = container.getBoundingClientRect().bottom -
+                    parseFloat(articleStyle.paddingBottom) -
+                    parseFloat(contentStyle.paddingBottom) -
+                    footerEl.getBoundingClientRect().bottom;
                 return available > MIN_END_TIP_SPACE;
+            }
+
+            function revealEntries(): void {
+                if (!isEditorial || reduceMotion.matches) return;
+                const animation = content.animate([
+                    { opacity: 0, transform: "translateY(4px)" },
+                    { opacity: 1, transform: "translateY(0)" },
+                ], {
+                    duration: 220,
+                    easing: "cubic-bezier(.16, 1, .3, 1)",
+                    fill: "both",
+                });
+                pageAnimation = animation;
+                void animation.finished.then(() => {
+                    if (pageAnimation !== animation) return;
+                    animation.cancel();
+                    pageAnimation = null;
+                }, () => {});
+            }
+
+            function cancelPageTransition(): void {
+                transitionVersion++;
+                pageAnimation?.cancel();
+                pageAnimation = null;
+                content.removeAttribute("aria-busy");
+            }
+
+            async function changePage(page: number, historyMode: HistoryMode = "push"): Promise<void> {
+                const nextPage = Math.max(0, Math.min(page, totalPages() - 1));
+                if (nextPage === requestedPage) return;
+                requestedPage = nextPage;
+
+                // 从正在显示的状态接续，快速连点不会先闪回完全不透明。
+                const style = getComputedStyle(content);
+                const from = { opacity: style.opacity, transform: style.transform };
+                cancelPageTransition();
+                const version = transitionVersion;
+
+                if (isEditorial && hasEntered && !reduceMotion.matches) {
+                    content.setAttribute("aria-busy", "true");
+                    const exit = content.animate([
+                        from,
+                        { opacity: 0, transform: "translateY(-4px)" },
+                    ], {
+                        duration: 100,
+                        easing: "cubic-bezier(.4, 0, 1, 1)",
+                        fill: "forwards",
+                    });
+                    pageAnimation = exit;
+                    try {
+                        await exit.finished;
+                    } catch {
+                        return;
+                    }
+                    if (version !== transitionVersion) return;
+                }
+
+                const listTop = mainEl
+                    ? mainEl.scrollTop + container.getBoundingClientRect().top -
+                        Math.max(0, mainEl.getBoundingClientRect().top) + parseFloat(getComputedStyle(container).paddingTop) - 16
+                    : 0;
+                const scrollTop = Math.min(mainEl?.scrollTop ?? 0, Math.max(0, listTop));
+                showPage(nextPage, nextPage === currentPage && historyMode === "push" ? "none" : historyMode);
+                scrollToPageStart(scrollTop);
+                pageAnimation?.cancel();
+                pageAnimation = null;
+                content.removeAttribute("aria-busy");
+                revealEntries();
+            }
+
+            function scrollToPageStart(top: number): void {
+                if (!mainEl) return;
+                if (isEditorial) {
+                    // 只补足维持阅读位置所需的高度，末页无需保留整页空白。
+                    const missingHeight = top - Math.max(0, mainEl.scrollHeight - mainEl.clientHeight);
+                    if (missingHeight > 0) {
+                        content.style.minHeight = `${content.getBoundingClientRect().height + missingHeight}px`;
+                    }
+                    mainEl.scrollTo({ top, behavior: "instant" });
+                } else {
+                    mainEl.scrollTo({ top: 0, behavior: reduceMotion.matches ? "instant" : "smooth" });
+                }
+            }
+
+            function retainPaginationFocus(label: string | null): void {
+                if (!label) return;
+                const buttons = Array.from(pagination.querySelectorAll<HTMLButtonElement>("button"));
+                const target = buttons.find((button) => button.getAttribute("aria-label") === label && !button.disabled) ??
+                    buttons.find((button) => button.getAttribute("aria-current") === "page");
+                target?.focus({ preventScroll: true });
             }
 
             function showPage(
@@ -115,20 +220,26 @@ const { articles } = Astro.props as Props;
                 historyMode: HistoryMode = "none",
             ): void {
                 currentPage = Math.max(0, Math.min(page, totalPages() - 1));
+                requestedPage = currentPage;
+                content.style.minHeight = "";
                 const start = currentPage * perPage;
                 const end = start + perPage;
                 const lastVisibleIndex = Math.min(end, allItems.length) - 1;
 
                 allItems.forEach((item, i) => {
                     const isVisible = i >= start && i < end;
-                    item.style.display = isVisible ? "" : "none";
+                    item.hidden = !isVisible;
                     item.classList.toggle(
                         "docs-last",
                         isVisible && i === lastVisibleIndex,
                     );
                 });
 
+                const focusedLabel = pagination.contains(document.activeElement)
+                    ? document.activeElement?.getAttribute("aria-label") ?? null
+                    : null;
                 renderPagination();
+                retainPaginationFocus(focusedLabel);
                 if (historyMode !== "none") {
                     syncPageUrl(historyMode);
                 }
@@ -169,8 +280,7 @@ const { articles } = Astro.props as Props;
                 prev.setAttribute("aria-label", "上一页");
                 prev.disabled = currentPage === 0;
                 prev.addEventListener("click", () => {
-                    showPage(currentPage - 1, "push");
-                    scrollToTop();
+                    void changePage(requestedPage - 1);
                 });
                 pagination.appendChild(prev);
 
@@ -196,8 +306,7 @@ const { articles } = Astro.props as Props;
                             btn.setAttribute("aria-current", "page");
                         }
                         btn.addEventListener("click", () => {
-                            showPage(Number(p), "push");
-                            scrollToTop();
+                            void changePage(Number(p));
                         });
                         pagination.appendChild(btn);
                     }
@@ -210,20 +319,9 @@ const { articles } = Astro.props as Props;
                 next.setAttribute("aria-label", "下一页");
                 next.disabled = currentPage === totalPages() - 1;
                 next.addEventListener("click", () => {
-                    showPage(currentPage + 1, "push");
-                    scrollToTop();
+                    void changePage(requestedPage + 1);
                 });
                 pagination.appendChild(next);
-            }
-
-            function scrollToTop(): void {
-                const mainEl = document.querySelector(".main") as HTMLElement | null;
-                if (mainEl) {
-                    mainEl.scrollTo({
-                        top: 0,
-                        behavior: reduceMotion.matches ? "auto" : "smooth",
-                    });
-                }
             }
 
             function init(): void {
@@ -239,10 +337,21 @@ const { articles } = Astro.props as Props;
 
             init();
 
+            if (isEditorial) {
+                const observer = new IntersectionObserver((entries) => {
+                    if (!entries.some((entry) => entry.isIntersecting)) return;
+                    hasEntered = true;
+                    if (!pageAnimation) revealEntries();
+                    observer.disconnect();
+                }, { root: document.querySelector(".main"), threshold: .05 });
+                observer.observe(list);
+            }
+
             let resizeTimer: number;
             window.addEventListener("resize", () => {
                 clearTimeout(resizeTimer);
                 resizeTimer = window.setTimeout(() => {
+                    cancelPageTransition();
                     const firstVisibleIndex = currentPage * perPage;
                     perPage = calcPerPage();
                     showPage(
@@ -253,8 +362,11 @@ const { articles } = Astro.props as Props;
             });
 
             window.addEventListener("popstate", () => {
-                showPage(pageFromUrl());
-                scrollToTop();
+                void changePage(pageFromUrl(), "none");
+            });
+
+            reduceMotion.addEventListener("change", () => {
+                if (reduceMotion.matches) pageAnimation?.finish();
             });
         })();
     </script>
